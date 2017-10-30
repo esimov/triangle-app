@@ -17,7 +17,7 @@ const styles = {
 // Theme
 const muiTheme = getMuiTheme({
   palette: {
-    accent1Color: colors.teal600
+    accent1Color: colors.teal900
   }
 })
 
@@ -36,7 +36,7 @@ class Index extends Component {
     }
   };
   
-  handleRequestClose = () => {
+  handleClose = () => {
     this.setState({
       open: false,
     });
@@ -53,13 +53,13 @@ class Index extends Component {
       <FlatButton
         label="Cancel"
         primary={true}
-        onClick={this.handleRequestClose}
+        onClick={this.handleClose}
       />,
       <FlatButton
         label="Submit"
         primary={true}
         keyboardFocused={true}
-        onClick={this.handleRequestClose}
+        onClick={this.handleClose}
       />,
     ];
 
