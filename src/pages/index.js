@@ -4,7 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import Slider from 'material-ui/Slider';
-import { teal600 } from 'material-ui/styles/colors';
+import * as colors from 'material-ui/styles/colors';
 import { getMuiTheme, MuiThemeProvider } from 'material-ui/styles';
 
 const styles = {
@@ -17,7 +17,7 @@ const styles = {
 // Theme
 const muiTheme = getMuiTheme({
   palette: {
-    accent1Color: teal600
+    accent1Color: colors.teal600
   }
 })
 
@@ -28,6 +28,12 @@ class Index extends Component {
 
   style = {
     margin: 12,
+  };
+
+  getInitialState = () => {
+    return {
+      open: false
+    }
   };
   
   handleRequestClose = () => {
