@@ -1,5 +1,5 @@
 import React from 'react';
-import * as ReactDOM from 'react-dom';
-import Index from './pages/index';
+import ReactDOM from 'react-dom';
+import App from './app';
 
-ReactDOM.render(<Index />, document.querySelector('#root'));
+ReactDOM.render(<App />, document.querySelector('#root'));
