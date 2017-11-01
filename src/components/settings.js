@@ -25,9 +25,13 @@ export default class Settings extends Component {
     width: 400,
   }
 
-  handleSlider = (event, value) => {
+  // Update slider values
+  handleSlider = (id, event, value) => {
+    const sliders = this.state.sliders;
+    sliders[id].currentVal = value;
+
     this.setState({
-      slider: value
+      sliders
     });
   };
 
@@ -42,7 +46,8 @@ export default class Settings extends Component {
             max: 20,
             default: 4,
             step: 1
-          }
+          },
+          currentVal: 4
         },
         {
           name: "Sobel Threshold",
@@ -52,29 +57,26 @@ export default class Settings extends Component {
             max: 60,
             default: 10,
             step: 1
-          }
+          },
+          currentVal: 10          
         }
       ]
     });
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    console.log(prevState);
-  }
-
   render() {
     let sliderItems;
-    sliderItems = this.state.sliders.map(slider => {
+    sliderItems = this.state.sliders.map((slider, id) => {      
       return (
         <div style={this.mainStyle} key={slider.name} >
-          <span style={this.textStyle}>{slider.title} <Value sliderValue={this.state.slider} /></span>
+          <span style={this.textStyle}>{slider.title} <Value sliderValue={this.state.sliders[id].currentVal} /></span>
           <Slider name={slider.name}
             min={slider.range.min}
             max={slider.range.max}
-            value={slider.range.default}
+            defaultValue={slider.range.default}
             step={slider.range.step}
             style={this.sliderStyle}
-            onChange={this.handleSlider}
+            onChange={this.handleSlider.bind(slider, id)}  // Extend the default event action parameters with the slider id. We need to capture it,          
           />
         </div>
       );
