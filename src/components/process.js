@@ -8,14 +8,14 @@ const style = {
   leftPanel: {
     display: "flex",
     flexWrap: "wrap",
-    width: "75%",
+    width: "80%",
     float: "left"
   },
 
   rightPanel: {
     display: "flex",
     flexWrap: "wrap",
-    width: "25%",
+    width: "20%",
     float: "left"
   },
 
