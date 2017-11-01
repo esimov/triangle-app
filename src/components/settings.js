@@ -19,6 +19,7 @@ const styles = {
   },
   rightPanel: {
     paddingRight: 10,
+    paddingTop: 10,
     float: "left",
     width: "49%"
   },
@@ -31,7 +32,7 @@ const styles = {
     position: "relative",
     width: 400,
     height:80,    
-    top: 14
+    top: 16
   },
   toggle: {
     width: 400,
@@ -202,7 +203,7 @@ export default class Settings extends Component {
       return (
         <div style={styles.main} key={slider.name} >
           <span style={styles.text}>{slider.title}
-            <TextField style={{width:60, marginLeft:10}} type="number" onChange={this.handleSliderChange.bind(slider, id)} value={this.state.sliders[id].currentVal}/>
+            <TextField underlineShow={false} style={{width:60, marginLeft:10}} type="number" onChange={this.handleSliderChange.bind(slider, id)} value={this.state.sliders[id].currentVal}/>
           </span>
           <Slider name={slider.name}
             min={slider.range.min}
