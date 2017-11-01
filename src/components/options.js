@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
-import Dialog from 'material-ui/Dialog';
 import FontIcon from 'material-ui/FontIcon';
 import {Card, CardHeader, CardText} from 'material-ui/Card';
 import Settings from './settings';
@@ -39,10 +37,10 @@ export default class Options extends Component {
     return (
       <div className="Options">      
         <Card
+          expanded={this.state.expanded}
           onExpandChange={this.onExpandChange}
         >
-          <CardHeader      
-            expanded={this.state.expanded}      
+          <CardHeader
             title={this.state.title}
             showExpandableButton={true}
             actAsExpander={true}                  

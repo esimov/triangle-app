@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
 import Slider from 'material-ui/Slider';
 import Toggle from 'material-ui/Toggle';
 import SelectField from 'material-ui/SelectField';
 import TextField from 'material-ui/TextField';
 import MenuItem from 'material-ui/MenuItem';
-import FontIcon from 'material-ui/FontIcon';
 
 const styles = {
   main: {
@@ -197,13 +195,18 @@ export default class Settings extends Component {
   }  
 
   render() {
-    let sliderItems, toggleItems, wireframeMode;      
+    let sliderItems, toggleItems;
     
     sliderItems = this.state.sliders.map((slider, id) => {      
       return (
         <div style={styles.main} key={slider.name} >
           <span style={styles.text}>{slider.title}
-            <TextField underlineShow={false} style={{width:60, marginLeft:10}} type="number" onChange={this.handleSliderChange.bind(slider, id)} value={this.state.sliders[id].currentVal}/>
+            <TextField type="number"
+                underlineShow={false}
+                style={{width:60, marginLeft:10}}
+                onChange={this.handleSliderChange.bind(slider, id)}
+                value={this.state.sliders[id].currentVal}
+            />
           </span>
           <Slider name={slider.name}
             min={slider.range.min}
@@ -212,7 +215,8 @@ export default class Settings extends Component {
             step={slider.range.step}
             style={styles.settings}
             value={this.state.sliders[id].currentVal}
-            onChange={this.handleSlider.bind(slider, id)}  // Extend the default event action parameters with the slider id. We need to capture the current item.
+            // Extend the default event action parameters with the slider id. We need to capture the current item.
+            onChange={this.handleSlider.bind(slider, id)}
           />
         </div>
       );
@@ -223,8 +227,9 @@ export default class Settings extends Component {
         <div style={this.mainStyle} key={toggleItem.name} >                  
           <Toggle label={toggleItem.label}
             style={styles.toggle}
-            defaultToggled={toggleItem.toggled}            
-            onToggle={this.handleToggleSwitch.bind(toggleItem, id)}  // Extend the default event action parameters with the togggle id. We need to capture the current item.
+            defaultToggled={toggleItem.toggled}
+            // Extend the default event action parameters with the togggle id. We need to capture the current item.
+            onToggle={this.handleToggleSwitch.bind(toggleItem, id)}
           />                    
         </div>
       );
