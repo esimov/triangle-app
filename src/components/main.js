@@ -13,7 +13,7 @@ class Main extends Component {
             <CardActions>
               <Preview />
               <sections className="middlePanel">
-                <i class="material-icons">code</i>
+                <i class="material-icons">arrow_forward</i>
               </sections>
               <Result />
               <Options />                     
