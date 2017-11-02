@@ -1,0 +1,25 @@
+.optionsHeader {
+    line-height: 0.8em;
+}
+
+.dropZone {
+    position: relative;
+}
+
+.dropZone .previewMsg {
+    font-size: 1.0em;
+    position: absolute;    
+    text-align: center;    
+    width: 100%;
+    top: 50%;
+    transform: translateX(-50%);
+    transform: translateY(-50%);
+    cursor: default;
+}
+
+.dropZone .previewImg {    
+    position: absolute;
+    width: 100%; 
+    top: 50%;
+    transform: translateY(-50%);
+}

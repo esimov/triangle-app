@@ -7,16 +7,14 @@ import { blueGrey200 } from 'material-ui/styles/colors';
 const style = {
   leftPanel: {
     display: "flex",
-    flexWrap: "wrap",
-    width: "80%",
+    flexWrap: "wrap",    
     float: "left"
   },
 
   rightPanel: {
     display: "flex",
-    flexWrap: "wrap",
-    width: "20%",
-    float: "left"
+    flexWrap: "wrap",    
+    float: "right"
   },
 
   customInputStyle: {
@@ -30,14 +28,11 @@ const style = {
 };
 
 export default class Process extends Component {
-  getInitialState = () => {
-    return {
-      open: false
+  constructor() {
+    super()
+    this.state = {
+      open : false
     }
-  }
-
-  state = {
-    open: false
   }
 
   // Clear preview
@@ -104,7 +99,7 @@ export default class Process extends Component {
             style={style.customBtnStyle}
           />
           <RaisedButton
-            label="Save"
+            label="Process"
             secondary={true}
             onClick={this.onModalOpen}
             style={style.customBtnStyle}

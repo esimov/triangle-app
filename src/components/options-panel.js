@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
 import FontIcon from 'material-ui/FontIcon';
 import {Card, CardHeader, CardText} from 'material-ui/Card';
-import Settings from './settings';
+import Settings from './settings-panel';
 
-export default class Options extends Component {  
-  headerStyle = {
-    lineHeight: "0.8em"    
-  }
-  
+export default class Options extends Component {    
   state = {
-    expanded: false,
+    expanded: true,
     title: "More Options"
   }
   
@@ -37,16 +33,16 @@ export default class Options extends Component {
     return (
       <div className="Options">      
         <Card
-          expanded={this.state.expanded}
+          expandable={true}   
+          expanded={this.state.expanded}      
           onExpandChange={this.onExpandChange}
         >
-          <CardHeader
-            title={this.state.title}
+          <CardHeader            
+            title={this.state.title}            
             showExpandableButton={true}
             actAsExpander={true}                  
             avatar={<FontIcon
-              className="material-icons"
-              style={this.headerStyle}
+              className="material-icons optionsHeader"              
             >settings</FontIcon>}
           />
           <CardText 

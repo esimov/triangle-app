@@ -13,13 +13,13 @@ const styles = {
   leftPanel: {
     paddingLeft: 15,
     float: "left",
-    width: "49%"
+    width: "48%"
   },
   rightPanel: {
     paddingRight: 10,
     paddingTop: 10,
-    float: "left",
-    width: "49%"
+    float: "right",
+    width: "48%"
   },
   text: {    
     color: "#424242",
@@ -32,11 +32,11 @@ const styles = {
     height:80,
     top: 20
   },
-  toggle: {
-    width: 400,
+  toggle: {    
     marginBottom: 12
   }
 }
+
 export default class Settings extends Component {
   constructor() {
     super();
@@ -263,16 +263,6 @@ export default class Settings extends Component {
             />
           </div>
         </div>
-    );
-  }
-}
-
-export class Value extends Component {
-  render() {
-    return (
-        <span>
-          {this.props.sliderValue}
-        </span>
     );
   }
 }
