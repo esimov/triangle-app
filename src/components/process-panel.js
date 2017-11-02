@@ -87,7 +87,7 @@ export default class Process extends Component {
     ];
 
     return (
-      <div className="Process">
+      <section className="Process">
         <div style={style.leftPanel}>
           <RaisedButton label="Clear Drawing" onClick={this.onClear} style={style.customBtnStyle} />
         </div>
@@ -120,7 +120,7 @@ export default class Process extends Component {
             /><br />
           </Dialog>
         </div>
-      </div>
+      </section>
     );
   }
 }

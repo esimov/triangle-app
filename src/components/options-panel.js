@@ -31,7 +31,7 @@ export default class Options extends Component {
 
   render() {    
     return (
-      <div className="Options">      
+      <section className="Options">      
         <Card
           expandable={true}   
           expanded={this.state.expanded}      
@@ -51,7 +51,7 @@ export default class Options extends Component {
           >      
           </CardText>
         </Card>
-      </div>
+      </section>
     );
   }
 }

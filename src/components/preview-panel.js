@@ -58,7 +58,7 @@ export default class Preview extends Component {
     this.setState({
       isValid: false,
       loadedImg: "#",
-      message: "Unsupported file type!"
+      message: "Wrong file type!"
     })
   }
 
@@ -88,7 +88,7 @@ export default class Preview extends Component {
     }
     let textColor = this.state.isValid ? colors.cyan600 : colors.redA700
     return (      
-      <section>
+      <section className="imageLeftPanel">
         <div className="dropZone">
           <Dropzone 
             accept="image/jpeg, image/png"
@@ -100,7 +100,7 @@ export default class Preview extends Component {
             onDropAccepted={this.onDropAccepted.bind(this)}
             onDropRejected={this.onDropRejected.bind(this)}
           >
-            <span className="previewMsg" style={{color:textColor}}>{this.state.message}</span>
+            <span className="previewMsg" style={{color:textColor}}>{this.state.message.toUpperCase()}</span>
             <img id="previewImg" className="previewImg" src={this.state.loadedImg}/>
             <FloatingActionButton mini={true} backgroundColor={colors.cyan600} style={{margin: 10}} zDepth={1} >
               <ContentAdd />

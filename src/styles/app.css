@@ -1,9 +1,43 @@
 .optionsHeader {
     line-height: 0.8em;
 }
+.Options {
+    clear: both;
+}
+
+.imageLeftPanel, 
+.imageRightPanel {
+    width: 25%;    
+    position: relative;
+}
+
+.imageLeftPanel {
+    float: left;
+}
+.imageRightPanel {
+    float: right;
+}
+
+.middlePanel {
+    width: 50%;
+}
+.middlePanel i {
+    font-size: 12em;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(177, 177, 177, 0.1);
+    cursor: default;
+}
 
 .dropZone {
     position: relative;
+}
+
+.resultZone {
+    width: 200px;
+    height: 200px;
+    float: right;
 }
 
 .dropZone .previewMsg {
@@ -18,6 +52,13 @@
 }
 
 .dropZone .previewImg {    
+    position: absolute;
+    width: 100%; 
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.resultZone .resultImg {    
     position: absolute;
     width: 100%; 
     top: 50%;

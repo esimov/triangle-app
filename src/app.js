@@ -15,7 +15,7 @@ const styles = {
 const muiTheme = getMuiTheme({
   palette: {
     primary1Color: colors.deepPurple500,
-      accent1Color: colors.cyan600
+    accent1Color: colors.cyan600
   }
 })
 

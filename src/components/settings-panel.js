@@ -202,6 +202,7 @@ export default class Settings extends Component {
         <div style={styles.main} key={slider.name} >
           <span style={styles.text}>{slider.title}
             <TextField type="number"
+              name={slider.name}
               underlineShow={false}
               style={{width:60, marginLeft:10}}
               onChange={this.handleSliderChange.bind(slider, id)}
