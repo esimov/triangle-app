@@ -11,7 +11,7 @@ const styles = {
     flexDirection: 'row'
   },
   leftPanel: {
-    paddingLeft: 14,
+    paddingLeft: 15,
     float: "left",
     width: "49%"
   },
@@ -26,11 +26,11 @@ const styles = {
     position: "absolute",
     zIndex: 99,
   },
-  settings: {
+  slider: {
     position: "relative",
     width: 400,
-    height:80,    
-    top: 16
+    height:80,
+    top: 20
   },
   toggle: {
     width: 400,
@@ -202,10 +202,10 @@ export default class Settings extends Component {
         <div style={styles.main} key={slider.name} >
           <span style={styles.text}>{slider.title}
             <TextField type="number"
-                underlineShow={false}
-                style={{width:60, marginLeft:10}}
-                onChange={this.handleSliderChange.bind(slider, id)}
-                value={this.state.sliders[id].currentVal}
+              underlineShow={false}
+              style={{width:60, marginLeft:10}}
+              onChange={this.handleSliderChange.bind(slider, id)}
+              value={this.state.sliders[id].currentVal}
             />
           </span>
           <Slider name={slider.name}
@@ -213,7 +213,7 @@ export default class Settings extends Component {
             max={slider.range.max}
             defaultValue={slider.range.default}
             step={slider.range.step}
-            style={styles.settings}
+            style={styles.slider}
             value={this.state.sliders[id].currentVal}
             // Extend the default event action parameters with the slider id. We need to capture the current item.
             onChange={this.handleSlider.bind(slider, id)}
