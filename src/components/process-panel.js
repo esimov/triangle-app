@@ -3,6 +3,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import { blueGrey200 } from 'material-ui/styles/colors';
+import PubSub from 'pubsub-js';
 
 const style = {
   rightPanel: {
@@ -23,8 +24,13 @@ export default class Process extends Component {
   constructor() {
     super()
     this.state = {
-      open : false
+      open : false,
+      value : "",
+      errorMessage: ""
     }
+    PubSub.subscribe('settings', (event, data) => {
+      this.settings = data;      
+    });
   }
 
   // Clear preview
@@ -37,27 +43,40 @@ export default class Process extends Component {
     console.log('On preview');
   }
 
-  // Save triangulated image
-  onSave = () => {
-    console.log('On image save');
-    this.setState({
-      open: false
-    });
-  }
-
   // Open save modal panel
-  onModalOpen = () => {
-    console.log('On save');
+  onModalOpen = () => {    
     this.setState({
       open: true
     });
   }
 
+  // Save triangulated image
+  onSave = () => {            
+    this.settings = JSON.stringify(this.settings)    
+    if (this.state.value === "") {
+      this.setState({
+        errorMessage: "This field is required"
+      })
+      return false;
+    }
+    this.setState({            
+      value: "",
+      errorMessage: "",
+      open: false
+    });
+  }
+
   // Close save modal panel
-  onModalClose = () => {
+  onClose = () => {
     this.setState({
       open: false
     });
+  }
+
+  handleInputChange = (event) => {    
+    this.setState({
+      value : event.target.value
+    })
   }
 
   // Render 
@@ -73,13 +92,13 @@ export default class Process extends Component {
         label="Cancel"
         secondary={true}
         keyboardFocused={true}
-        onClick={this.onModalClose}
+        onClick={this.onClose}
         style={style.customBtnStyle}
       />,
     ];
 
-    return (
-      <section className="Process">
+    return (      
+      <section className="Process">        
         <span style={style.leftPanel}>
           <RaisedButton label="Clear Drawing" onClick={this.onClear} style={style.customBtnStyle} />
         </span>
@@ -101,14 +120,17 @@ export default class Process extends Component {
             actions={actions}
             modal={false}
             open={this.state.open}
-            onRequestClose={this.onModalClose}
+            onRequestClose={this.onClose}
           >
-            File name:<br />
-            <TextField
+            <span>File name:</span><br />
+            <TextField              
               hintText="File Name"
+              errorText={this.state.errorMessage}
               floatingLabelText="File Name"
               floatingLabelStyle={style.customInputStyle}
               floatingLabelFocusStyle={style.customInputStyle}
+              value={this.state.value}
+              onChange={this.handleInputChange}
             /><br />
           </Dialog>
         </span>

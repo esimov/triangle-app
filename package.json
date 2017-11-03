@@ -4,6 +4,7 @@
   "description": "Desktop application for Triangle",
   "dependencies": {
     "material-ui": "^0.19.4",
+    "pubsub-js": "^1.5.7",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-dropzone": "^4.2.1",

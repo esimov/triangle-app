@@ -4,6 +4,7 @@ import Toggle from 'material-ui/Toggle';
 import SelectField from 'material-ui/SelectField';
 import TextField from 'material-ui/TextField';
 import MenuItem from 'material-ui/MenuItem';
+import PubSub from 'pubsub-js';
 
 const styles = {
   main: {
@@ -41,7 +42,7 @@ const styles = {
 export default class Settings extends Component {
   constructor() {
     super();
-
+    
     this.state = {
       sliders: [],
       toggleItems: [],
@@ -237,6 +238,9 @@ export default class Settings extends Component {
       );
     });
     
+    // We need to comminicate between components not directly related.
+    // For this reason we need to dispatch a custom event which we'll capture on save action.
+    PubSub.publish('settings', this.state)    
     return (
         <div className="Settings" style={{"overflow":"hidden", "position":"relative"}}>
           <div style={styles.leftPanel}>
