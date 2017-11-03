@@ -17,7 +17,7 @@ const styles = {
     width: "48%"
   },
   rightPanel: {
-    paddingRight: 10,
+    paddingLeft: 10,
     paddingTop: 10,
     float: "right",
     width: "48%"
@@ -25,19 +25,19 @@ const styles = {
   text: {    
     color: "#424242",
     position: "absolute",
-    zIndex: 99,
+    zIndex: 99
   },
   slider: {
     position: "relative",
     width: 400,
-    height:80,
+    height: 60,
     top: 20
   },
   toggle: {    
     marginBottom: 12,
     width: 300
   }
-}
+};
 
 export default class Settings extends Component {
   constructor() {
@@ -60,7 +60,7 @@ export default class Settings extends Component {
     this.setState({
       sliders
     });
-  }
+  };
 
   // Toggle switch handler
   handleToggleSwitch = (id, event, checked) => {
@@ -70,7 +70,7 @@ export default class Settings extends Component {
     this.setState({
       toggleItems
     });
-  }
+  };
 
   // Wireframe input field event handler
   handleValueChange = (event, value) => {    
@@ -83,14 +83,14 @@ export default class Settings extends Component {
     this.setState({
       wireframeValue : newValue
     })
-  }
+  };
 
   // Wireframe type event handler
   handleTypeChange = (event, value) => {
     this.setState({
       wireframeType : value
     });
-  }
+  };
 
   handleSliderChange = (id, event, value) => {
     const sliders = this.state.sliders;    
@@ -105,9 +105,9 @@ export default class Settings extends Component {
     this.setState({
       sliders
     });
-  }
+  };
 
-  componentWillMount() {
+  componentDidMount() {
     this.setState({
       // Slider items
       sliders : [
@@ -176,7 +176,7 @@ export default class Settings extends Component {
             step: 0.1
           },
           currentVal: 10
-        },        
+        }
       ],
       // Toggle items
       toggleItems : [
@@ -184,14 +184,14 @@ export default class Settings extends Component {
           name: "Grayscale",
           label: "Grayscale:",          
           toggled: false,
-          status: false,
+          status: false
         },
         {
           name: "Solid Wireframe",
           label: "Solid Wireframe:",          
           toggled: false,
-          status: false,
-        },  
+          status: false
+        }
       ]
     });
   }  
@@ -217,7 +217,7 @@ export default class Settings extends Component {
             defaultValue={slider.range.default}
             step={slider.range.step}
             style={styles.slider}
-            value={this.state.sliders[id].currentVal}
+            value={parseInt(this.state.sliders[id].currentVal)}
             // Extend the default event action parameters with the slider id. We need to capture the current item.
             onChange={this.handleSlider.bind(slider, id)}
           />
@@ -238,9 +238,9 @@ export default class Settings extends Component {
       );
     });
     
-    // We need to comminicate between components not directly related.
+    // We need to communicate between components not directly related.
     // For this reason we need to dispatch a custom event which we'll capture on save action.
-    PubSub.publish('settings', this.state)    
+    PubSub.publish('settings', this.state);
     return (
         <div className="Settings" style={{"overflow":"hidden", "position":"relative"}}>
           <div style={styles.leftPanel}>

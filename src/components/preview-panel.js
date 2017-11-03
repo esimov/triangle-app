@@ -3,39 +3,40 @@ import Dropzone from 'react-dropzone';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import * as colors from 'material-ui/styles/colors';
+import PubSub from 'pubsub-js';
 import dropzoneStyles from '../styles/app.css';
 
 export default class Preview extends Component {
   constructor() {
-    super()        
+    super();
     this.state = {
       dragOver : false,       
       isValid : true,
       accepted : [],
       rejected : [],    
       loadedImg : "#",
-      message : "Drop image here...",  
-    }
+      message : "Drop image here..."
+    };
     this.acceptedFile = null
   }
 
   onDrop = (accepted, rejected) => {    
     this.setState({
       accepted: accepted,
-      rejected: rejected,
+      rejected: rejected
     });
     this.acceptedFile = accepted[0]
-  }
+  };
 
   onDropAccepted = () => {    
     this.setState({
       isValid: true,
       message: ""
-    })
+    });
 
     const promise = new Promise((resolve, reject) => {
-      const reader = new FileReader()          
-      reader.readAsDataURL(this.acceptedFile)
+      const reader = new FileReader();
+      reader.readAsDataURL(this.acceptedFile);
       reader.onload = () => {
         if (reader.result) {
           resolve(reader.result)
@@ -44,15 +45,16 @@ export default class Preview extends Component {
           reject(Error("Failed converting to base64"))
         }
       }
-    })
+    });
     promise.then(result => {
       this.setState({
         loadedImg : result
-      })      
+      });
+      PubSub.publish('droppedImage', this.state);
     }, err => {
       console.log(err)
     })    
-  }
+  };
 
   onDropRejected = () => {    
     this.setState({
@@ -60,32 +62,32 @@ export default class Preview extends Component {
       loadedImg: "#",
       message: "Wrong file type!"
     })
-  }
+  };
 
   onDragOver = () => {
     this.setState({
-      dragOver: true,
+      dragOver: true
     })    
-  }
+  };
 
   onDragLeave = () => {
     this.setState({
-      dragOver: false,
+      dragOver: false
     })
-  }
+  };
 
   render() {    
     const dropZone = {
       position: "relative",      
-      width: 300,
-      height: 300,
+      width: 200,
+      height: 200,
       borderStyle: "dotted",
       borderWidth: 1,
       borderRadius: 5,
       borderColor: this.state.isValid ? colors.cyan600 : colors.redA700,
       backgroundColor : this.state.isValid ? "transparent" : colors.red50,
       cursor: "default"   
-    }
+    };
     let textColor = this.state.isValid ? colors.cyan600 : colors.redA700
     return (      
       <section className="imageLeftPanel">
@@ -103,7 +105,8 @@ export default class Preview extends Component {
             onDropRejected={this.onDropRejected.bind(this)}
           >
             <span className="previewMsg" style={{color:textColor}}>{this.state.message.toUpperCase()}</span>
-            <img id="previewImg" className="previewImg" src={this.state.loadedImg}/>
+            <img id="previewImg" className="previewImg" src={this.state.loadedImg} />
+
             <FloatingActionButton mini={true} backgroundColor={colors.cyan600} style={{margin: 10}} zDepth={1} >
               <ContentAdd />
             </FloatingActionButton>

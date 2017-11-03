@@ -7,8 +7,8 @@ import Main from './components/main';
 const styles = {
   root: {
     textAlign: 'center',
-    paddingTop: 200,
-  },
+    paddingTop: 200
+  }
 };
 
 // Theme
@@ -17,7 +17,7 @@ const muiTheme = getMuiTheme({
     primary1Color: colors.deepPurple500,
     accent1Color: colors.cyan600
   }
-})
+});
 
 class App extends Component {  
   render() {    

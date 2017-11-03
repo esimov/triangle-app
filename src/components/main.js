@@ -9,11 +9,11 @@ class Main extends Component {
   render() {
     return (      
         <div className="App">
-          <Card containerStyle={{padding: 20}}>
+          <Card containerStyle={{padding: 2}}>
             <CardActions>
               <Preview />
               <section className="middlePanel">
-                <i className="material-icons">insert_link</i>
+                <span className="triangle-header"><span className="symbol">▲</span>Triangle</span>
               </section>
               <Result />
               <Options />                     

@@ -4,7 +4,7 @@ import * as colors from 'material-ui/styles/colors';
 
 export default class Result extends Component {
   constructor() {
-    super()        
+    super();
     this.state = {      
     }    
   }
@@ -16,7 +16,7 @@ export default class Result extends Component {
       borderRadius: 5,
       borderColor: colors.cyan600,
       cursor: "default"   
-    }
+    };
 
     return (      
       <section className="imageRightPanel">

@@ -22,62 +22,72 @@ const style = {
 
 export default class Process extends Component {
   constructor() {
-    super()
+    super();
     this.state = {
       open : false,
       value : "",
-      errorMessage: ""
-    }
+      errorMessage : ""
+    };
+    this.image = null;
+
     PubSub.subscribe('settings', (event, data) => {
-      this.settings = data;      
+      this.options = data;      
+    });
+    PubSub.subscribe('droppedImage', (event, data) => {
+      this.image = data;
+      this.options = Object.assign(this.options, this.image);
     });
   }
 
   // Clear preview
   onClear = () => {
     console.log('On clear');
-  }
+  };
 
   // Preview triangulated image
   onPreview = () => {
     console.log('On preview');
-  }
+  };
 
   // Open save modal panel
   onModalOpen = () => {    
     this.setState({
       open: true
     });
-  }
+  };
 
   // Save triangulated image
-  onSave = () => {            
-    this.settings = JSON.stringify(this.settings)    
+  onSave = () => {
     if (this.state.value === "") {
       this.setState({
         errorMessage: "This field is required"
-      })
+      });
       return false;
+    }
+    if (!this.image) {
+      alert("No uploaded image!")
     }
     this.setState({            
       value: "",
       errorMessage: "",
       open: false
     });
-  }
+    const options = JSON.stringify(this.options);
+    console.log(this.options);
+  };
 
   // Close save modal panel
   onClose = () => {
     this.setState({
       open: false
     });
-  }
+  };
 
   handleInputChange = (event) => {    
     this.setState({
       value : event.target.value
     })
-  }
+  };
 
   // Render 
   render() {
@@ -94,13 +104,13 @@ export default class Process extends Component {
         keyboardFocused={true}
         onClick={this.onClose}
         style={style.customBtnStyle}
-      />,
+      />
     ];
 
     return (      
       <section className="Process">        
         <span style={style.leftPanel}>
-          <RaisedButton label="Clear Drawing" onClick={this.onClear} style={style.customBtnStyle} />
+          <RaisedButton label="Clear Preview" onClick={this.onClear} style={style.customBtnStyle} />
         </span>
         <span style={style.rightPanel}>
           <RaisedButton

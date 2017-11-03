@@ -7,7 +7,7 @@ export default class Options extends Component {
   state = {
     expanded: true,
     title: "More Options"
-  }
+  };
   
   onExpand = () => {
     this.setState({
@@ -15,19 +15,19 @@ export default class Options extends Component {
       title: "Less Options"
     });
 
-  }
+  };
 
   onCollapse = () => {
     this.setState({
       expanded: false,
       title: "More Options"
     });
-  }
+  };
 
   onExpandChange = () => {
     this.state.expanded = !this.state.expanded;
     this.state.title = this.state.expanded ? this.onExpand() : this.onCollapse();  
-  }
+  };
 
   render() {    
     return (
@@ -38,15 +38,15 @@ export default class Options extends Component {
           onExpandChange={this.onExpandChange}
         >
           <CardHeader            
-            title={this.state.title}            
-            showExpandableButton={true}
-            actAsExpander={true}                  
+            //title={this.state.title} style={{paddingBottom:2}}
+            title="Options"
+            actAsExpander={true}
             avatar={<FontIcon
               className="material-icons optionsHeader"              
             >settings</FontIcon>}
           />
-          <CardText 
-            expandable={true}
+          <CardText style={{paddingTop:2}}
+            expandable={false}
             children={<Settings />}
           >      
           </CardText>

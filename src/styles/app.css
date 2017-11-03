@@ -1,3 +1,7 @@
+#root {
+    width: 800px;
+}
+
 .optionsHeader {
     line-height: 0.8em;
 }
@@ -7,7 +11,7 @@
 
 .imageLeftPanel, 
 .imageRightPanel {
-    width: 30%;    
+    width: 25%;
     position: relative;
 }
 
@@ -21,18 +25,18 @@
 
 .middlePanel {
     position: relative;
-    width: 40%;
-    height: 300px;
+    width: 50%;
+    height: 200px;
     margin-right: 0!important;
 }
 
-.middlePanel i {
-    font-size: 12em;
+.middlePanel .triangle-header {
     position: absolute;
     left: 50%; top: 50%;
     transform: translate(-50%, -50%);
     color: rgba(177, 177, 177, 0.1);
     cursor: default;
+    font-size: 4.8em;
 }
 
 .dropZone {
@@ -40,8 +44,8 @@
 }
 
 .resultZone {
-    width: 300px;
-    height: 300px;
+    width: 200px;
+    height: 200px;
     float: right;
 }
 
