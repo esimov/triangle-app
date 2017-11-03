@@ -12,9 +12,9 @@ class Main extends Component {
           <Card containerStyle={{padding: 20}}>
             <CardActions>
               <Preview />
-              <sections className="middlePanel">
-                <i class="material-icons">arrow_forward</i>
-              </sections>
+              <section className="middlePanel">
+                <i className="material-icons">insert_link</i>
+              </section>
               <Result />
               <Options />                     
               <Process />

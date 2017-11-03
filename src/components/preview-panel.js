@@ -76,14 +76,14 @@ export default class Preview extends Component {
 
   render() {    
     const dropZone = {
-      position: "relative",
-      backgroundColor : this.state.dragOver ? (this.state.isValid ? "transparent" : colors.red50) : colors.grey50,
-      width: 200,
-      height: 200,
+      position: "relative",      
+      width: 300,
+      height: 300,
       borderStyle: "dotted",
       borderWidth: 1,
       borderRadius: 5,
       borderColor: this.state.isValid ? colors.cyan600 : colors.redA700,
+      backgroundColor : this.state.isValid ? "transparent" : colors.red50,
       cursor: "default"   
     }
     let textColor = this.state.isValid ? colors.cyan600 : colors.redA700
@@ -94,6 +94,8 @@ export default class Preview extends Component {
             accept="image/jpeg, image/png"
             multiple={false}
             style={dropZone}
+            activeStyle={{backgroundColor:colors.green50}}
+            acceptStyle={{backgroundColor:"transparent"}}            
             onDrop={this.onDrop.bind(this)}
             onDragOver={this.onDragOver.bind(this)}
             onDragLeave={this.onDragLeave.bind(this)}

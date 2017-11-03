@@ -33,7 +33,8 @@ const styles = {
     top: 20
   },
   toggle: {    
-    marginBottom: 12
+    marginBottom: 12,
+    width: 300
   }
 }
 

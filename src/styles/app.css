@@ -7,11 +7,12 @@
 
 .imageLeftPanel, 
 .imageRightPanel {
-    width: 25%;    
+    width: 30%;    
     position: relative;
 }
 
-.imageLeftPanel {
+.imageLeftPanel,
+.middlePanel {
     float: left;
 }
 .imageRightPanel {
@@ -19,13 +20,17 @@
 }
 
 .middlePanel {
-    width: 50%;
+    position: relative;
+    width: 40%;
+    height: 300px;
+    margin-right: 0!important;
 }
+
 .middlePanel i {
     font-size: 12em;
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
     color: rgba(177, 177, 177, 0.1);
     cursor: default;
 }
@@ -35,8 +40,8 @@
 }
 
 .resultZone {
-    width: 200px;
-    height: 200px;
+    width: 300px;
+    height: 300px;
     float: right;
 }
 

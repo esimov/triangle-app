@@ -5,18 +5,10 @@ import TextField from 'material-ui/TextField';
 import { blueGrey200 } from 'material-ui/styles/colors';
 
 const style = {
-  leftPanel: {
-    display: "flex",
-    flexWrap: "wrap",    
-    float: "left"
-  },
-
   rightPanel: {
-    display: "flex",
-    flexWrap: "wrap",    
     float: "right"
   },
-
+  
   customInputStyle: {
     borderColor: blueGrey200,
     color: blueGrey200
@@ -88,10 +80,10 @@ export default class Process extends Component {
 
     return (
       <section className="Process">
-        <div style={style.leftPanel}>
+        <span style={style.leftPanel}>
           <RaisedButton label="Clear Drawing" onClick={this.onClear} style={style.customBtnStyle} />
-        </div>
-        <div style={style.rightPanel}>
+        </span>
+        <span style={style.rightPanel}>
           <RaisedButton
             label="Preview"
             primary={true}
@@ -119,7 +111,7 @@ export default class Process extends Component {
               floatingLabelFocusStyle={style.customInputStyle}
             /><br />
           </Dialog>
-        </div>
+        </span>
       </section>
     );
   }
