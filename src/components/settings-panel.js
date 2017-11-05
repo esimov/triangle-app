@@ -4,11 +4,12 @@ import Toggle from 'material-ui/Toggle';
 import SelectField from 'material-ui/SelectField';
 import TextField from 'material-ui/TextField';
 import MenuItem from 'material-ui/MenuItem';
+import * as colors from 'material-ui/styles/colors';
 import PubSub from 'pubsub-js';
 
 const WITHOUT_WIREFRAME = 0,
-      WITH_WIREFRAME = 1,
-      WIREFRAME_ONLY = 2;
+      WITH_WIREFRAME    = 1,
+      WIREFRAME_ONLY    = 2;
 
 const styles = {
   main: {
@@ -94,7 +95,7 @@ export default class Settings extends Component {
     this.setState({
       wireframeType: value
     });
-    if (value == WITHOUT_WIREFRAME) {
+    if (value === WITHOUT_WIREFRAME) {
       this.setState({
         wirefameDisabled: true,
         wireframeValue: 0
@@ -266,7 +267,7 @@ export default class Settings extends Component {
               floatingLabelText="Wireframe mode"
               value={this.state.wireframeType}
               onChange={this.handleTypeChange}
-              style={styles.customWidth}
+              selectedMenuItemStyle={{color:colors.pink500}}
             >
               <MenuItem value={WITHOUT_WIREFRAME} primaryText="Without Wireframe" />
               <MenuItem value={WITH_WIREFRAME} primaryText="With Wireframe" />
@@ -275,7 +276,7 @@ export default class Settings extends Component {
             <span>Stroke width:</span><br/>
             <TextField
               name="wireframe-line-width"
-              style={{width:200}}            
+              style={{width:200}}
               disabled={this.state.wirefameDisabled}
               value={this.state.wireframeValue}
               onChange={this.handleValueChange}
