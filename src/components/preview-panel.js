@@ -55,9 +55,12 @@ export default class Preview extends Component {
       // If we don't do this FileReader will show each image in landscape mode.
       let exif = EXIF.readFromBinaryFile(this.base64ToArrayBuffer(result));
       let orientation;
-
+      console.log(exif.Orientation);
       // Get the image orientation and rotate it.
       switch (exif.Orientation) {
+        case 1:
+          orientation = 0;
+          break;
         case 3:
           orientation = 180;
           break;

@@ -9,7 +9,7 @@ export default class Result extends Component {
     super();
     this.state = {
       processResult: "#",
-      rotation: 0,
+      rotation: 0
     };
 
     PubSub.subscribe('onResult', (event, result) => {
@@ -18,6 +18,9 @@ export default class Result extends Component {
 
       // Get the image orientation and rotate it.
       switch (exif.Orientation) {
+        case 1:
+          orientation = 0;
+          break;
         case 3:
           orientation = 180;
           break;
