@@ -55,6 +55,7 @@ export default class Preview extends Component {
       // If we don't do this FileReader will show each image in landscape mode.
       let exif = EXIF.readFromBinaryFile(this.base64ToArrayBuffer(result));
       let orientation;
+
       // Get the image orientation and rotate it.
       switch (exif.Orientation) {
         case 3:
@@ -119,11 +120,11 @@ export default class Preview extends Component {
       borderStyle: "dotted",
       borderWidth: 1,
       borderRadius: 5,
-      borderColor: this.state.isValid ? colors.pink500 : colors.redA700,
+      borderColor: this.state.isValid ? colors.blue700 : colors.redA700,
       backgroundColor : this.state.isValid ? "transparent" : colors.red50
     };
 
-    let textColor = this.state.isValid ? colors.pink500 : colors.redA700;
+    let textColor = this.state.isValid ? colors.blue700 : colors.redA700;
 
     return (      
       <section className="imageLeftPanel">
@@ -146,7 +147,7 @@ export default class Preview extends Component {
             <span className="previewMsg" style={{color:textColor}}>{this.state.message}</span>
             <img id="previewImg" className="previewImg" src={this.state.loadedImg} attr={this.state.rotation} style={{transform: `translateY(-50%) rotate(${this.state.rotation}deg)`}}/>
 
-            <FloatingActionButton mini={true} backgroundColor={colors.pink500} style={{margin: 10}} zDepth={1} >
+            <FloatingActionButton mini={true} backgroundColor={colors.blue700} style={{margin: 10}} zDepth={1} >
               <ContentAdd />
             </FloatingActionButton>
           </Dropzone>

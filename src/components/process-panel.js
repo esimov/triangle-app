@@ -26,7 +26,8 @@ export default class Process extends Component {
     this.state = {
       open : false,
       value : "",
-      errorMessage : ""
+      errorMessage : "",
+      previewDisabled: true
     };
     this.image = null;
 
@@ -36,19 +37,24 @@ export default class Process extends Component {
     PubSub.subscribe('onDroppedImage', (event, data) => {
       this.image = data;
       this.options = Object.assign(this.options, this.image);
+      this.setState({
+        previewDisabled: false
+      })
     });
   }
 
-  // Clear preview
-  onClear = () => {
-    console.log('On clear');
+  // Restore default settings
+  restoreDefaults = () => {
+    console.log('Restore defaults');
   };
 
   // Preview triangulated image
   onPreview = () => {
     PubSub.publish('onPreview', true);
+    //TODO Get request ....then
     window.setTimeout(() => {
       PubSub.publish('onPreview', false);
+      PubSub.publish('onResult', this.options);
     }, 2000);
   };
 
@@ -113,13 +119,14 @@ export default class Process extends Component {
     return (      
       <section className="Process">        
         <span style={style.leftPanel}>
-          <RaisedButton label="Clear Preview" onClick={this.onClear} style={style.customBtnStyle} />
+          <RaisedButton label="Restore Defaults" onClick={this.restoreDefaults} style={style.customBtnStyle} />
         </span>
         <span style={style.rightPanel}>
           <RaisedButton
             label="Preview"
             primary={true}
             onClick={this.onPreview}
+            disabled={this.state.previewDisabled}
             style={style.customBtnStyle}
           />
           <RaisedButton
