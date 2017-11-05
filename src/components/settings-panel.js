@@ -6,6 +6,10 @@ import TextField from 'material-ui/TextField';
 import MenuItem from 'material-ui/MenuItem';
 import PubSub from 'pubsub-js';
 
+const WITHOUT_WIREFRAME = 0,
+      WITH_WIREFRAME = 1,
+      WIREFRAME_ONLY = 2;
+
 const styles = {
   main: {
     display: 'flex',    
@@ -46,7 +50,7 @@ export default class Settings extends Component {
     this.state = {
       sliders: [],
       toggleItems: [],
-      wirefameDisabled: false,
+      wirefameDisabled: true,
       wireframeValue: 0,
       wireframeType: 0
     }
@@ -81,15 +85,25 @@ export default class Settings extends Component {
       newValue = 10;
     }
     this.setState({
-      wireframeValue : newValue
+      wireframeValue: newValue
     })
   };
 
   // Wireframe type event handler
   handleTypeChange = (event, value) => {
     this.setState({
-      wireframeType : value
+      wireframeType: value
     });
+    if (value == WITHOUT_WIREFRAME) {
+      this.setState({
+        wirefameDisabled: true,
+        wireframeValue: 0
+      });
+    } else {
+      this.setState({
+        wirefameDisabled: false
+      });
+    }
   };
 
   handleSliderChange = (id, event, value) => {
@@ -254,15 +268,15 @@ export default class Settings extends Component {
               onChange={this.handleTypeChange}
               style={styles.customWidth}
             >
-              <MenuItem value={0} primaryText="Without Wireframe" />
-              <MenuItem value={1} primaryText="With Wireframe" />
-              <MenuItem value={2} primaryText="Wireframe Only" />
+              <MenuItem value={WITHOUT_WIREFRAME} primaryText="Without Wireframe" />
+              <MenuItem value={WITH_WIREFRAME} primaryText="With Wireframe" />
+              <MenuItem value={WIREFRAME_ONLY} primaryText="Wireframe Only" />
             </SelectField><br/><br/>
-            <span>Wireframe line width:</span><br/>
+            <span>Stroke width:</span><br/>
             <TextField
               name="wireframe-line-width"
               style={{width:200}}            
-              disabled={this.state.wirefameEnabled}
+              disabled={this.state.wirefameDisabled}
               value={this.state.wireframeValue}
               onChange={this.handleValueChange}
               type="number"

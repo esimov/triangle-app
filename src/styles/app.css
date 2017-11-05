@@ -90,9 +90,9 @@
 }
 .dropZone .dropIn {
     margin-top: 20%;
-    animation-duration: 0.6s;
+    animation-duration: 0.4s;
     animation-name: animateArrow;
-    animation-iteration-count: 4;
+    animation-iteration-count: 6;
     animation-timing-function: cubic-bezier(0.42,0,0.58,1);
     animation-direction: alternate;
 }

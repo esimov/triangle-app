@@ -7,17 +7,15 @@ export default class Loader extends Component {
   constructor() {
     super();
 
+    this.state = {
+      loading : false
+    };
+
     PubSub.subscribe('onPreview', (event, data) => {
       this.setState({
         loading: data
       });
     });
-  }
-
-  componentWillMount() {
-    this.state = {
-      loading : false
-    };
   }
 
   render() {
