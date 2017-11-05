@@ -5,6 +5,34 @@
 .optionsHeader {
     line-height: 0.8em;
 }
+
+.App {
+    position: relative;
+}
+
+#loader {
+    position: absolute;
+    left: 0;
+    width: 100%; height:100%;
+    background-color: #fff;
+    z-index: 999;
+    transition: all 0.4s cubic-bezier(0.42,0,0.58,1);
+}
+
+#loader .container {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#loader.hidden {
+    top: -110%;
+}
+
+#loader.visible {
+    top: 0;
+}
+
 .Options {
     clear: both;
 }
@@ -36,22 +64,17 @@
     transform: translate(-50%, -50%);
     color: rgba(177, 177, 177, 0.1);
     cursor: default;
-    font-size: 4.8em;
+    font-size: 3.5em;
 }
 
 .dropZone {
     position: relative;
 }
 
-.resultZone {
-    width: 200px;
-    height: 200px;
-    float: right;
-}
-
-.dropZone .previewMsg {
+.dropZone .previewMsg,
+.dropZone .dropIn {
     font-size: 1.0em;
-    position: absolute;    
+    position: absolute;
     text-align: center;    
     width: 100%;
     top: 50%;
@@ -64,7 +87,25 @@
     position: absolute;
     width: 100%; 
     top: 50%;
-    transform: translateY(-50%);
+}
+.dropZone .dropIn {
+    margin-top: 20%;
+    animation-duration: 0.6s;
+    animation-name: animateArrow;
+    animation-iteration-count: 4;
+    animation-timing-function: cubic-bezier(0.42,0,0.58,1);
+    animation-direction: alternate;
+}
+
+.dropZone .dropIn i {
+    font-size: 2.8em;
+    color: rgb(233, 30, 99);
+}
+
+.resultZone {
+    width: 200px;
+    height: 200px;
+    float: right;
 }
 
 .resultZone .resultImg {    
@@ -72,4 +113,13 @@
     width: 100%; 
     top: 50%;
     transform: translateY(-50%);
+}
+
+@keyframes animateArrow {
+    from {
+        margin-top: 20%;
+    }
+    to {
+        margin-top: 26%;
+    }
 }

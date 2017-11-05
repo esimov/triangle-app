@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Desktop application for Triangle",
   "dependencies": {
+    "exif-js": "^2.3.0",
     "material-ui": "^0.19.4",
     "pubsub-js": "^1.5.7",
     "react": "^16.0.0",

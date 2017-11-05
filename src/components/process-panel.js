@@ -31,9 +31,9 @@ export default class Process extends Component {
     this.image = null;
 
     PubSub.subscribe('settings', (event, data) => {
-      this.options = data;      
+      this.options = data;
     });
-    PubSub.subscribe('droppedImage', (event, data) => {
+    PubSub.subscribe('onDroppedImage', (event, data) => {
       this.image = data;
       this.options = Object.assign(this.options, this.image);
     });
@@ -46,7 +46,10 @@ export default class Process extends Component {
 
   // Preview triangulated image
   onPreview = () => {
-    console.log('On preview');
+    PubSub.publish('onPreview', true);
+    window.setTimeout(() => {
+      PubSub.publish('onPreview', false);
+    }, 2000);
   };
 
   // Open save modal panel
@@ -65,7 +68,7 @@ export default class Process extends Component {
       return false;
     }
     if (!this.image) {
-      alert("No uploaded image!")
+      alert("Please upload an image!")
     }
     this.setState({            
       value: "",

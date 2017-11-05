@@ -40,6 +40,7 @@ export default class Options extends Component {
           <CardHeader            
             //title={this.state.title} style={{paddingBottom:2}}
             title="Options"
+            style={{paddingBottom:0}}
             actAsExpander={true}
             avatar={<FontIcon
               className="material-icons optionsHeader"              

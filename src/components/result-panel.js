@@ -14,7 +14,7 @@ export default class Result extends Component {
       borderStyle: "dotted",
       borderWidth: 1,
       borderRadius: 5,
-      borderColor: colors.cyan600,
+      borderColor: colors.pink500,
       cursor: "default"   
     };
 
