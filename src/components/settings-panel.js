@@ -267,7 +267,7 @@ export default class Settings extends Component {
               floatingLabelText="Wireframe mode"
               value={this.state.wireframeType}
               onChange={this.handleTypeChange}
-              selectedMenuItemStyle={{color:colors.pink500}}
+              selectedMenuItemStyle={{color:colors.blue700}}
             >
               <MenuItem value={WITHOUT_WIREFRAME} primaryText="Without Wireframe" />
               <MenuItem value={WITH_WIREFRAME} primaryText="With Wireframe" />

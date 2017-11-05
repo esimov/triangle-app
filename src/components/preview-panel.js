@@ -145,7 +145,7 @@ export default class Preview extends Component {
               <i className="material-icons">get_app</i>
             </span>
             <span className="previewMsg" style={{color:textColor}}>{this.state.message}</span>
-            <img id="previewImg" className="previewImg" src={this.state.loadedImg} attr={this.state.rotation} style={{transform: `translateY(-50%) rotate(${this.state.rotation}deg)`}}/>
+            <img id="previewImg" className="previewImg" src={this.state.loadedImg} style={{transform: `translateY(-50%) rotate(${this.state.rotation}deg)`}}/>
 
             <FloatingActionButton mini={true} backgroundColor={colors.blue700} style={{margin: 10}} zDepth={1} >
               <ContentAdd />
