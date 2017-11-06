@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Slider from 'material-ui/Slider';
 import Toggle from 'material-ui/Toggle';
+import RaisedButton from 'material-ui/RaisedButton';
 import SelectField from 'material-ui/SelectField';
 import TextField from 'material-ui/TextField';
 import MenuItem from 'material-ui/MenuItem';
@@ -44,17 +45,107 @@ const styles = {
   }
 };
 
+const defaultValues = {
+  // Slider items
+  sliders : [
+    {
+      name: "Blur Radius",
+      title: "Blur Radius:",
+      range: {
+        min: 0,
+        max: 20,
+        default: 4,
+        step: 1
+      },
+      currentVal: 4
+    },
+    {
+      name: "Sobel Threshold",
+      title: "Sobel Threshold:",
+      range: {
+        min: 2,
+        max: 60,
+        default: 10,
+        step: 1
+      },
+      currentVal: 10          
+    },
+    {
+      name: "Noise",
+      title: "Noise:",
+      range: {
+        min: 0,
+        max: 10,
+        default: 0,
+        step: 1
+      },
+      currentVal: 0
+    },
+    {
+      name: "Points Threshold",
+      title: "Points Threshold:",
+      range: {
+        min: 0,
+        max: 100,
+        default: 20,
+        step: 1
+      },
+      currentVal: 20
+    },
+    {
+      name: "Maximum Number of Points",
+      title: "Maximum Number of Points:",
+      range: {
+        min: 700,
+        max: 6500,
+        default: 2500,
+        step: 50
+      },
+      currentVal: 2500
+    },
+    {
+      name: "Sobel Filter Threshold",
+      title: "Sobel Filter Threshold:",
+      range: {
+        min: 2,
+        max: 50,
+        default: 10,
+        step: 0.1
+      },
+      currentVal: 10
+    }
+  ],
+  // Toggle items
+  toggleItems : [
+    {
+      name: "Grayscale",
+      label: "Grayscale:",          
+      toggled: false,
+      status: false
+    },
+    {
+      name: "Solid Wireframe",
+      label: "Solid Wireframe:",          
+      toggled: false,
+      status: false
+    }
+  ]
+}
+
 export default class Settings extends Component {
-  constructor() {
-    super();
-    
-    this.state = {
-      sliders: [],
-      toggleItems: [],
+  constructor(props) {
+    super(props);
+    this.state = this.initialState;    
+  }
+
+  static restoreDefaults;
+
+  get initialState() {
+    return Object.assign(defaultValues, {
       wirefameDisabled: true,
       wireframeValue: 0,
       wireframeType: 0
-    }
+    });
   }
 
   // Update slider values
@@ -122,96 +213,22 @@ export default class Settings extends Component {
     });
   };
 
-  componentDidMount() {
-    this.setState({
-      // Slider items
-      sliders : [
-        {
-          name: "Blur Radius",
-          title: "Blur Radius:",
-          range: {
-            min: 0,
-            max: 20,
-            default: 4,
-            step: 1
-          },
-          currentVal: 4
-        },
-        {
-          name: "Sobel Threshold",
-          title: "Sobel Threshold:",
-          range: {
-            min: 2,
-            max: 60,
-            default: 10,
-            step: 1
-          },
-          currentVal: 10          
-        },
-        {
-          name: "Noise",
-          title: "Noise:",
-          range: {
-            min: 0,
-            max: 10,
-            default: 0,
-            step: 1
-          },
-          currentVal: 0
-        },
-        {
-          name: "Points Threshold",
-          title: "Points Threshold:",
-          range: {
-            min: 0,
-            max: 100,
-            default: 20,
-            step: 1
-          },
-          currentVal: 20
-        },
-        {
-          name: "Maximum Number of Points",
-          title: "Maximum Number of Points:",
-          range: {
-            min: 700,
-            max: 6500,
-            default: 2500,
-            step: 50
-          },
-          currentVal: 2500
-        },
-        {
-          name: "Sobel Filter Threshold",
-          title: "Sobel Filter Threshold:",
-          range: {
-            min: 2,
-            max: 50,
-            default: 10,
-            step: 0.1
-          },
-          currentVal: 10
-        }
-      ],
-      // Toggle items
-      toggleItems : [
-        {
-          name: "Grayscale",
-          label: "Grayscale:",          
-          toggled: false,
-          status: false
-        },
-        {
-          name: "Solid Wireframe",
-          label: "Solid Wireframe:",          
-          toggled: false,
-          status: false
-        }
-      ]
-    });
-  }  
+  // Restore default values
+  restoreDefaults = () => {    
+    this.setState(this.initialState);
+  }
 
-  render() {
+  // Set default values after first render
+  componentDidMount() {
+    this.setState(this.initialState);
+    Settings.restoreDefaults = this.resetElement;    
+  }
+
+  componentDidUpdate(prevProps, prevState) {           
+    //console.log(this.initialState)
+  }
+  
+  render() {            
     let sliderItems, toggleItems;
     
     sliderItems = this.state.sliders.map((slider, id) => {      
@@ -282,6 +299,7 @@ export default class Settings extends Component {
               onChange={this.handleValueChange}
               type="number"
             />
+            <RaisedButton label="Restore Defaults" onClick={this.restoreDefaults} style={{display:"none"}} ref={reset => this.resetElement = reset} />
           </div>
         </div>
     );

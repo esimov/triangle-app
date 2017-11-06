@@ -55,7 +55,7 @@ export default class Preview extends Component {
       // If we don't do this FileReader will show each image in landscape mode.
       let exif = EXIF.readFromBinaryFile(this.base64ToArrayBuffer(result));
       let orientation;
-      console.log(exif.Orientation);
+      
       // Get the image orientation and rotate it.
       switch (exif.Orientation) {
         case 1:
@@ -75,32 +75,21 @@ export default class Preview extends Component {
         loadedImg : result,
         rotation : orientation,
         arrowVisibility : false
-      });
+      });      
       PubSub.publish('onDroppedImage', this.state);
     }, err => {
       console.log(err)
     })    
   };
 
-  // Convert the base64 string to an ArrayBuffer
-  base64ToArrayBuffer = (base64) => {
-    base64 = base64.replace(/^data\:([^\;]+)\;base64,/gmi, '');
-    var binaryString = atob(base64);
-    var len = binaryString.length;
-    var bytes = new Uint8Array(len);
-
-    for (var i = 0; i < len; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-    return bytes.buffer;
-  };
-
   onDropRejected = () => {    
     this.setState({
       isValid: false,
       loadedImg: "#",
+      arrowVisibility: false,
       message: "Wrong file type!"
-    })
+    });      
+    PubSub.publish('onInvalidImage', true);
   };
 
   onDragOver = () => {
@@ -113,6 +102,19 @@ export default class Preview extends Component {
     this.setState({
       dragOver: false
     })
+  };
+
+  // Convert the base64 string to an ArrayBuffer
+  base64ToArrayBuffer = (base64) => {
+    base64 = base64.replace(/^data:([^;]+);base64,/gmi, '');
+    var binaryString = atob(base64);
+    var len = binaryString.length;
+    var bytes = new Uint8Array(len);
+
+    for (var i = 0; i < len; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
   };
 
   render() {    
@@ -147,7 +149,7 @@ export default class Preview extends Component {
             <span className="dropIn" style={{display:this.state.arrowVisibility ? "block" : "none"}}>
               <i className="material-icons">get_app</i>
             </span>
-            <span className="previewMsg" style={{color:textColor}}>{this.state.message}</span>
+            <span className="previewMsg" style={{color:textColor}}>{this.state.message.toUpperCase()}</span>
             <img id="previewImg" className="previewImg" src={this.state.loadedImg} style={{transform: `translateY(-50%) rotate(${this.state.rotation}deg)`}}/>
 
             <FloatingActionButton mini={true} backgroundColor={colors.blue700} style={{margin: 10}} zDepth={1} >

@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import { blueGrey200 } from 'material-ui/styles/colors';
 import PubSub from 'pubsub-js';
+import Settings from './settings-panel';
 
 const style = {
   rightPanel: {
@@ -27,7 +29,7 @@ export default class Process extends Component {
       open : false,
       value : "",
       errorMessage : "",
-      previewDisabled: true
+      btnDisabled: true
     };
     this.image = null;
 
@@ -35,17 +37,23 @@ export default class Process extends Component {
       this.options = data;
     });
     PubSub.subscribe('onDroppedImage', (event, data) => {
-      this.image = data;
+      this.image = data;      
       this.options = Object.assign(this.options, this.image);
       this.setState({
-        previewDisabled: false
+        btnDisabled: false
       })
+    });
+    PubSub.subscribe('onInvalidImage', (event, data) => {            
+      this.image = null;
+      this.setState({
+        btnDisabled: true
+      })      
     });
   }
 
   // Restore default settings
   restoreDefaults = () => {
-    console.log('Restore defaults');
+    ReactDOM.findDOMNode(Settings.restoreDefaults.refs.container).click();
   };
 
   // Preview triangulated image
@@ -72,10 +80,7 @@ export default class Process extends Component {
         errorMessage: "This field is required"
       });
       return false;
-    }
-    if (!this.image) {
-      alert("Please upload an image!")
-    }
+    }  
     this.setState({            
       value: "",
       errorMessage: "",
@@ -126,13 +131,14 @@ export default class Process extends Component {
             label="Preview"
             primary={true}
             onClick={this.onPreview}
-            disabled={this.state.previewDisabled}
+            disabled={this.state.btnDisabled}
             style={style.customBtnStyle}
           />
           <RaisedButton
             label="Process"
             secondary={true}
             onClick={this.onModalOpen}
+            disabled={this.state.btnDisabled}
             style={style.customBtnStyle}
           />
           <Dialog

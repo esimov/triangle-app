@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import CircularProgress from 'material-ui/CircularProgress';
-import * as colors from 'material-ui/styles/colors';
 import PubSub from 'pubsub-js';
 
 export default class Loader extends Component {
