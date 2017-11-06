@@ -1,6 +1,7 @@
-body {margin: 0}
-#root {
+body {
     width: 800px;
+    height:600px;
+    margin: 0
 }
 
 .optionsHeader {
