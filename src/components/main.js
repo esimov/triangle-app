@@ -11,7 +11,7 @@ class Main extends Component {
     return (      
         <div className="App">
           <Loader />
-          <Card containerStyle={{padding: 2}}>
+          <Card containerStyle={{padding: 2}} className="cardWrapper" >
             <CardActions>
               <Preview />
               <section className="middlePanel">
@@ -21,7 +21,7 @@ class Main extends Component {
               <Options />                     
               <Process />
             </CardActions>
-          </Card>                            
+          </Card>
         </div>
     );
   }

@@ -25,7 +25,7 @@ const styles = {
   rightPanel: {
     paddingLeft: 10,
     paddingTop: 10,
-    float: "right",
+    float: "left",
     width: "48%"
   },
   text: {    
@@ -36,8 +36,8 @@ const styles = {
   slider: {
     position: "relative",
     width: 400,
-    height: 60,
-    top: 20
+    height: 66,
+    top: 18
   },
   toggle: {    
     marginBottom: 12,

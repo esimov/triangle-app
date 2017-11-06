@@ -1,7 +1,6 @@
 body {
-    width: 800px;
-    height:600px;
-    margin: 0
+    margin: 0;
+    overflow: hidden;
 }
 
 .optionsHeader {
@@ -10,6 +9,10 @@ body {
 
 .App {
     position: relative;
+}
+
+.App .cardWrapper {
+    box-shadow: none!important;
 }
 
 #loader {
