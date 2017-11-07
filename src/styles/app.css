@@ -1,5 +1,6 @@
-body {    
+body {
     overflow: hidden;
+    margin: 0;
 }
 
 .optionsHeader {
@@ -41,7 +42,7 @@ body {
     clear: both;
 }
 
-.imageLeftPanel, 
+.imageLeftPanel,
 .imageRightPanel {
     width: 25%;
     position: relative;
@@ -79,7 +80,7 @@ body {
 .dropZone .dropIn {
     font-size: 1.0em;
     position: absolute;
-    text-align: center;    
+    text-align: center;
     width: 100%;
     top: 50%;
     transform: translateX(-50%);
@@ -87,8 +88,8 @@ body {
     cursor: default;
 }
 
-.dropZone .previewImg {    
-    position: absolute;    
+.dropZone .previewImg {
+    position: absolute;
     top: 50%;
 }
 .dropZone .dropIn {
@@ -111,9 +112,9 @@ body {
     float: right;
 }
 
-.resultZone .resultImg {    
+.resultZone .resultImg {
     position: absolute;
-    width: 100%; 
+    width: 100%;
     top: 50%;
     transform: translateY(-50%);
 }
