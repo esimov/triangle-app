@@ -1,5 +1,4 @@
-body {
-    margin: 0;
+body {    
     overflow: hidden;
 }
 
@@ -89,8 +88,7 @@ body {
 }
 
 .dropZone .previewImg {    
-    position: absolute;
-    width: 100%; 
+    position: absolute;    
     top: 50%;
 }
 .dropZone .dropIn {

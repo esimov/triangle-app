@@ -4,8 +4,9 @@ import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import * as colors from 'material-ui/styles/colors';
 import PubSub from 'pubsub-js';
-import dropzoneStyles from '../styles/app.css';
 import EXIF from "exif-js";
+import dropzoneStyles from '../styles/app.css';
+import placeholderImage from '../image/placeholder.png';
 
 export default class Preview extends Component {
   constructor() {
@@ -15,7 +16,7 @@ export default class Preview extends Component {
       isValid   : true,
       accepted  : [],
       rejected  : [],
-      loadedImg : "#",
+      loadedImg : placeholderImage,
       rotation  : 0,
       message   : "Drop image here...",
       arrowVisibility : true
@@ -23,7 +24,7 @@ export default class Preview extends Component {
     this.acceptedFile = null
   }
 
-  onDrop = (accepted, rejected) => {    
+  onDrop = (accepted, rejected) => {
     this.setState({
       accepted: accepted,
       rejected: rejected
@@ -55,7 +56,7 @@ export default class Preview extends Component {
       // If we don't do this FileReader will show each image in landscape mode.
       let exif = EXIF.readFromBinaryFile(this.base64ToArrayBuffer(result));
       let orientation;
-      
+
       // Get the image orientation and rotate it.
       switch (exif.Orientation) {
         case 1:
@@ -75,27 +76,27 @@ export default class Preview extends Component {
         loadedImg : result,
         rotation : orientation,
         arrowVisibility : false
-      });      
+      });
       PubSub.publish('onDroppedImage', this.state);
     }, err => {
       console.log(err)
-    })    
+    })
   };
 
-  onDropRejected = () => {    
+  onDropRejected = () => {
     this.setState({
       isValid: false,
-      loadedImg: "#",
+      loadedImg: placeholderImage,
       arrowVisibility: false,
       message: "Wrong file type!"
-    });      
+    });
     PubSub.publish('onInvalidImage', true);
   };
 
   onDragOver = () => {
     this.setState({
       dragOver: true
-    })    
+    })
   };
 
   onDragLeave = () => {
@@ -117,9 +118,9 @@ export default class Preview extends Component {
     return bytes.buffer;
   };
 
-  render() {    
+  render() {
     const dropZone = {
-      position: "relative",      
+      position: "relative",
       width: 200,
       height: 200,
       borderStyle: "dotted",
@@ -130,16 +131,17 @@ export default class Preview extends Component {
     };
 
     let textColor = this.state.isValid ? colors.blue700 : colors.redA700;
+    let imageWidth = this.state.message == "" ? "100%" : "auto";
 
-    return (      
+    return (
       <section className="imageLeftPanel">
         <div className="dropZone">
-          <Dropzone 
+          <Dropzone
             accept="image/jpeg, image/png"
             multiple={false}
             style={dropZone}
             activeStyle={{backgroundColor:colors.green50}}
-            acceptStyle={{backgroundColor:"transparent"}}            
+            acceptStyle={{backgroundColor:"transparent"}}
             onDrop={this.onDrop.bind(this)}
             onDragOver={this.onDragOver.bind(this)}
             onDragLeave={this.onDragLeave.bind(this)}
@@ -150,7 +152,7 @@ export default class Preview extends Component {
               <i className="material-icons">get_app</i>
             </span>
             <span className="previewMsg" style={{color:textColor}}>{this.state.message.toUpperCase()}</span>
-            <img id="previewImg" className="previewImg" src={this.state.loadedImg} style={{transform: `translateY(-50%) rotate(${this.state.rotation}deg)`}}/>
+            <img id="previewImg" className="previewImg" src={this.state.loadedImg} style={{width: imageWidth, transform: `translateY(-50%) rotate(${this.state.rotation}deg)`}}/>
 
             <FloatingActionButton mini={true} backgroundColor={colors.blue700} style={{margin: 10}} zDepth={1} >
               <ContentAdd />

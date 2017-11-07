@@ -44,7 +44,7 @@ export default class Options extends Component {
             actAsExpander={true}
             avatar={<FontIcon
               className="material-icons optionsHeader"              
-            >settings</FontIcon>}
+            >list</FontIcon>}
           />
           <CardText style={{paddingTop:2}}
             expandable={false}

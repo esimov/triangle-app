@@ -3,12 +3,13 @@ import Paper from 'material-ui/Paper';
 import * as colors from 'material-ui/styles/colors';
 import PubSub from 'pubsub-js';
 import EXIF from "exif-js";
+import placeholderImage from '../image/placeholder-preview.png';
 
 export default class Result extends Component {
   constructor() {
     super();
     this.state = {
-      processResult: "#",
+      processResult: placeholderImage,
       rotation: 0
     };
 
@@ -51,16 +52,17 @@ export default class Result extends Component {
     return bytes.buffer;
   };
 
-  render() {      
+  render() {
     const resultZone = {
+      position: "relative",
       borderStyle: "dotted",
       borderWidth: 1,
       borderRadius: 5,
       borderColor: colors.blue700,
-      cursor: "default"   
+      cursor: "default"
     };
 
-    return (      
+    return (
       <section className="imageRightPanel">
         <Paper className="resultZone" style={resultZone} zDepth={0}>
           <img src={this.state.processResult} className="resultImg" style={{transform: `translateY(-50%) rotate(${this.state.rotation}deg)`}} />

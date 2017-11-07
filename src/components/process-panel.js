@@ -76,7 +76,8 @@ export default class Process extends Component {
   // Save triangulated image
   onSave = () => {
     if (this.state.value === "") {
-      this.setState({
+      this.inputName.focus();
+      this.setState({        
         errorMessage: "This field is required"
       });
       return false;
@@ -110,12 +111,12 @@ export default class Process extends Component {
         label="Save"
         primary={true}
         onClick={this.onSave}
+        keyboardFocused={true}
         style={style.customBtnStyle}
       />,
       <RaisedButton
         label="Cancel"
-        secondary={true}
-        keyboardFocused={true}
+        secondary={true}        
         onClick={this.onClose}
         style={style.customBtnStyle}
       />
@@ -156,6 +157,7 @@ export default class Process extends Component {
               floatingLabelStyle={style.customInputStyle}
               floatingLabelFocusStyle={style.customInputStyle}
               value={this.state.value}
+              ref={(inputName) => this.inputName = inputName}
               onChange={this.handleInputChange}
             /><br />
           </Dialog>
