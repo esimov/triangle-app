@@ -14,7 +14,7 @@ const WITHOUT_WIREFRAME = 0,
 
 const styles = {
   main: {
-    display: 'flex',    
+    display: 'flex',
     flexDirection: 'row'
   },
   leftPanel: {
@@ -28,7 +28,7 @@ const styles = {
     float: "left",
     width: "48%"
   },
-  text: {    
+  text: {
     color: "#424242",
     position: "absolute",
     zIndex: 99
@@ -39,7 +39,7 @@ const styles = {
     height: 66,
     top: 18
   },
-  toggle: {    
+  toggle: {
     marginBottom: 12,
     width: 300
   }
@@ -68,7 +68,7 @@ const defaultValues = {
         default: 10,
         step: 1
       },
-      currentVal: 10          
+      currentVal: 10
     },
     {
       name: "Noise",
@@ -119,13 +119,13 @@ const defaultValues = {
   toggleItems : [
     {
       name: "Grayscale",
-      label: "Grayscale:",          
+      label: "Grayscale:",
       toggled: false,
       status: false
     },
     {
       name: "Solid Wireframe",
-      label: "Solid Wireframe:",          
+      label: "Solid Wireframe:",
       toggled: false,
       status: false
     }
@@ -135,7 +135,7 @@ const defaultValues = {
 export default class Settings extends Component {
   constructor(props) {
     super(props);
-    this.state = this.initialState;    
+    this.state = this.initialState;
   }
 
   static restoreDefaults;
@@ -162,14 +162,14 @@ export default class Settings extends Component {
   handleToggleSwitch = (id, event, checked) => {
     const toggleItems = this.state.toggleItems;
     toggleItems[id].status = checked;
-    
+
     this.setState({
       toggleItems
     });
   };
 
   // Wireframe input field event handler
-  handleValueChange = (event, value) => {    
+  handleValueChange = (event, value) => {
     let newValue = value;
     if (value < 0) {
       newValue = 0;
@@ -199,9 +199,9 @@ export default class Settings extends Component {
   };
 
   handleSliderChange = (id, event, value) => {
-    const sliders = this.state.sliders;    
+    const sliders = this.state.sliders;
 
-    if (value < sliders[id].range.min) {      
+    if (value < sliders[id].range.min) {
       value = sliders[id].range.min;
     } else if (value > sliders[id].range.max) {
       value = sliders[id].range.max;
@@ -214,24 +214,24 @@ export default class Settings extends Component {
   };
 
   // Restore default values
-  restoreDefaults = () => {    
+  restoreDefaults = () => {
     this.setState(this.initialState);
   }
 
   // Set default values after first render
   componentDidMount() {
     this.setState(this.initialState);
-    Settings.restoreDefaults = this.resetElement;    
+    Settings.restoreDefaults = this.resetElement;
   }
 
-  componentDidUpdate(prevProps, prevState) {           
+  componentDidUpdate(prevProps, prevState) {
     //console.log(this.initialState)
   }
-  
-  render() {            
+
+  render() {
     let sliderItems, toggleItems;
-    
-    sliderItems = this.state.sliders.map((slider, id) => {      
+
+    sliderItems = this.state.sliders.map((slider, id) => {
       return (
         <div style={styles.main} key={slider.name} >
           <span style={styles.text}>{slider.title}
@@ -256,20 +256,20 @@ export default class Settings extends Component {
         </div>
       );
     });
-    
-    toggleItems = this.state.toggleItems.map((toggleItem, id) => {  
+
+    toggleItems = this.state.toggleItems.map((toggleItem, id) => {
       return (
-        <div style={this.mainStyle} key={toggleItem.name} >                  
+        <div style={this.mainStyle} key={toggleItem.name} >
           <Toggle label={toggleItem.label}
             style={styles.toggle}
             defaultToggled={toggleItem.toggled}
             // Extend the default event action parameters with the togggle id. We need to capture the current item.
             onToggle={this.handleToggleSwitch.bind(toggleItem, id)}
-          />                    
+          />
         </div>
       );
     });
-    
+
     // We need to communicate between components not directly related.
     // For this reason we need to dispatch a custom event which we'll capture on save action.
     PubSub.publish('settings', this.state);
@@ -279,7 +279,7 @@ export default class Settings extends Component {
             {sliderItems}
           </div>
           <div style={styles.rightPanel}>
-          {toggleItems}             
+          {toggleItems}
             <SelectField
               floatingLabelText="Wireframe mode"
               value={this.state.wireframeType}

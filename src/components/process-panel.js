@@ -11,12 +11,12 @@ const style = {
   rightPanel: {
     float: "right"
   },
-  
+
   customInputStyle: {
     borderColor: blueGrey200,
     color: blueGrey200
   },
-  
+
   customBtnStyle: {
     margin: 10
   }
@@ -37,17 +37,17 @@ export default class Process extends Component {
       this.options = data;
     });
     PubSub.subscribe('onDroppedImage', (event, data) => {
-      this.image = data;      
+      this.image = data;
       this.options = Object.assign(this.options, this.image);
       this.setState({
         btnDisabled: false
       })
     });
-    PubSub.subscribe('onInvalidImage', (event, data) => {            
+    PubSub.subscribe('onInvalidImage', (event, data) => {
       this.image = null;
       this.setState({
         btnDisabled: true
-      })      
+      })
     });
   }
 
@@ -67,7 +67,7 @@ export default class Process extends Component {
   };
 
   // Open save modal panel
-  onModalOpen = () => {    
+  onModalOpen = () => {
     this.setState({
       open: true
     });
@@ -77,12 +77,12 @@ export default class Process extends Component {
   onSave = () => {
     if (this.state.value === "") {
       this.inputName.focus();
-      this.setState({        
+      this.setState({
         errorMessage: "This field is required"
       });
       return false;
-    }  
-    this.setState({            
+    }
+    this.setState({
       value: "",
       errorMessage: "",
       open: false
@@ -98,13 +98,13 @@ export default class Process extends Component {
     });
   };
 
-  handleInputChange = (event) => {    
+  handleInputChange = (event) => {
     this.setState({
       value : event.target.value
     })
   };
 
-  // Render 
+  // Render
   render() {
     const actions = [
       <RaisedButton
@@ -116,14 +116,14 @@ export default class Process extends Component {
       />,
       <RaisedButton
         label="Cancel"
-        secondary={true}        
+        secondary={true}
         onClick={this.onClose}
         style={style.customBtnStyle}
       />
     ];
 
-    return (      
-      <section className="Process">        
+    return (
+      <section className="Process">
         <span style={style.leftPanel}>
           <RaisedButton label="Restore Defaults" onClick={this.restoreDefaults} style={style.customBtnStyle} />
         </span>
@@ -150,7 +150,7 @@ export default class Process extends Component {
             onRequestClose={this.onClose}
           >
             <span>File name:</span><br />
-            <TextField              
+            <TextField
               hintText="File Name"
               errorText={this.state.errorMessage}
               floatingLabelText="File Name"

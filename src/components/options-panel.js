@@ -3,12 +3,12 @@ import FontIcon from 'material-ui/FontIcon';
 import {Card, CardHeader, CardText} from 'material-ui/Card';
 import Settings from './settings-panel';
 
-export default class Options extends Component {    
+export default class Options extends Component {
   state = {
     expanded: true,
     title: "More Options"
   };
-  
+
   onExpand = () => {
     this.setState({
       expanded: true,
@@ -26,30 +26,30 @@ export default class Options extends Component {
 
   onExpandChange = () => {
     this.state.expanded = !this.state.expanded;
-    this.state.title = this.state.expanded ? this.onExpand() : this.onCollapse();  
+    this.state.title = this.state.expanded ? this.onExpand() : this.onCollapse();
   };
 
-  render() {    
+  render() {
     return (
-      <section className="Options">      
+      <section className="Options">
         <Card
-          expandable={true}   
-          expanded={this.state.expanded}      
+          expandable={true}
+          expanded={this.state.expanded}
           onExpandChange={this.onExpandChange}
         >
-          <CardHeader            
+          <CardHeader
             //title={this.state.title} style={{paddingBottom:2}}
             title="Options"
             style={{paddingBottom:0}}
             actAsExpander={true}
             avatar={<FontIcon
-              className="material-icons optionsHeader"              
+              className="material-icons optionsHeader"
             >list</FontIcon>}
           />
           <CardText style={{paddingTop:2}}
             expandable={false}
             children={<Settings />}
-          >      
+          >
           </CardText>
         </Card>
       </section>

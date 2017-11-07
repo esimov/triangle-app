@@ -8,7 +8,7 @@ import Loader from './loader';
 
 class Main extends Component {
   render() {
-    return (      
+    return (
         <div className="App">
           <Loader />
           <Card containerStyle={{padding: 2}} className="cardWrapper" >
@@ -18,7 +18,7 @@ class Main extends Component {
                 <span className="triangle-header"><span className="symbol">▲</span>Triangle</span>
               </section>
               <Result />
-              <Options />                     
+              <Options />
               <Process />
             </CardActions>
           </Card>
