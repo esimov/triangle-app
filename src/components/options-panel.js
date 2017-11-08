@@ -4,30 +4,32 @@ import {Card, CardHeader, CardText} from 'material-ui/Card';
 import Settings from './settings-panel';
 
 export default class Options extends Component {
-  state = {
-    expanded: true,
-    title: "More Options"
-  };
+  constructor() {
+    super()
+    this.state = {
+      expanded: true,
+      title: "More Options"
+    };
+  }
 
-  onExpand = () => {
+  onExpand() {
     this.setState({
       expanded: true,
       title: "Less Options"
     });
+  }
 
-  };
-
-  onCollapse = () => {
+  onCollapse() {
     this.setState({
       expanded: false,
       title: "More Options"
     });
-  };
+  }
 
-  onExpandChange = () => {
+  onExpandChange() {
     this.state.expanded = !this.state.expanded;
     this.state.title = this.state.expanded ? this.onExpand() : this.onCollapse();
-  };
+  }
 
   render() {
     return (

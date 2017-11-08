@@ -52,12 +52,12 @@ export default class Process extends Component {
   }
 
   // Restore default settings
-  restoreDefaults = () => {
+  restoreDefaults() {
     ReactDOM.findDOMNode(Settings.restoreDefaults.refs.container).click();
   };
 
   // Preview triangulated image
-  onPreview = () => {
+  onPreview() {
     PubSub.publish('onPreview', true);
     //TODO Get request ....then
     window.setTimeout(() => {
@@ -67,14 +67,14 @@ export default class Process extends Component {
   };
 
   // Open save modal panel
-  onModalOpen = () => {
+  onModalOpen() {
     this.setState({
       open: true
     });
   };
 
   // Save triangulated image
-  onSave = () => {
+  onSave() {
     if (this.state.value === "") {
       this.inputName.focus();
       this.setState({
@@ -92,13 +92,13 @@ export default class Process extends Component {
   };
 
   // Close save modal panel
-  onClose = () => {
+  onClose() {
     this.setState({
       open: false
     });
   };
 
-  handleInputChange = (event) => {
+  handleInputChange(event) {
     this.setState({
       value : event.target.value
     })
@@ -110,14 +110,14 @@ export default class Process extends Component {
       <RaisedButton
         label="Save"
         primary={true}
-        onClick={this.onSave}
+        onClick={this.onSave.bind(this)}
         keyboardFocused={true}
         style={style.customBtnStyle}
       />,
       <RaisedButton
         label="Cancel"
         secondary={true}
-        onClick={this.onClose}
+        onClick={this.onClose.bind(this)}
         style={style.customBtnStyle}
       />
     ];
@@ -125,20 +125,20 @@ export default class Process extends Component {
     return (
       <section className="Process">
         <span style={style.leftPanel}>
-          <RaisedButton label="Restore Defaults" onClick={this.restoreDefaults} style={style.customBtnStyle} />
+          <RaisedButton label="Restore Defaults" onClick={this.restoreDefaults.bind(this)} style={style.customBtnStyle} />
         </span>
         <span style={style.rightPanel}>
           <RaisedButton
             label="Preview"
             primary={true}
-            onClick={this.onPreview}
+            onClick={this.onPreview.bind(this)}
             disabled={this.state.btnDisabled}
             style={style.customBtnStyle}
           />
           <RaisedButton
             label="Process"
             secondary={true}
-            onClick={this.onModalOpen}
+            onClick={this.onModalOpen.bind(this)}
             disabled={this.state.btnDisabled}
             style={style.customBtnStyle}
           />
@@ -147,7 +147,7 @@ export default class Process extends Component {
             actions={actions}
             modal={false}
             open={this.state.open}
-            onRequestClose={this.onClose}
+            onRequestClose={this.onClose.bind(this)}
           >
             <span>File name:</span><br />
             <TextField
@@ -158,7 +158,7 @@ export default class Process extends Component {
               floatingLabelFocusStyle={style.customInputStyle}
               value={this.state.value}
               ref={(inputName) => this.inputName = inputName}
-              onChange={this.handleInputChange}
+              onChange={this.handleInputChange.bind(this)}
             /><br />
           </Dialog>
         </span>

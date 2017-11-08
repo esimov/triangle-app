@@ -40,7 +40,7 @@ export default class Result extends Component {
   }
 
   // Convert the base64 string to an ArrayBuffer
-  base64ToArrayBuffer = (base64) => {
+  base64ToArrayBuffer(base64) {
     base64 = base64.replace(/^data:([^;]+);base64,/gmi, '');
     var binaryString = atob(base64);
     var len = binaryString.length;

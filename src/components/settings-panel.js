@@ -136,6 +136,9 @@ export default class Settings extends Component {
   constructor(props) {
     super(props);
     this.state = this.initialState;
+    this.handleSlider = this.handleSlider.bind(this);
+    this.handleToggleSwitch = this.handleToggleSwitch.bind(this);
+    this.handleSliderChange = this.handleSliderChange.bind(this);
   }
 
   static restoreDefaults;
@@ -149,7 +152,7 @@ export default class Settings extends Component {
   }
 
   // Update slider values
-  handleSlider = (id, event, value) => {
+  handleSlider(id, event, value) {
     const sliders = this.state.sliders;
     sliders[id].currentVal = value;
 
@@ -159,7 +162,8 @@ export default class Settings extends Component {
   };
 
   // Toggle switch handler
-  handleToggleSwitch = (id, event, checked) => {
+  handleToggleSwitch(id, event, checked) {
+    console.log(this.state);
     const toggleItems = this.state.toggleItems;
     toggleItems[id].status = checked;
 
@@ -169,7 +173,7 @@ export default class Settings extends Component {
   };
 
   // Wireframe input field event handler
-  handleValueChange = (event, value) => {
+  handleValueChange(event, value) {
     let newValue = value;
     if (value < 0) {
       newValue = 0;
@@ -182,7 +186,7 @@ export default class Settings extends Component {
   };
 
   // Wireframe type event handler
-  handleTypeChange = (event, value) => {
+  handleTypeChange(event, value) {
     this.setState({
       wireframeType: value
     });
@@ -198,7 +202,7 @@ export default class Settings extends Component {
     }
   };
 
-  handleSliderChange = (id, event, value) => {
+  handleSliderChange(id, event, value) {
     const sliders = this.state.sliders;
 
     if (value < sliders[id].range.min) {
@@ -214,7 +218,7 @@ export default class Settings extends Component {
   };
 
   // Restore default values
-  restoreDefaults = () => {
+  restoreDefaults() {
     this.setState(this.initialState);
   }
 
@@ -283,7 +287,7 @@ export default class Settings extends Component {
             <SelectField
               floatingLabelText="Wireframe mode"
               value={this.state.wireframeType}
-              onChange={this.handleTypeChange}
+              onChange={this.handleTypeChange.bind(this)}
               selectedMenuItemStyle={{color:colors.blue700}}
             >
               <MenuItem value={WITHOUT_WIREFRAME} primaryText="Without Wireframe" />
@@ -296,10 +300,10 @@ export default class Settings extends Component {
               style={{width:200}}
               disabled={this.state.wirefameDisabled}
               value={this.state.wireframeValue}
-              onChange={this.handleValueChange}
+              onChange={this.handleValueChange.bind(this)}
               type="number"
             />
-            <RaisedButton label="Restore Defaults" onClick={this.restoreDefaults} style={{display:"none"}} ref={reset => this.resetElement = reset} />
+            <RaisedButton label="Restore Defaults" onClick={this.restoreDefaults.bind(this)} style={{display:"none"}} ref={reset => this.resetElement = reset} />
           </div>
         </div>
     );

@@ -24,7 +24,7 @@ export default class Preview extends Component {
     this.acceptedFile = null
   }
 
-  onDrop = (accepted, rejected) => {
+  onDrop(accepted, rejected) {
     this.setState({
       accepted: accepted,
       rejected: rejected
@@ -32,7 +32,7 @@ export default class Preview extends Component {
     this.acceptedFile = accepted[0]
   };
 
-  onDropAccepted = (event) => {
+  onDropAccepted(event) {
     this.setState({
       isValid: true,
       message: ""
@@ -83,7 +83,7 @@ export default class Preview extends Component {
     })
   };
 
-  onDropRejected = () => {
+  onDropRejected() {
     this.setState({
       isValid: false,
       loadedImg: placeholderImage,
@@ -93,20 +93,20 @@ export default class Preview extends Component {
     PubSub.publish('onInvalidImage', true);
   };
 
-  onDragOver = () => {
+  onDragOver() {
     this.setState({
       dragOver: true
     })
   };
 
-  onDragLeave = () => {
+  onDragLeave() {
     this.setState({
       dragOver: false
     })
   };
 
   // Convert the base64 string to an ArrayBuffer
-  base64ToArrayBuffer = (base64) => {
+  base64ToArrayBuffer(base64) {
     base64 = base64.replace(/^data:([^;]+);base64,/gmi, '');
     var binaryString = atob(base64);
     var len = binaryString.length;
