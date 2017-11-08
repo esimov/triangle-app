@@ -1,7 +1,7 @@
 {
   "name": "triangle-app",
   "version": "1.0.0",
-  "description": "Desktop application for Triangle",
+  "description": "Triangle Desktop Application",
   "dependencies": {
     "exif-js": "^2.3.0",
     "material-ui": "^0.19.4",
@@ -13,7 +13,8 @@
     "react-scripts": "^1.0.14"
   },
   "devDependencies": {
-    "electron": "^1.7.9",
+    "electron": "^1.8.1",
+    "electron-compile": "^6.4.2",
     "electron-forge": "^4.1.2",
     "electron-prebuilt-compile": "1.7.9",
     "foreman": "^2.0.0"
@@ -28,11 +29,16 @@
     "electron": "electron .",
     "dev": "nf start -p 3000",
     "make": "electron-forge make",
+    "package": "electron-forge package",
     "publish": "electron-forge publish"
   },
-  "author": "Endre Simo",
+  "author": "Endre Simo <esimov@gmail.com>",
   "license": "MIT",
-  "keywords": ["electron", "reactjs", "triangulation"],
+  "keywords": [
+    "electron",
+    "reactjs",
+    "triangulation"
+  ],
   "config": {
     "forge": {
       "make_targets": {
@@ -49,20 +55,30 @@
       },
       "electronPackagerConfig": {
         "packageManager": "npm",
-        "name": "triangle-app"
+        "icon": "src/assets/icons/mac/triangle.icns",
+        "name": "triangle"
       },
       "electronWinstallerConfig": {
-        "name": "triangle-app",
+        "name": "triangle",
         "icon": "src/assets/icons/win/triangle.ico"
       },
       "electronInstallerDMG": {
         "icon": "src/assets/icons/mac/triangle.icns"
       },
       "electronInstallerDebian": {
-        "icon": "src/assets/icons/png/128x128.png"
+        "name": "triangle",
+        "productName": "Triangle",
+        "genericName": "Desktop Application",
+        "description": "Convert images to computer generated art using delaunay triangulation.",
+        "maintainer": "Endre Simo <esimov@gmail.com>",
+        "homepage": "www.esimov.com",
+        "icon": "src/assets/icons/png/128x128.png",
+        "categories": [
+          "Utility"
+        ]
       },
       "electronInstallerRedhat": {
-        "icon": "src/assets/icons/png/128x128.png"
+        "icon": "src/assets/icons/png/256x256.png"
       },
       "github_repository": {
         "owner": "esimov",
@@ -70,7 +86,7 @@
       },
       "windowsStoreConfig": {
         "packageName": "",
-        "name": "triangle-app"
+        "name": "triangle"
       }
     }
   }
