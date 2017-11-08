@@ -14,6 +14,7 @@
   },
   "devDependencies": {
     "electron": "^1.8.1",
+    "electron-builder": "^19.45.4",
     "electron-compile": "^6.4.2",
     "electron-forge": "^4.1.2",
     "electron-prebuilt-compile": "1.7.9",
@@ -30,7 +31,8 @@
     "dev": "nf start -p 3000",
     "make": "electron-forge make",
     "package": "electron-forge package",
-    "publish": "electron-forge publish"
+    "publish": "electron-forge publish",
+    "dist": "npm run build && build"
   },
   "author": "Endre Simo <esimov@gmail.com>",
   "license": "MIT",
@@ -88,6 +90,12 @@
         "packageName": "",
         "name": "triangle"
       }
+    }
+  },
+  "build": {
+    "appId": "com.electron.electron-with-create-react-app",
+    "directories": {
+        "buildResources": "public"
     }
   }
 }

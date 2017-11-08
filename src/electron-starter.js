@@ -27,11 +27,15 @@ function createWindow() {
         slashes: true
     });
 
+    const isDevMode = process.execPath.match(/[\\/]electron/);
+
     // and load the index.html of the app.
     mainWindow.loadURL(startUrl);
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    if (isDevMode) {
+        //mainWindow.webContents.openDevTools();
+    }
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {
