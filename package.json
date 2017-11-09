@@ -2,6 +2,14 @@
   "name": "triangle-app",
   "version": "1.0.0",
   "description": "Triangle Desktop Application",
+  "author": "Endre Simo <esimov@gmail.com>",
+  "copyright": "Copyright © 2017 Endre Simo <esimov@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "electron",
+    "reactjs",
+    "triangulation"
+  ],
   "dependencies": {
     "exif-js": "^2.3.0",
     "material-ui": "^0.19.4",
@@ -14,7 +22,7 @@
   },
   "devDependencies": {
     "electron": "^1.8.1",
-    "electron-builder": "^19.45.4",
+    "electron-builder": "^19.45.5",
     "electron-compile": "^6.4.2",
     "electron-forge": "^4.1.2",
     "electron-prebuilt-compile": "1.7.9",
@@ -32,15 +40,9 @@
     "make": "electron-forge make",
     "package": "electron-forge package",
     "publish": "electron-forge publish",
-    "dist": "npm run build && build"
+    "pack": "electron-builder --dir",
+    "dist": "yarn run build && electron-builder"
   },
-  "author": "Endre Simo <esimov@gmail.com>",
-  "license": "MIT",
-  "keywords": [
-    "electron",
-    "reactjs",
-    "triangulation"
-  ],
   "config": {
     "forge": {
       "make_targets": {
@@ -57,15 +59,15 @@
       },
       "electronPackagerConfig": {
         "packageManager": "npm",
-        "icon": "src/assets/icons/mac/triangle.icns",
+        "icon": "assets/icons/icon.icns",
         "name": "triangle"
       },
       "electronWinstallerConfig": {
         "name": "triangle",
-        "icon": "src/assets/icons/win/triangle.ico"
+        "icon": "assets/icons/icon.ico"
       },
       "electronInstallerDMG": {
-        "icon": "src/assets/icons/mac/triangle.icns"
+        "icon": "assets/icons/icon.icns"
       },
       "electronInstallerDebian": {
         "name": "triangle",
@@ -74,13 +76,13 @@
         "description": "Convert images to computer generated art using delaunay triangulation.",
         "maintainer": "Endre Simo <esimov@gmail.com>",
         "homepage": "www.esimov.com",
-        "icon": "src/assets/icons/png/128x128.png",
+        "icon": "assets/icons/png/128x128.png",
         "categories": [
           "Utility"
         ]
       },
       "electronInstallerRedhat": {
-        "icon": "src/assets/icons/png/256x256.png"
+        "icon": "assets/icons/png/128x128.png"
       },
       "github_repository": {
         "owner": "esimov",
@@ -93,9 +95,69 @@
     }
   },
   "build": {
-    "appId": "com.electron.electron-with-create-react-app",
+    "appId": "com.electron.triangle-app",
+    "productName": "▲ TRIANGLE",
+    "copyright": "Copyright © 2017 Endre Simo <esimov@gmail.com>",
+    "asar": false,
+    "files": [
+      "**/*",
+      "!docs${/*}",
+      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme,test,__tests__,tests,powered-test,example,examples,*.d.ts}",
+      "!**/node_modules/.bin",
+      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,__pycache__,thumbs.db,.gitignore,.gitattributes,.flowconfig,.yarn-metadata.json,.idea,.vs,appveyor.yml,.travis.yml,circle.yml,npm-debug.log,.nyc_output,yarn.lock,.yarn-integrity}"
+    ],
     "directories": {
-        "buildResources": "public"
+      "buildResources": "public"
+    },
+    "mac": {
+      "category": "public.app-category.utilities",
+      "icon": "assets/icons/icon.icns",
+      "type": "distribution"
+    },
+    "linux": {
+      "category": "GNOME;GTK;Graphics;Utility",
+      "packageCategory": "GNOME;GTK;Graphics;Utility",
+      "description": "Triangle Desktop Application",
+      "target": [
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "maintainer": "Endre Simo <esimov@gmail.com>"
+    },
+    "deb": {
+      "synopsis": "Triangle Desktop Application"
+    },
+    "dmg": {
+      "icon": "assets/icons/icon.icns",
+      "iconSize": 128,
+      "contents": [
+        {
+          "x": 380,
+          "y": 240,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 122,
+          "y": 240,
+          "type": "file"
+        }
+      ]
+    },
+    "nsis": {
+      "perMachine": true,
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
     }
   }
 }
