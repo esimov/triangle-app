@@ -58,7 +58,7 @@ export default class Result extends Component {
       borderStyle: "dotted",
       borderWidth: 1,
       borderRadius: 5,
-      borderColor: colors.blue700,
+      borderColor: "rgba(25, 118, 210, 0.3)",
       cursor: "default"
     };
 

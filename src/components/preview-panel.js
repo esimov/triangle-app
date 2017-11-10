@@ -126,7 +126,7 @@ export default class Preview extends Component {
       borderStyle: "dotted",
       borderWidth: 1,
       borderRadius: 5,
-      borderColor: this.state.isValid ? colors.blue700 : colors.redA700,
+      borderColor: this.state.isValid ? "rgba(25, 118, 210, 0.3)" : colors.redA700,
       backgroundColor : this.state.isValid ? "transparent" : colors.red50
     };
 

@@ -5,6 +5,7 @@ import Result  from './result-panel';
 import Options from './options-panel';
 import Process from './process-panel';
 import Loader from './loader';
+import logo from '../image/triangle-logo.png';
 
 class Main extends Component {
   render() {
@@ -15,7 +16,7 @@ class Main extends Component {
             <CardActions>
               <Preview />
               <section className="middlePanel">
-                <span className="triangle-header"><span className="symbol">▲</span>Triangle</span>
+                <span className="triangle-header"><img src={logo} alt="triangle-logo"/><span className="symbol"> Triangle</span></span>
               </section>
               <Result />
               <Options />
