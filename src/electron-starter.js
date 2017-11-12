@@ -1,8 +1,5 @@
-const electron = require('electron');
-// Module to control application life.
-const app = electron.app;
-// Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow;
+import {electron, app, BrowserWindow} from 'electron';
+import AppMenu from './menu';
 
 const path = require('path');
 const url = require('url');
@@ -17,8 +14,12 @@ function createWindow() {
         width: 1024,
         height: 768,
         resizable: false,
+        fullscreenable: true,
         icon: path.join(__dirname, '/../assets/icons/png/128x128.png')
     });
+
+    mainWindow.setResizable(true);
+    mainWindow.setFullScreenable(true);
 
     // Load the index.html of the app.
     const startUrl = process.env.ELECTRON_START_URL || url.format({
@@ -32,11 +33,6 @@ function createWindow() {
     // and load the index.html of the app.
     mainWindow.loadURL(startUrl);
 
-    // Open the DevTools.
-    if (isDevMode) {
-        //mainWindow.webContents.openDevTools();
-    }
-
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {
         // Dereference the window object, usually you would store windows
@@ -45,7 +41,30 @@ function createWindow() {
         mainWindow = null
     });
 
-    mainWindow.setResizable(false);
+    const appMenu = new AppMenu();
+    appMenu.setMenu({
+        tabs: []
+    });
+
+    if (isDevMode) {
+        appMenu.appendMenuItem({
+            label: 'Developer Panel',
+            submenu: [{
+                label: 'Toggle Developer Tools',
+                accelerator: (function() {
+                if (process.platform == 'darwin')
+                    return 'Alt+Command+I';
+                else
+                    return 'Ctrl+Shift+I';
+                })(),
+                click: function(item, focusedWindow) {
+                if (focusedWindow)
+                    focusedWindow.toggleDevTools();
+                }
+            }]
+        });
+    }
+    appMenu.initMenu();
 }
 
 // This method will be called when Electron has finished
