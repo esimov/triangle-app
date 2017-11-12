@@ -24,6 +24,7 @@ class AppMenu {
         {
           label: 'Save',
           accelerator: 'CmdOrCtrl+S',
+          enabled: false,
           click: function() {
             // TODO trigger save dialog
           }
@@ -31,6 +32,7 @@ class AppMenu {
         {
           label: 'Save as...',
           accelerator: 'CmdOrCtrl+Shift+S',
+          enabled: false,
           click: function() {
             const {dialog} = require('electron');
             dialog.showSaveDialog({
@@ -68,21 +70,6 @@ class AppMenu {
               focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
             }
           }
-        },
-        {
-          type: 'separator'
-        },
-        {
-          label: 'Settings...',
-          accelerator: (function () {
-            if (process.platform == 'darwin')
-              return 'Cmd+,';
-            else
-              return 'Ctrl+P';
-          })(),
-          click: function() {
-            // TODO call settings panel...
-          }
         }
       ]
     }]
@@ -118,6 +105,21 @@ class AppMenu {
             type: 'separator'
           },
           {
+            label: 'Settings...',
+            accelerator: (function () {
+              if (process.platform == 'darwin')
+                return 'Cmd+,';
+              else
+                return 'Ctrl+P';
+            })(),
+            click: function() {
+              // TODO call settings panel...
+            }
+          },
+          {
+            type: 'separator'
+          },
+          {
             label: 'Quit',
             accelerator: 'Command+Q',
             click: function () {
@@ -130,10 +132,15 @@ class AppMenu {
     }
   }
 
-  // Build menu based on the menu template.
-  setMenu(props) {
+  // Build the application menu based on the menu template.
+  setMenu() {
     this.menu = Menu.buildFromTemplate(this.menuTemplate);
     return this;
+  }
+
+  // Retrive menu object.
+  getMenu() {
+    return this.menu;
   }
 
   // Append menu item
