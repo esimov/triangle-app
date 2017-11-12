@@ -1,54 +1,154 @@
-import {Menu, MenuItem} from 'electron';
+const { app, Menu, MenuItem } = require('electron');
 
-export default class AppMenu {
-    constructor(mainWindow) {
-        this.mainWindow = mainWindow;
-        this.menu;
-    }
+class AppMenu {
+  constructor() {
+    this.menu;
+  }
 
-    get menuTemplate() {
-        return [{
-            label: 'View',
-            submenu: [
-              {
-                label: 'Reload',
-                accelerator: 'CmdOrCtrl+R',
-                click: function(item, focusedWindow) {
-                  if (focusedWindow)
-                    focusedWindow.reload();
-                }
-              },
-              {
-                label: 'Toggle Full Screen',
-                accelerator: (function() {
-                  if (process.platform == 'darwin')
-                    return 'Ctrl+Command+F';
-                  else
-                    return 'F11';
-                })(),
-                click: function(item, focusedWindow) {
-                  if (focusedWindow)
-                    focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
-                }
-              }
-            ]
-        }]
-    }
+  // Return the menu template;
+  get menuTemplate() {
+    let template = [{
+      label: 'File',
+      submenu: [
+        {
+          label: 'Open...',
+          accelerator: 'CmdOrCtrl+O',
+          click: function() {
+            const {dialog} = require('electron');
+            dialog.showOpenDialog({properties: ['openFile', 'openDirectory', 'multiSelections']});
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Save',
+          accelerator: 'CmdOrCtrl+S',
+          click: function() {
+            // TODO trigger save dialog
+          }
+        },
+        {
+          label: 'Save as...',
+          accelerator: 'CmdOrCtrl+Shift+S',
+          click: function() {
+            const {dialog} = require('electron');
+            dialog.showSaveDialog({
+              filters: [{
+                name:'Image',
+                extensions: ['jpg', 'png']
+              }]
+            })
+          }
+        }
+      ]
+    },
+    {
+      label: 'View',
+      submenu: [
+        {
+          label: 'Reload',
+          accelerator: 'CmdOrCtrl+R',
+          click: function (item, focusedWindow) {
+            if (focusedWindow) {
+              focusedWindow.reload();
+            }
+          }
+        },
+        {
+          label: 'Toggle Full Screen',
+          accelerator: (function () {
+            if (process.platform == 'darwin')
+              return 'Ctrl+Command+F';
+            else
+              return 'F11';
+          })(),
+          click: function (item, focusedWindow) {
+            if (focusedWindow) {
+              focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
+            }
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Settings...',
+          accelerator: (function () {
+            if (process.platform == 'darwin')
+              return 'Cmd+,';
+            else
+              return 'Ctrl+P';
+          })(),
+          click: function() {
+            // TODO call settings panel...
+          }
+        }
+      ]
+    }]
 
-    setMenu(props) {
-        this.menu = Menu.buildFromTemplate(this.menuTemplate);
-        return this;
+    // On MacOS we need to include the menu subitems into the application menu item.
+    if (process.platform == 'darwin') {
+      var name = app.getName();
+      template.unshift({
+        label: name,
+        submenu: [
+          {
+            label: 'About ' + name,
+            role: 'about'
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: 'Hide ' + name,
+            accelerator: 'Command+H',
+            role: 'hide'
+          },
+          {
+            label: 'Hide Others',
+            accelerator: 'Command+Shift+H',
+            role: 'hideothers'
+          },
+          {
+            label: 'Show All',
+            role: 'unhide'
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: 'Quit',
+            accelerator: 'Command+Q',
+            click: function () {
+              app.quit();
+            }
+          },
+        ]
+      });
+      return template;
     }
+  }
 
-    appendMenuItem(menuItem) {
-      const item = new MenuItem(menuItem)
-      this.menu.append(item);
-      return this;
-    }
+  // Build menu based on the menu template.
+  setMenu(props) {
+    this.menu = Menu.buildFromTemplate(this.menuTemplate);
+    return this;
+  }
 
-    initMenu() {
-      if (this.menu) {
-        Menu.setApplicationMenu(this.menu);
-      }
+  // Append menu item
+  appendMenuItem(menuItem) {
+    const item = new MenuItem(menuItem)
+    this.menu.append(item);
+    return this;
+  }
+
+  // Initialize the menu
+  initMenu() {
+    if (this.menu) {
+      Menu.setApplicationMenu(this.menu);
     }
+  }
 }
+
+module.exports = AppMenu;

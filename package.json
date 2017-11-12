@@ -1,5 +1,5 @@
 {
-  "name": "triangle",
+  "name": "Triangle",
   "version": "1.0.0",
   "description": "▲ TRIANGLE is a desktop application to generate triangulated images.",
   "author": "Endre Simo <esimov@gmail.com>",
@@ -96,7 +96,7 @@
   },
   "build": {
     "appId": "com.electron.triangle-app",
-    "productName": "▲ TRIANGLE",
+    "productName": "Triangle",
     "copyright": "Copyright © 2017 Endre Simo <esimov@gmail.com>",
     "asar": true,
     "files": [

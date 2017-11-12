@@ -1,5 +1,5 @@
-import {electron, app, BrowserWindow} from 'electron';
-import AppMenu from './menu';
+const { electron, app, BrowserWindow } = require('electron');
+const AppMenu = require('./menu');
 
 const path = require('path');
 const url = require('url');
@@ -51,15 +51,15 @@ function createWindow() {
             label: 'Developer Panel',
             submenu: [{
                 label: 'Toggle Developer Tools',
-                accelerator: (function() {
-                if (process.platform == 'darwin')
-                    return 'Alt+Command+I';
-                else
-                    return 'Ctrl+Shift+I';
+                accelerator: (function () {
+                    if (process.platform == 'darwin')
+                        return 'Alt+Command+I';
+                    else
+                        return 'Ctrl+Shift+I';
                 })(),
-                click: function(item, focusedWindow) {
-                if (focusedWindow)
-                    focusedWindow.toggleDevTools();
+                click: function (item, focusedWindow) {
+                    if (focusedWindow)
+                        focusedWindow.toggleDevTools();
                 }
             }]
         });
