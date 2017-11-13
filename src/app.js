@@ -4,6 +4,8 @@ import * as colors from 'material-ui/styles/colors';
 import { getMuiTheme, MuiThemeProvider } from 'material-ui/styles';
 import Main from './components/main';
 
+const {ipcRenderer} = window.require('electron');
+
 const styles = {
   root: {
     textAlign: 'center',
@@ -19,12 +21,19 @@ const muiTheme = getMuiTheme({
   }
 });
 
-class App extends Component {  
-  render() {    
-    return (      
+class App extends Component {
+  componentDidMount() {
+    ipcRenderer.on('open-about', (event, message) => {
+      // TODO load about dialog panel
+      console.log('click');
+    })
+  }
+
+  render() {
+    return (
       <MuiThemeProvider muiTheme={muiTheme}>
-        <Main />        
-      </MuiThemeProvider>      
+        <Main />
+      </MuiThemeProvider>
     );
   }
 }

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
-import * as colors from 'material-ui/styles/colors';
 import PubSub from 'pubsub-js';
 import EXIF from "exif-js";
 import placeholderImage from '../image/placeholder-preview.png';

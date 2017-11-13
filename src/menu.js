@@ -1,4 +1,6 @@
-const { app, shell, Menu, MenuItem } = require('electron');
+const { app, shell, BrowserWindow, Menu, MenuItem } = require('electron');
+
+const HELP_URL = 'http://github.com/esimov/triangle';
 
 class AppMenu {
   constructor() {
@@ -15,7 +17,9 @@ class AppMenu {
           accelerator: 'CmdOrCtrl+O',
           click: function() {
             const {dialog} = require('electron');
-            dialog.showOpenDialog({properties: ['openFile', 'openDirectory', 'multiSelections']});
+            dialog.showOpenDialog(
+              {properties: ['openFile', 'openDirectory', 'multiSelections']
+            });
           }
         },
         {
@@ -81,13 +85,13 @@ class AppMenu {
       submenu: [
         {
           label: 'Learn More',
-          click: function() { shell.openExternal('http://github.com/esimov/triangle') }
+          click: function() { shell.openExternal(HELP_URL) }
         },
       ]
     }]
 
     // On MacOS we need to include the menu subitems into the application menu item.
-    if (process.platform == 'darwin') {
+    if (process.platform === 'darwin') {
       var name = app.getName();
       template.unshift({
         label: name,
@@ -118,12 +122,7 @@ class AppMenu {
           },
           {
             label: 'Settings...',
-            accelerator: (function () {
-              if (process.platform == 'darwin')
-                return 'Cmd+,';
-              else
-                return 'Ctrl+P';
-            })(),
+            accelerator: 'Cmd+,',
             click: function() {
               // TODO call settings panel...
             }
@@ -140,8 +139,31 @@ class AppMenu {
           },
         ]
       });
-      return template;
+    } else {
+      var name = app.getName();
+      template[1].submenu.push(
+        {
+          type: 'separator'
+        }, {
+          label: 'Settings...',
+          accelerator: 'Ctrl+P',
+          click: function() {
+            // TODO call settings panel...
+          }
+      });
+      template[template.length-1].submenu.push(
+        {
+          type: 'separator'
+        }, {
+          label: 'About ' + name,
+          click: function(item, focusedWindow) {
+            if (focusedWindow) {
+              AppMenu.action('open-about');
+            }
+          }
+      })
     }
+    return template;
   }
 
   // Build the application menu based on the menu template.
@@ -167,6 +189,14 @@ class AppMenu {
     if (this.menu) {
       Menu.setApplicationMenu(this.menu);
     }
+  }
+
+  static action(action, ...params) {
+    const win = BrowserWindow.getAllWindows()[0];
+    if (process.platform === 'darwin') {
+			win.restore();
+		}
+    win.webContents.send(action, ...params);
   }
 }
 

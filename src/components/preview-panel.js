@@ -8,7 +8,7 @@ import EXIF from "exif-js";
 import dropzoneStyles from '../styles/app.css';
 import placeholderImage from '../image/placeholder.png';
 
-const {electron, remote} = window.require('electron');
+const {remote} = window.require('electron');
 
 export default class Preview extends Component {
   constructor() {
@@ -126,7 +126,7 @@ export default class Preview extends Component {
   // Change Save ans Save As... menu item status at runtime.
   changeFileMenuStatus(status) {
     let menu = remote.Menu.getApplicationMenu();
-    let menuItems = menu.items[1].submenu.items;
+    let menuItems = process.platform === "darwin" ? menu.items[1].submenu.items : menu.items[0].submenu.items;
     menuItems.map((item) => {
       if (item.sublabel === 'changeable') {
         item.enabled = status ? true : false;
