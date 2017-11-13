@@ -12,7 +12,7 @@ const {remote} = window.require('electron');
 
 export default class Preview extends Component {
   constructor() {
-    super();
+    super()
     this.state = {
       dragOver  : false,
       isValid   : true,
