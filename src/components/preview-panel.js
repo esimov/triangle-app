@@ -8,6 +8,8 @@ import EXIF from "exif-js";
 import dropzoneStyles from '../styles/app.css';
 import placeholderImage from '../image/placeholder.png';
 
+const {electron, remote} = window.require('electron');
+
 export default class Preview extends Component {
   constructor() {
     super();
@@ -22,6 +24,7 @@ export default class Preview extends Component {
       arrowVisibility : true
     };
     this.acceptedFile = null
+    this.changeFileMenuStatus(false);
   }
 
   onDrop(accepted, rejected) {
@@ -78,6 +81,8 @@ export default class Preview extends Component {
         arrowVisibility : false
       });
       PubSub.publish('onDroppedImage', this.state);
+      // TODO need to move after image triangulation action.
+      this.changeFileMenuStatus(true);
     }, err => {
       console.log(err)
     })
@@ -118,6 +123,17 @@ export default class Preview extends Component {
     return bytes.buffer;
   };
 
+  // Change Save ans Save As... menu item status at runtime.
+  changeFileMenuStatus(status) {
+    let menu = remote.Menu.getApplicationMenu();
+    let menuItems = menu.items[1].submenu.items;
+    menuItems.map((item) => {
+      if (item.sublabel === 'changeable') {
+        item.enabled = status ? true : false;
+      }
+    });
+  }
+
   render() {
     const dropZone = {
       position: "relative",
@@ -131,7 +147,7 @@ export default class Preview extends Component {
     };
 
     let textColor = this.state.isValid ? colors.blue700 : colors.redA700;
-    let imageWidth = this.state.message == "" ? "100%" : "auto";
+    let imageWidth = this.state.message === "" ? "100%" : "auto";
 
     return (
       <section className="imageLeftPanel">

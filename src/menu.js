@@ -1,4 +1,4 @@
-const { app, Menu, MenuItem } = require('electron');
+const { app, shell, Menu, MenuItem } = require('electron');
 
 class AppMenu {
   constructor() {
@@ -23,6 +23,7 @@ class AppMenu {
         },
         {
           label: 'Save',
+          sublabel: 'changeable',
           accelerator: 'CmdOrCtrl+S',
           enabled: false,
           click: function() {
@@ -31,6 +32,7 @@ class AppMenu {
         },
         {
           label: 'Save as...',
+          sublabel: 'changeable',
           accelerator: 'CmdOrCtrl+Shift+S',
           enabled: false,
           click: function() {
@@ -71,6 +73,16 @@ class AppMenu {
             }
           }
         }
+      ]
+    },
+    {
+      label: 'Help',
+      role: 'help',
+      submenu: [
+        {
+          label: 'Learn More',
+          click: function() { shell.openExternal('http://github.com/esimov/triangle') }
+        },
       ]
     }]
 
