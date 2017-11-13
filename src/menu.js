@@ -15,11 +15,13 @@ class AppMenu {
         {
           label: 'Open...',
           accelerator: 'CmdOrCtrl+O',
-          click: function() {
-            const {dialog} = require('electron');
-            dialog.showOpenDialog(
-              {properties: ['openFile', 'openDirectory', 'multiSelections']
-            });
+          click(item, focusedWindow) {
+            if (focusedWindow) {
+              const {dialog} = require('electron');
+              dialog.showOpenDialog(
+                {properties: ['openFile', 'openDirectory', 'multiSelections']
+              });
+            }
           }
         },
         {
@@ -30,7 +32,7 @@ class AppMenu {
           sublabel: 'changeable',
           accelerator: 'CmdOrCtrl+S',
           enabled: false,
-          click: function() {
+          click() {
             // TODO trigger save dialog
           }
         },
@@ -39,14 +41,16 @@ class AppMenu {
           sublabel: 'changeable',
           accelerator: 'CmdOrCtrl+Shift+S',
           enabled: false,
-          click: function() {
-            const {dialog} = require('electron');
-            dialog.showSaveDialog({
-              filters: [{
-                name:'Image',
-                extensions: ['jpg', 'png']
-              }]
-            })
+          click(item, focusedWindow) {
+            if (focusedWindow) {
+              const {dialog} = require('electron');
+              dialog.showSaveDialog({
+                filters: [{
+                  name:'Image',
+                  extensions: ['jpg', 'png']
+                }]
+              })
+            }
           }
         }
       ]
@@ -57,7 +61,7 @@ class AppMenu {
         {
           label: 'Reload',
           accelerator: 'CmdOrCtrl+R',
-          click: function (item, focusedWindow) {
+          click(item, focusedWindow) {
             if (focusedWindow) {
               focusedWindow.reload();
             }
@@ -71,7 +75,7 @@ class AppMenu {
             else
               return 'F11';
           })(),
-          click: function (item, focusedWindow) {
+          click(item, focusedWindow) {
             if (focusedWindow) {
               focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
             }
@@ -85,7 +89,9 @@ class AppMenu {
       submenu: [
         {
           label: 'Learn More',
-          click: function() { shell.openExternal(HELP_URL) }
+          click() { 
+            shell.openExternal(HELP_URL)
+          }
         },
       ]
     }]
@@ -123,8 +129,10 @@ class AppMenu {
           {
             label: 'Settings...',
             accelerator: 'Cmd+,',
-            click: function() {
-              // TODO call settings panel...
+            click(item, focusedWindow) {
+              if (focusedWindow) {
+                AppMenu.action('open-settings');
+              }
             }
           },
           {
@@ -133,7 +141,7 @@ class AppMenu {
           {
             label: 'Quit',
             accelerator: 'Command+Q',
-            click: function () {
+            click() {
               app.quit();
             }
           },
@@ -147,8 +155,10 @@ class AppMenu {
         }, {
           label: 'Settings...',
           accelerator: 'Ctrl+P',
-          click: function() {
-            // TODO call settings panel...
+          click(item, focusedWindow) {
+            if (focusedWindow) {
+              AppMenu.action('open-settings');
+            }
           }
       });
       template[template.length-1].submenu.push(
@@ -156,7 +166,7 @@ class AppMenu {
           type: 'separator'
         }, {
           label: 'About ' + name,
-          click: function(item, focusedWindow) {
+          click(item, focusedWindow) {
             if (focusedWindow) {
               AppMenu.action('open-about');
             }

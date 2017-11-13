@@ -2,33 +2,41 @@ import React, { Component } from 'react';
 import Dialog from 'material-ui/Dialog';
 import IconButton from 'material-ui/IconButton';
 
-export default class About extends Component {
-  constructor() {
-    super();
+export default class AboutModal extends Component {
+  constructor(props) {
+    super(props);
 
     this.state = {
-      open: false
-    };
+      status: this.props.state
+    }
+  }
+
+  // Update state status in response to prop changes
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      status: nextProps.state
+    })
   }
 
   handleClose = () => {
-    this.setState({open: false});
+    this.setState({
+      status: false
+    });
   };
 
   render() {
-    console.log(this.props.state);
     return (
       <section id="about">
         <div className="container">
           <Dialog
             title="About"
             modal={false}
-            open={this.props.state}
+            open={this.state.status}
             onRequestClose={this.handleClose.bind(this)}
             actions={
-              <div className="closeDialog">
-                <IconButton tooltip="Close">
-                  <i class="material-icons">arrow_forward</i>
+              <div className="close">
+                <IconButton tooltip="Close" onClick={this.handleClose.bind(this)}>
+                  <i className="material-icons">close</i>
                 </IconButton>
               </div>
             }
