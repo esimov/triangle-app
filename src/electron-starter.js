@@ -65,6 +65,14 @@ function createWindow() {
         });
     }
     appMenu.initMenu();
+
+    mainWindow.webContents.on('did-finish-load', function() {
+        const appInfo = {
+            name: app.getName(),
+            version: app.getVersion()
+        }
+        mainWindow.webContents.send('app-info', appInfo);
+    });
 }
 
 // This method will be called when Electron has finished

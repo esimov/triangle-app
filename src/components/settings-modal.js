@@ -18,7 +18,7 @@ export default class SettingsModal extends Component {
     })
   }
 
-  handleClose = () => {
+  handleClose = (event) => {
     this.setState({
       status: false
     });

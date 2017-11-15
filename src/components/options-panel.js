@@ -26,18 +26,12 @@ export default class Options extends Component {
     });
   }
 
-  onExpandChange() {
-    this.state.expanded = !this.state.expanded;
-    this.state.title = this.state.expanded ? this.onExpand() : this.onCollapse();
-  }
-
   render() {
     return (
       <section className="Options">
         <Card
-          expandable={true}
+          expandable={false}
           expanded={this.state.expanded}
-          onExpandChange={this.onExpandChange}
         >
           <CardHeader
             //title={this.state.title} style={{paddingBottom:2}}

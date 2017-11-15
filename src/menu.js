@@ -89,7 +89,7 @@ class AppMenu {
       submenu: [
         {
           label: 'Learn More',
-          click() { 
+          click() {
             shell.openExternal(HELP_URL)
           }
         },
@@ -154,7 +154,7 @@ class AppMenu {
           type: 'separator'
         }, {
           label: 'Settings...',
-          accelerator: 'Ctrl+P',
+          accelerator: 'Ctrl+,',
           click(item, focusedWindow) {
             if (focusedWindow) {
               AppMenu.action('open-settings');
@@ -201,6 +201,7 @@ class AppMenu {
     }
   }
 
+  // Trasmit event trough IPC channel
   static action(action, ...params) {
     const win = BrowserWindow.getAllWindows()[0];
     if (process.platform === 'darwin') {
