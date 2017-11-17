@@ -3,14 +3,18 @@ import Dialog from 'material-ui/Dialog';
 import Toggle from 'material-ui/Toggle';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
+import PubSub from 'pubsub-js';
 
 export default class SettingsModal extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      status: this.props.state
-    }
+    const storage = JSON.parse(localStorage.getItem('settings.state'));
+    this.state = Object.assign({}, {
+      status: this.props.state,
+      isDarkTheme : false,
+      isWebcamEnabled : false,
+    }, storage);
 
     this.modal = {
       titleStyle: {
@@ -34,17 +38,33 @@ export default class SettingsModal extends Component {
     })
   }
 
+  // Store the current settings in the local storage
+  componentDidUpdate() {
+    const storage = (({ isDarkTheme, isWebcamEnabled }) => ({ isDarkTheme, isWebcamEnabled }))(this.state);
+    localStorage.setItem('settings.state', JSON.stringify(storage));
+  }
+
   handleClose = (event) => {
     this.setState({
       status: false
     });
   };
 
-  handleToggleSwitch = (event) => {
+  handleThemeSwitch = (event, status) => {
+    this.setState({
+      isDarkTheme: status
+    })
+  }
 
+  handleWebcamSwitch = (event, status) => {
+    this.setState({
+      isWebcamEnabled: status
+    })
+    PubSub.publish('webcam_enabled', status);
   }
 
   render() {
+    const {isDarkTheme, isWebcamEnabled} = this.state
     return (
       <Dialog
         title="Settings"
@@ -64,15 +84,15 @@ export default class SettingsModal extends Component {
       >
         <div className="content">
           <Toggle label="Dark Theme"
-            defaultToggled={false}
+            defaultToggled={isDarkTheme}
             style={this.modal.toggleStyle}
-            onToggle={this.handleToggleSwitch.bind(this)}
+            onToggle={this.handleThemeSwitch.bind(this)}
           />
           <Divider />
           <Toggle label="Use Webcam"
-            defaultToggled={true}
+            defaultToggled={isWebcamEnabled}
             style={this.modal.toggleStyle}
-            onToggle={this.handleToggleSwitch.bind(this)}
+            onToggle={this.handleWebcamSwitch.bind(this)}
           />
         </div>
       </Dialog>

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Dropzone from 'react-dropzone';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import IconButton from 'material-ui/IconButton';
+import FontIcon from 'material-ui/FontIcon';
 import * as colors from 'material-ui/styles/colors';
 import PubSub from 'pubsub-js';
 import EXIF from "exif-js";
@@ -13,7 +15,10 @@ const {remote} = window.require('electron');
 export default class Preview extends Component {
   constructor() {
     super()
-    this.state = {
+
+    // Get the saved settings from local storage
+    const storage = JSON.parse(localStorage.getItem('webcam.state'));
+    this.state = Object.assign({}, {
       dragOver  : false,
       isValid   : true,
       accepted  : [],
@@ -21,10 +26,23 @@ export default class Preview extends Component {
       loadedImg : placeholderImage,
       rotation  : 0,
       message   : "Drop image here...",
-      arrowVisibility : true
-    };
+      arrowVisibility : true,
+      isWebcamEnabled : false,
+    }, storage);
     this.acceptedFile = null
     this.changeFileMenuStatus(false);
+
+    PubSub.subscribe('webcam_enabled', (event, data) => {
+      this.setState({
+        isWebcamEnabled: data
+      })
+    });
+  }
+
+  // Store the current settings in the local storage
+  componentDidUpdate() {
+    const storage = (({ isWebcamEnabled }) => ({ isWebcamEnabled }))(this.state);
+    localStorage.setItem('webcam.state', JSON.stringify(storage));
   }
 
   onDrop(accepted, rejected) {
@@ -110,6 +128,11 @@ export default class Preview extends Component {
     })
   };
 
+  startWebcam(event) {
+    event.preventDefault();
+    console.log('webcam started');
+  }
+
   // Convert the base64 string to an ArrayBuffer
   base64ToArrayBuffer(base64) {
     base64 = base64.replace(/^data:([^;]+);base64,/gmi, '');
@@ -143,7 +166,16 @@ export default class Preview extends Component {
       borderWidth: 1,
       borderRadius: 5,
       borderColor: this.state.isValid ? "rgba(25, 118, 210, 0.3)" : colors.redA700,
-      backgroundColor : this.state.isValid ? "transparent" : colors.red50
+      backgroundColor : this.state.isValid ? "transparent" : colors.red50,
+      webcamStyle : {
+        position:"absolute",
+        bottom:10,
+        right:10,
+        iconStyle : {
+          fontSize: 30,
+          color: this.state.accepted.length ? colors.grey200 : colors.blue700
+        }
+      }
     };
 
     let textColor = this.state.isValid ? colors.blue700 : colors.redA700;
@@ -174,6 +206,15 @@ export default class Preview extends Component {
               <ContentAdd />
             </FloatingActionButton>
           </Dropzone>
+          <IconButton id="webcam-icon"
+            disableTouchRipple={true}
+            className={this.state.isWebcamEnabled ? "active" : "inactive"}
+            style={dropZone.webcamStyle}
+            iconStyle={dropZone.webcamStyle.iconStyle}
+            onClick={this.startWebcam.bind(this)}
+          >
+            <FontIcon className={"fa fa-camera pulse " + (this.state.accepted.length ? "white" : "blue")} />
+          </IconButton>
         </div><br/>
       </section>
     );

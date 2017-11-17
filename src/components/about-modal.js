@@ -71,13 +71,13 @@ export default class AboutModal extends Component {
 
           <div className="links">
             <IconButton href="http://www.esimov.com" tooltip="esimov" onClick={this.openLink.bind(this)}>
-              <FontIcon className="fa fa-home fa-3x"/>
+              <FontIcon className="fa fa-home"/>
             </IconButton>
             <IconButton href="https://github.com/esimov" tooltip="Github" onClick={this.openLink.bind(this)}>
-              <FontIcon className="fa fa-github fa-3x" />
+              <FontIcon className="fa fa-github" />
             </IconButton>
             <IconButton href="https://twitter.com/simo_endre" tooltip="Twitter" onClick={this.openLink.bind(this)}>
-              <FontIcon className="fa fa-twitter fa-3x"/>
+              <FontIcon className="fa fa-twitter"/>
             </IconButton>
           </div>
         </div>
