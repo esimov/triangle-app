@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {Card, CardActions} from 'material-ui/Card';
+import PubSub from 'pubsub-js';
 import Preview from './preview-panel';
 import Result  from './result-panel';
 import Options from './options-panel';
@@ -43,6 +44,13 @@ class Main extends Component {
           version: app.version
         }
       })
+    })
+
+    ipcRenderer.on('file-open', (event, image) => {
+      console.log(image);
+      if (image) {
+        PubSub.publish('file-open', image);
+      }
     })
   }
 

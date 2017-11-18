@@ -13,13 +13,18 @@ class AppMenu {
       label: 'File',
       submenu: [
         {
-          label: 'Open...',
+          label: 'Load Image...',
           accelerator: 'CmdOrCtrl+O',
           click(item, focusedWindow) {
             if (focusedWindow) {
               const {dialog} = require('electron');
               dialog.showOpenDialog(
                 {properties: ['openFile', 'openDirectory', 'multiSelections']
+              }, (filePaths) => {
+                if (filePaths) {
+                  // Get the last file selected and send it trough IPC action to web renderer
+                  AppMenu.action('file-open', filePaths[filePaths.length-1])
+                }
               });
             }
           }

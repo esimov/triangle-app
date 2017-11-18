@@ -4,7 +4,7 @@ import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import logo from '../image/triangle-logo.png';
 
-const {shell, ipcRenderer} = window.require('electron');
+const {shell} = window.require('electron');
 
 export default class AboutModal extends Component {
   constructor(props) {

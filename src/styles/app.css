@@ -1,5 +1,5 @@
 body {
-    overflow: auto;
+    overflow: hidden;
     margin: 0;
 }
 
@@ -66,9 +66,11 @@ body {
     transform: translateX(-50%);
     transform: translateY(-50%);
     cursor: default;
+    z-index: 9;
 }
 .dropZone .previewImg {
     position: absolute;
+    width: 100%;
     top: 50%;
 }
 .dropZone .dropIn {

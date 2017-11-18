@@ -6,7 +6,8 @@ import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import * as colors from 'material-ui/styles/colors';
 import PubSub from 'pubsub-js';
-import EXIF from "exif-js";
+import EXIF from 'exif-js';
+import Webcam from './webcam'
 import dropzoneStyles from '../styles/app.css';
 import placeholderImage from '../image/placeholder.png';
 
@@ -37,6 +38,15 @@ export default class Preview extends Component {
         isWebcamEnabled: data
       })
     });
+
+    PubSub.subscribe('file-open', (event, data) => {
+      this.setState({
+        loadedImg : data,
+        isValid: true,
+        arrowVisibility: false,
+        message: ""
+      });
+    })
   }
 
   // Store the current settings in the local storage
@@ -129,8 +139,8 @@ export default class Preview extends Component {
   };
 
   startWebcam(event) {
-    event.preventDefault();
     console.log('webcam started');
+    event.preventDefault();
   }
 
   // Convert the base64 string to an ArrayBuffer
@@ -200,7 +210,7 @@ export default class Preview extends Component {
               <i className="material-icons">get_app</i>
             </span>
             <span className="previewMsg" style={{color:textColor}}>{this.state.message.toUpperCase()}</span>
-            <img id="previewImg" className="previewImg" src={this.state.loadedImg} style={{width: imageWidth, transform: `translateY(-50%) rotate(${this.state.rotation}deg)`}}/>
+            <img id="previewImg" className="previewImg" src={this.state.loadedImg} style={{transform: `translateY(-50%) rotate(${this.state.rotation}deg)`}}/>
 
             <FloatingActionButton mini={true} backgroundColor={colors.blue700} style={{margin: 10}} zDepth={1} >
               <ContentAdd />
@@ -216,6 +226,7 @@ export default class Preview extends Component {
             <FontIcon className={"fa fa-camera pulse " + (this.state.accepted.length ? "white" : "blue")} />
           </IconButton>
         </div><br/>
+        {/* <Webcam/> */}
       </section>
     );
   }
