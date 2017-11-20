@@ -17,6 +17,11 @@ export default class Webcam extends Component {
     this.clearPhoto = this.clearPhoto.bind(this);
   }
 
+  // Focus webcam modal after the component has been rendered.
+  componentDidUpdate() {
+    this.webcamPanel.focus()
+  }
+
   componentWillReceiveProps(webcam) {
     this.setState({
       isWebcamEnabled: webcam.isActive
@@ -56,6 +61,21 @@ export default class Webcam extends Component {
     photo.setAttribute('src', data);
   }
 
+  takePicture() {
+    const canvas = document.querySelector('canvas');
+    const context = canvas.getContext('2d');
+    const video = document.querySelector('video');
+    const photo = document.getElementById('photo');
+    const { width, height } = this.state.constraints.video;
+
+    canvas.width = width;
+    canvas.height = height;
+    context.drawImage(video, 0, 0, width, height);
+
+    const data = canvas.toDataURL('image/png');
+    photo.setAttribute('src', data);
+  }
+
   handleStartClick(event) {
     event.preventDefault();
     this.takePicture();
@@ -75,23 +95,11 @@ export default class Webcam extends Component {
     }
   }
 
+  // Close webcam modal on ESC keypress.
   handleKeyPress(event) {
-    console.log(event)
-  }
-
-  takePicture() {
-    const canvas = document.querySelector('canvas');
-    const context = canvas.getContext('2d');
-    const video = document.querySelector('video');
-    const photo = document.getElementById('photo');
-    const { width, height } = this.state.constraints.video;
-
-    canvas.width = width;
-    canvas.height = height;
-    context.drawImage(video, 0, 0, width, height);
-
-    const data = canvas.toDataURL('image/png');
-    photo.setAttribute('src', data);
+    if (this.state.isWebcamEnabled && event.keyCode == 27) {
+      this.handleCloseWebcam(event)
+    }
   }
 
   render() {
@@ -137,7 +145,13 @@ export default class Webcam extends Component {
     )
 
     return (
-      <section className={"webcam " + (this.state.isWebcamEnabled ? "enabled" : "disabled")} style={styles.webcam} onKeyPress={this.handleKeyPress.bind(this)} >
+      <section 
+        className={"webcam " + (this.state.isWebcamEnabled ? "enabled" : "disabled")} 
+        style={styles.webcam} 
+        tabIndex="0"
+        onKeyDown={this.handleKeyPress.bind(this)} 
+        ref={(webcamPanel) => {this.webcamPanel = webcamPanel}}
+      >
         <div className="close">
           <IconButton tooltip="Close" 
             style={styles.close} 
