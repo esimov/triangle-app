@@ -163,7 +163,6 @@ export default class Settings extends Component {
 
   // Toggle switch handler
   handleToggleSwitch(id, event, checked) {
-    console.log(this.state);
     const toggleItems = this.state.toggleItems;
     toggleItems[id].status = checked;
 

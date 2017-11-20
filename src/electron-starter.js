@@ -18,7 +18,7 @@ function createWindow() {
         icon: path.join(__dirname, '/../assets/icons/png/128x128.png')
     });
 
-    mainWindow.setResizable(true);
+    mainWindow.setResizable(false);
     mainWindow.setFullScreenable(true);
 
     // Load the index.html of the app.

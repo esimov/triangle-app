@@ -12,13 +12,15 @@ import dropzoneStyles from '../styles/app.css';
 import placeholderImage from '../image/placeholder.png';
 
 const {remote} = window.require('electron');
+// Get remote window width and height
+const {width, height} = remote.getCurrentWindow().getBounds();
+// Get the saved settings from local storage
+const storage = JSON.parse(localStorage.getItem('webcam.state'));
 
 export default class Preview extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
 
-    // Get the saved settings from local storage
-    const storage = JSON.parse(localStorage.getItem('webcam.state'));
     this.state = Object.assign({}, {
       dragOver  : false,
       isValid   : true,
@@ -29,9 +31,14 @@ export default class Preview extends Component {
       message   : "Drop image here...",
       arrowVisibility : true,
       isWebcamEnabled : false,
+      webcamStatus : false,
+      windowWidth : width,
+      windowHeight : height 
     }, storage);
-    this.acceptedFile = null
-    this.changeFileMenuStatus(false);
+
+    this.dropzoneRef = null;
+    this.acceptedFile = null;
+    this.activateFileMenu(false);
 
     PubSub.subscribe('webcam_enabled', (event, data) => {
       this.setState({
@@ -55,6 +62,7 @@ export default class Preview extends Component {
     localStorage.setItem('webcam.state', JSON.stringify(storage));
   }
 
+  // Handle file drop event
   onDrop(accepted, rejected) {
     this.setState({
       accepted: accepted,
@@ -63,6 +71,7 @@ export default class Preview extends Component {
     this.acceptedFile = accepted[0]
   };
 
+  // Handle drop accepted event
   onDropAccepted(event) {
     this.setState({
       isValid: true,
@@ -83,8 +92,8 @@ export default class Preview extends Component {
       }
     });
     promise.then(result => {
-      // Retrieve the EXIF information from the image file and rotate the image.
-      // If we don't do this FileReader will show each image in landscape mode.
+      // Retrieve the EXIF information and rotate the image accordingly.
+      // If we don't do this, FileReader will show each image in landscape mode.
       let exif = EXIF.readFromBinaryFile(this.base64ToArrayBuffer(result));
       let orientation;
 
@@ -109,13 +118,14 @@ export default class Preview extends Component {
         arrowVisibility : false
       });
       PubSub.publish('onDroppedImage', this.state);
-      // TODO need to move after image triangulation action.
-      this.changeFileMenuStatus(true);
+      // TODO activate it after triangulation is done...
+      this.activateFileMenu(true);
     }, err => {
       console.log(err)
     })
   };
 
+  // Handle drop rejected event 
   onDropRejected() {
     this.setState({
       isValid: false,
@@ -138,9 +148,19 @@ export default class Preview extends Component {
     })
   };
 
+  // Start the webcam
   startWebcam(event) {
-    console.log('webcam started');
     event.preventDefault();
+    this.setState({
+      webcamStatus : true
+    })
+  }
+
+  // Close the webcam
+  closeWebcam(event) {
+    this.setState({
+      webcamStatus : false
+    })
   }
 
   // Convert the base64 string to an ArrayBuffer
@@ -157,7 +177,7 @@ export default class Preview extends Component {
   };
 
   // Change Save ans Save As... menu item status at runtime.
-  changeFileMenuStatus(status) {
+  activateFileMenu(status) {
     let menu = remote.Menu.getApplicationMenu();
     let menuItems = process.platform === "darwin" ? menu.items[1].submenu.items : menu.items[0].submenu.items;
     menuItems.map((item) => {
@@ -178,11 +198,11 @@ export default class Preview extends Component {
       borderColor: this.state.isValid ? "rgba(25, 118, 210, 0.3)" : colors.redA700,
       backgroundColor : this.state.isValid ? "transparent" : colors.red50,
       webcamStyle : {
-        position:"absolute",
-        bottom:10,
-        right:10,
+        position: "absolute",
+        bottom: 10, right: 10, padding: 0, zIndex: 9,
         iconStyle : {
           fontSize: 30,
+          cursor: "pointer",
           color: this.state.accepted.length ? colors.grey200 : colors.blue700
         }
       }
@@ -195,11 +215,13 @@ export default class Preview extends Component {
       <section className="imageLeftPanel">
         <div className="dropZone">
           <Dropzone
+            ref={(node) => {this.dropzoneRef = node}}
             accept="image/jpeg, image/png"
             multiple={false}
             style={dropZone}
             activeStyle={{backgroundColor:colors.green50}}
             acceptStyle={{backgroundColor:"transparent"}}
+            disableClick={true}
             onDrop={this.onDrop.bind(this)}
             onDragOver={this.onDragOver.bind(this)}
             onDragLeave={this.onDragLeave.bind(this)}
@@ -212,7 +234,13 @@ export default class Preview extends Component {
             <span className="previewMsg" style={{color:textColor}}>{this.state.message.toUpperCase()}</span>
             <img id="previewImg" className="previewImg" src={this.state.loadedImg} style={{transform: `translateY(-50%) rotate(${this.state.rotation}deg)`}}/>
 
-            <FloatingActionButton mini={true} backgroundColor={colors.blue700} style={{margin: 10}} zDepth={1} >
+            <FloatingActionButton 
+              mini={true} 
+              zDepth={1} 
+              style={{margin: 10}} 
+              backgroundColor={colors.blue700}
+              onClick={() => this.dropzoneRef.open()}
+            >
               <ContentAdd />
             </FloatingActionButton>
           </Dropzone>
@@ -226,7 +254,12 @@ export default class Preview extends Component {
             <FontIcon className={"fa fa-camera pulse " + (this.state.accepted.length ? "white" : "blue")} />
           </IconButton>
         </div><br/>
-        {/* <Webcam/> */}
+        <Webcam 
+          width={this.state.windowWidth} 
+          height={this.state.windowHeight}
+          isActive={this.state.webcamStatus}
+          onWebcamClose={this.closeWebcam.bind(this)} 
+        />
       </section>
     );
   }

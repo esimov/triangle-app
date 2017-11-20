@@ -47,7 +47,6 @@ class Main extends Component {
     })
 
     ipcRenderer.on('file-open', (event, image) => {
-      console.log(image);
       if (image) {
         PubSub.publish('file-open', image);
       }
