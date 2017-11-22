@@ -238,7 +238,7 @@ export default class Preview extends Component {
               className="previewImg" 
               src={this.state.loadedImg} 
               style={{
-                width: this.state.isValid ? "100%" : "auto",
+                width: imageWidth,
                 transform: `translateY(-50%) rotate(${this.state.rotation}deg)`
               }}
             />

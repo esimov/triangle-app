@@ -131,7 +131,7 @@ export default class Webcam extends Component {
   render() {
     const {width, height} = this.state.constraints.video
     const styles = {
-      webcamBtn : {
+      webcamPanel : {
         position: "absolute",
         top: this.state.isWebcamEnabled ? -10 : -height-10, 
         left: -10,
@@ -184,7 +184,7 @@ export default class Webcam extends Component {
     return (
       <section 
         className={"webcam " + (this.state.isWebcamEnabled ? "enabled" : "disabled")} 
-        style={styles.webcamBtn} 
+        style={styles.webcamPanel} 
         tabIndex="0"
         onKeyDown={this.handleKeyPress.bind(this)} 
         ref={(webcamPanel) => {this.webcamPanel = webcamPanel}}
