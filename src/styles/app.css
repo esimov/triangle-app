@@ -2,6 +2,9 @@ body {
     overflow: hidden;
     margin: 0;
 }
+*:focus {
+    outline: none;
+}
 
 .optionsHeader {
     line-height: 0.8em;
@@ -70,8 +73,8 @@ body {
 }
 .dropZone .previewImg {
     position: absolute;
-    width: 100%;
     top: 50%;
+    /* border-radius: 5px; */
 }
 .dropZone .dropIn {
     margin-top: 20%;
@@ -94,15 +97,25 @@ body {
 .dropZone #webcam-icon.inactive {
     opacity: 0;
 }
-.dropZone #webcam-icon .pulse {
+.dropZone #webcam-icon .pulse,
+.webcam .camera .pulse {
     border-radius: 50%;
     box-shadow: 0 0 0 rgba(25, 118, 210, 0.4);
 }
 .dropZone #webcam-icon .pulse.blue {
     animation: pulse-blue 2s infinite;
 }
-.dropZone #webcam-icon .pulse.white {
+.dropZone #webcam-icon .pulse.white,
+.webcam .camera .pulse.white {
     animation: pulse-white 2s infinite;
+}
+.webcam.enabled {
+    transition: all 0.8s cubic-bezier(0.42,0,0.58,1);
+}
+.webcam .output {
+    position: absolute;
+    top:0; left:0;
+    z-index: 9;
 }
 .resultZone {
     width: 200px;
@@ -160,9 +173,6 @@ body {
 }
 .about-modal .content .fa-twitter:before {
     color: #00a3ed;
-}
-.webcam.enabled {
-    transition: all 1s cubic-bezier(0.42,0,0.58,1);
 }
 
 @keyframes animateArrow {

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import IconButton from "material-ui/IconButton";
+import FontIcon from "material-ui/FontIcon";
 import * as colors from 'material-ui/styles/colors';
 
 export default class Webcam extends Component {
@@ -9,10 +10,14 @@ export default class Webcam extends Component {
     this.state = {
       constraints: { audio: false, video: { width: this.props.width, height: this.props.height } },
       isWebcamEnabled: false,
+      cameraIconActive: true,
+      counterIsActive: false,
+      videoSrc: null,
+      counter: 3
     };
     this.track = null;
 
-    this.handleStartClick = this.handleStartClick.bind(this);
+    this.handleSnapshot = this.handleSnapshot.bind(this);
     this.takePicture = this.takePicture.bind(this);
     this.clearPhoto = this.clearPhoto.bind(this);
   }
@@ -40,7 +45,9 @@ export default class Webcam extends Component {
         const video = document.querySelector('video');
         const vendorURL = window.URL || window.webkitURL;
         this.track = stream.getTracks()[0];  // if only one media track
-        video.src = vendorURL.createObjectURL(stream);
+        this.setState({
+          videoSrc: vendorURL.createObjectURL(stream)
+        })
         video.play();
       })
       .catch((err) => {
@@ -76,15 +83,19 @@ export default class Webcam extends Component {
     photo.setAttribute('src', data);
   }
 
-  handleStartClick(event) {
+  // This will initiate the countdown event.
+  handleSnapshot(event) {
     event.preventDefault();
-    this.takePicture();
+    this.setState({
+      counterIsActive: true
+    })
   }
 
   // Stop webcam on close event
   handleCloseWebcam(event) {
     this.setState({
-      isWebcamEnabled: false
+      isWebcamEnabled: false,
+      counterIsActive: false
     });
 
     // Pass state value from child to parent component.
@@ -102,71 +113,149 @@ export default class Webcam extends Component {
     }
   }
 
+  // Take the snapshot after countdown is over.
+  handleScreenCapture(done) {
+    this.setState({
+      counterIsActive: false
+    })
+    if (done) {
+      // Need to delay the screenshot capture a fraction of the second, otherwise the `takePicture` method
+      // will be triggered at the same moment with the state change generating an empty image.
+      setTimeout(() => {
+        this.takePicture();
+        //this.handleCloseWebcam();
+      }, 40)
+    }
+  }
+
   render() {
     const {width, height} = this.state.constraints.video
     const styles = {
-      webcam : {
+      webcamBtn : {
         position: "absolute",
         top: this.state.isWebcamEnabled ? -10 : -height-10, 
         left: -10,
         width: window.innerWidth, height: window.innerHeight,
         zIndex: 999
       },
-      close : {
+      closeBtn : {
         position: "absolute",
         top: 0, left: 0,
         color: colors.white,
         cursor: "pointer",
-        zIndex: 9
+        zIndex: 99
+      },
+      captureBtn : {
+        position: "absolute",
+        left: "50%",
+        bottom: 10
       }
     }
 
     const Camera = (props) => (
       <div className="camera">
-        <video id="video" width={width} height={height}/>
-        <a id="startButton"
-          onClick={props.handleStartClick}
-
-        >Take photo</a>
+        <video id="video" autoPlay="true" src={this.state.videoSrc} width={width} height={height}/>
+        <Counter 
+          counterIsActive={this.state.counterIsActive} 
+          counter={this.state.counter} 
+          handleScreenCapture={this.handleScreenCapture.bind(this)}
+        />
+        <IconButton
+          disabled={this.state.counterIsActive ? true : false}
+          disableTouchRipple={true}
+          onClick={props.onWebcamClick}
+          style={styles.captureBtn}
+          iconStyle={{
+            color: colors.white,
+            fontSize: 32
+          }}
+        >
+          <FontIcon className={"fa " + (this.state.cameraIconActive ? "fa-camera" : "fa-camera-retro") + " pulse white"} />
+        </IconButton>
       </div>
     )
+    
     const Photo = (props) => (
-      <div className="output"
-
-      >
-        <img id="photo" alt="Your photo"
-
-        />
-        <a id="saveButton"
-          onClick={props.handleSaveClick}
-
-        >Save Photo</a>
+      <div className="output">
+        <img id="photo" alt=""/>
       </div>
     )
 
     return (
       <section 
         className={"webcam " + (this.state.isWebcamEnabled ? "enabled" : "disabled")} 
-        style={styles.webcam} 
+        style={styles.webcamBtn} 
         tabIndex="0"
         onKeyDown={this.handleKeyPress.bind(this)} 
         ref={(webcamPanel) => {this.webcamPanel = webcamPanel}}
       >
         <div className="close">
           <IconButton tooltip="Close" 
-            style={styles.close} 
+            style={styles.closeBtn} 
             onKeyboardFocus={this.handleCloseWebcam.bind(this)}
             onClick={this.handleCloseWebcam.bind(this)}
           >
             <i className="material-icons">close</i>
           </IconButton>
         </div>
-        <Camera
-          handleStartClick={this.handleStartClick}
-        />
         <canvas id="canvas" hidden/>
-        <Photo />
+        <Camera onWebcamClick={this.handleSnapshot.bind(this)} />
+        <Photo/>
       </section>
     );
+  }
+}
+
+// Counter react component activated on webcam snapshot, receiving the state from it's parent (Webcam) 
+export class Counter extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      counterIsActive: this.props.counterIsActive,
+      counter: this.props.counter,
+      screenCaptured: false
+    }
+
+    // A simple time counter, showing the seconds remaining before the webcam snapshot is summoned.
+    if (this.state.counterIsActive) {
+      let counter = this.state.counter;
+      let interval = setInterval(() => {
+        if (counter > 1) {
+          counter = counter - 1;
+          this.setState({
+            counter: counter
+          })
+        } else {
+          clearInterval(interval)
+          this.setState({
+            screenCaptured: true,
+            counter: this.props.counter,
+          })
+          // Pass state value from child to parent component.
+          this.props.handleScreenCapture(this.state.screenCaptured);
+        }
+      }, 1000)
+    }
+  }
+
+  render() {
+    const counterStyle = {
+      display: this.state.counterIsActive ? "block" : "none",
+      position: "absolute",
+      top: "50%",
+      left: "47%",
+      transform: "translateY(-50%)",
+      fontSize: 200,
+      fontWeight: 100,
+      color: colors.white,
+      opacity: 0.9,
+      cursor: "default"
+    }
+    return (
+      <div className="counter" style={counterStyle}>
+        <span>{this.state.counter}</span>
+      </div>
+    )
   }
 }

@@ -200,6 +200,7 @@ export default class Preview extends Component {
       webcamStyle : {
         position: "absolute",
         bottom: 10, right: 10, padding: 0, zIndex: 9,
+        display: this.state.isWebcamEnabled ? "inline-block" : "none",
         iconStyle : {
           fontSize: 30,
           cursor: "pointer",
@@ -232,8 +233,15 @@ export default class Preview extends Component {
               <i className="material-icons">get_app</i>
             </span>
             <span className="previewMsg" style={{color:textColor}}>{this.state.message.toUpperCase()}</span>
-            <img id="previewImg" className="previewImg" src={this.state.loadedImg} style={{transform: `translateY(-50%) rotate(${this.state.rotation}deg)`}}/>
-
+            <img 
+              id="previewImg" 
+              className="previewImg" 
+              src={this.state.loadedImg} 
+              style={{
+                width: this.state.isValid ? "100%" : "auto",
+                transform: `translateY(-50%) rotate(${this.state.rotation}deg)`
+              }}
+            />
             <FloatingActionButton 
               mini={true} 
               zDepth={1} 
