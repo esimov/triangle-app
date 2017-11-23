@@ -18,6 +18,7 @@ export default class Webcam extends Component {
     this.track = null;
 
     this.handleSnapshot = this.handleSnapshot.bind(this);
+    this.handleScreenCapture = this.handleScreenCapture.bind(this);
     this.takePicture = this.takePicture.bind(this);
     this.clearPhoto = this.clearPhoto.bind(this);
   }
@@ -69,18 +70,28 @@ export default class Webcam extends Component {
   }
 
   takePicture() {
-    const canvas = document.querySelector('canvas');
-    const context = canvas.getContext('2d');
-    const video = document.querySelector('video');
-    const photo = document.getElementById('photo');
-    const { width, height } = this.state.constraints.video;
-
-    canvas.width = width;
-    canvas.height = height;
-    context.drawImage(video, 0, 0, width, height);
-
-    const data = canvas.toDataURL('image/png');
-    photo.setAttribute('src', data);
+    let snapshot = new Promise((resolve, reject) => {
+      const canvas = document.querySelector('canvas');
+      const context = canvas.getContext('2d');
+      const video = document.querySelector('video');
+      const photo = document.getElementById('photo');
+      const { width, height } = this.state.constraints.video;
+  
+      canvas.width = width;
+      canvas.height = height;
+      context.drawImage(video, 0, 0, width, height);
+  
+      const data = canvas.toDataURL('image/png');
+      photo.setAttribute('src', data);
+      resolve(data);
+    })
+    snapshot.then((image) => {
+      // Take the screen capture and send it to the parent (preview) component.
+      this.props.onScreenCapture(image);
+    })
+    snapshot.then(() => {
+      this.handleCloseWebcam()
+    })
   }
 
   // This will initiate the countdown event.
@@ -122,11 +133,8 @@ export default class Webcam extends Component {
       // Need to delay the screenshot capture a fraction of the second, otherwise the `takePicture` method
       // will be triggered at the same moment with the state change generating an empty image.
       setTimeout(() => {
-        this.takePicture();
-        setTimeout(() => {
-          this.handleCloseWebcam()
-        }, 3000)
-      }, 30)
+        this.takePicture()
+      }, 50)
     }
   }
 
@@ -255,9 +263,10 @@ export class Counter extends Component {
         top: "50%",
         left: "47%",
         transform: "translateY(-50%)",
-        fontSize: 200,
-        fontWeight: 100,
-        color: colors.white,
+        fontSize: 220,
+        fontWeight: 300,
+        color: colors.red500,
+        webkitTextStroke: "1px #fff",
         opacity: 0.9,
         cursor: "default"
       },

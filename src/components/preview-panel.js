@@ -163,6 +163,17 @@ export default class Preview extends Component {
     })
   }
 
+  receiveWebcamCapture(data) {
+    this.setState({
+      isValid: true,
+      loadedImg: data,
+      arrowVisibility: false,
+      webcamStatus: false,
+      accepted: [1],
+      message: ""
+    })
+  }
+
   // Convert the base64 string to an ArrayBuffer
   base64ToArrayBuffer(base64) {
     base64 = base64.replace(/^data:([^;]+);base64,/gmi, '');
@@ -266,7 +277,8 @@ export default class Preview extends Component {
           width={this.state.windowWidth} 
           height={this.state.windowHeight}
           isActive={this.state.webcamStatus}
-          onWebcamClose={this.closeWebcam.bind(this)} 
+          onWebcamClose={this.closeWebcam.bind(this)}
+          onScreenCapture={this.receiveWebcamCapture.bind(this)}
         />
       </section>
     );
