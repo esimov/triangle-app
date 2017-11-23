@@ -110,12 +110,17 @@ body {
     animation: pulse-white 2s infinite;
 }
 .webcam.enabled {
-    transition: all 0.8s cubic-bezier(0.42,0,0.58,1);
+    transition: all 1.0s cubic-bezier(0.42,0,0.58,1);
 }
 .webcam .output {
     position: absolute;
     top:0; left:0;
     z-index: 9;
+}
+.webcam .camera .blitz.fa-camera {
+    background-color: #fff;
+    border-radius: 50%;
+    padding: 20px;
 }
 .resultZone {
     width: 200px;
@@ -143,7 +148,7 @@ body {
     transform: translate(-50%, -50%);
 }
 #loader.hidden {
-    top: -110%;
+    top: -100%;
 }
 #loader.visible {
     top: 0;

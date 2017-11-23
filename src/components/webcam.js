@@ -10,10 +10,10 @@ export default class Webcam extends Component {
     this.state = {
       constraints: { audio: false, video: { width: this.props.width, height: this.props.height } },
       isWebcamEnabled: false,
-      cameraIconActive: true,
       counterIsActive: false,
       videoSrc: null,
-      counter: 3
+      counter: 3,
+      blitz: false
     };
     this.track = null;
 
@@ -24,7 +24,7 @@ export default class Webcam extends Component {
 
   // Focus webcam modal after the component has been rendered.
   componentDidUpdate() {
-    this.webcamPanel.focus()
+    this.webcam.focus()
   }
 
   componentWillReceiveProps(webcam) {
@@ -108,7 +108,7 @@ export default class Webcam extends Component {
 
   // Close webcam modal on ESC keypress.
   handleKeyPress(event) {
-    if (this.state.isWebcamEnabled && event.keyCode == 27) {
+    if (this.state.isWebcamEnabled && event.keyCode === 27) {
       this.handleCloseWebcam(event)
     }
   }
@@ -123,15 +123,17 @@ export default class Webcam extends Component {
       // will be triggered at the same moment with the state change generating an empty image.
       setTimeout(() => {
         this.takePicture();
-        //this.handleCloseWebcam();
-      }, 40)
+        setTimeout(() => {
+          this.handleCloseWebcam()
+        }, 3000)
+      }, 30)
     }
   }
 
   render() {
     const {width, height} = this.state.constraints.video
     const styles = {
-      webcamPanel : {
+      webcam : {
         position: "absolute",
         top: this.state.isWebcamEnabled ? -10 : -height-10, 
         left: -10,
@@ -148,7 +150,7 @@ export default class Webcam extends Component {
       captureBtn : {
         position: "absolute",
         left: "50%",
-        bottom: 10
+        bottom: 20
       }
     }
 
@@ -167,10 +169,10 @@ export default class Webcam extends Component {
           style={styles.captureBtn}
           iconStyle={{
             color: colors.white,
-            fontSize: 32
+            fontSize: 40
           }}
         >
-          <FontIcon className={"fa " + (this.state.cameraIconActive ? "fa-camera" : "fa-camera-retro") + " pulse white"} />
+          <FontIcon className={"fa fa-camera pulse white"} />
         </IconButton>
       </div>
     )
@@ -184,10 +186,10 @@ export default class Webcam extends Component {
     return (
       <section 
         className={"webcam " + (this.state.isWebcamEnabled ? "enabled" : "disabled")} 
-        style={styles.webcamPanel} 
+        style={styles.webcam} 
         tabIndex="0"
         onKeyDown={this.handleKeyPress.bind(this)} 
-        ref={(webcamPanel) => {this.webcamPanel = webcamPanel}}
+        ref={(webcam) => {this.webcam = webcam}}
       >
         <div className="close">
           <IconButton tooltip="Close" 
@@ -221,8 +223,13 @@ export class Counter extends Component {
     if (this.state.counterIsActive) {
       let counter = this.state.counter;
       let interval = setInterval(() => {
-        if (counter > 1) {
-          counter = counter - 1;
+        if (counter === 1) {
+          this.setState({
+            blitz: true
+          })
+        }
+        if (counter > 0) {
+          counter--;
           this.setState({
             counter: counter
           })
@@ -230,6 +237,7 @@ export class Counter extends Component {
           clearInterval(interval)
           this.setState({
             screenCaptured: true,
+            blitz: false,
             counter: this.props.counter,
           })
           // Pass state value from child to parent component.
@@ -240,21 +248,33 @@ export class Counter extends Component {
   }
 
   render() {
-    const counterStyle = {
-      display: this.state.counterIsActive ? "block" : "none",
-      position: "absolute",
-      top: "50%",
-      left: "47%",
-      transform: "translateY(-50%)",
-      fontSize: 200,
-      fontWeight: 100,
-      color: colors.white,
-      opacity: 0.9,
-      cursor: "default"
+    const styles = {
+      counter : {
+        display: this.state.counterIsActive ? "block" : "none",
+        position: "absolute",
+        top: "50%",
+        left: "47%",
+        transform: "translateY(-50%)",
+        fontSize: 200,
+        fontWeight: 100,
+        color: colors.white,
+        opacity: 0.9,
+        cursor: "default"
+      },
+      blitzBtn : {
+        top: "50%", left: "50%",
+        transform: "translate(-50%, -50%)",
+        fontSize: 80,
+        color: colors.red500
+      }
     }
+    let counterValue = (this.state.counter > 0) ? this.state.counter : "";
     return (
-      <div className="counter" style={counterStyle}>
-        <span>{this.state.counter}</span>
+      <div className="counter" style={styles.counter}>
+        <div className="wrapper">
+          <span>{counterValue}</span>
+          <FontIcon className={"blitz fa" + (this.state.blitz ? " fa-camera" : "")} style={styles.blitzBtn} />
+        </div>
       </div>
     )
   }
