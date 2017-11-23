@@ -143,9 +143,10 @@ export default class Webcam extends Component {
     const styles = {
       webcam : {
         position: "absolute",
-        top: this.state.isWebcamEnabled ? -10 : -height-10, 
-        left: -10,
+        display: "block",
+        left: -10, top: this.state.isWebcamEnabled ? -10 : -height-10, 
         width: window.innerWidth, height: window.innerHeight,
+        backgroundColor: colors.black,
         zIndex: 999
       },
       closeBtn : {
@@ -226,11 +227,14 @@ export class Counter extends Component {
       counter: this.props.counter,
       screenCaptured: false
     }
+  }
 
+  // Mount component on countdown start
+  componentDidMount() {
     // A simple time counter, showing the seconds remaining before the webcam snapshot is summoned.
     if (this.state.counterIsActive) {
       let counter = this.state.counter;
-      let interval = setInterval(() => {
+      this.interval = setInterval(() => {
         if (counter === 1) {
           this.setState({
             blitz: true
@@ -242,17 +246,21 @@ export class Counter extends Component {
             counter: counter
           })
         } else {
-          clearInterval(interval)
+          clearInterval(this.interval)
           this.setState({
             screenCaptured: true,
-            blitz: false,
-            counter: this.props.counter,
+            blitz: false
           })
           // Pass state value from child to parent component.
           this.props.handleScreenCapture(this.state.screenCaptured);
         }
       }, 1000)
     }
+  }
+
+  // Unmount component on clear interval
+  componentWillUnmount() {
+    clearInterval(this.interval)
   }
 
   render() {
@@ -263,11 +271,9 @@ export class Counter extends Component {
         top: "50%",
         left: "47%",
         transform: "translateY(-50%)",
-        fontSize: 220,
-        fontWeight: 300,
-        color: colors.red500,
-        webkitTextStroke: "1px #fff",
-        opacity: 0.9,
+        fontSize: 280,
+        fontWeight: 100,
+        color: colors.white,
         cursor: "default"
       },
       blitzBtn : {
