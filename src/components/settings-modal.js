@@ -13,7 +13,7 @@ export default class SettingsModal extends Component {
     this.state = Object.assign({}, {
       status: this.props.state,
       isDarkTheme : false,
-      isWebcamEnabled : false,
+      isWebcamEnabled : true,
     }, storage);
 
     this.modal = {

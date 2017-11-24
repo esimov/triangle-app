@@ -117,7 +117,7 @@ export default class Preview extends Component {
         rotation : orientation,
         arrowVisibility : false
       });
-      PubSub.publish('onDroppedImage', this.state);
+      PubSub.publish('onImageUpload', this.state);
       // TODO activate it after triangulation is done...
       this.activateFileMenu(true);
     }, err => {
@@ -167,11 +167,13 @@ export default class Preview extends Component {
     this.setState({
       isValid: true,
       loadedImg: data,
+      rotation: 0,
       arrowVisibility: false,
       webcamStatus: false,
       accepted: [1],
       message: ""
     })
+    PubSub.publish('onImageUpload', this.state);
   }
 
   // Convert the base64 string to an ArrayBuffer

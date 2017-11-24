@@ -21,6 +21,21 @@ export default class Webcam extends Component {
     this.handleScreenCapture = this.handleScreenCapture.bind(this);
     this.takePicture = this.takePicture.bind(this);
     this.clearPhoto = this.clearPhoto.bind(this);
+
+    // Change webcam screen width and height on window resize
+    window.addEventListener('resize', () => {
+      const {remote} = window.require('electron');
+      // Get remote window width and height
+      const {width, height} = remote.getCurrentWindow().getBounds();
+      this.setState({
+        constraints: {
+          video: {
+            width: width,
+            height: height
+          }
+        }
+      })
+    })
   }
 
   // Focus webcam modal after the component has been rendered.
@@ -271,7 +286,7 @@ export class Counter extends Component {
         top: "50%",
         left: "47%",
         transform: "translateY(-50%)",
-        fontSize: 280,
+        fontSize: 250,
         fontWeight: 100,
         color: colors.white,
         cursor: "default"

@@ -94,7 +94,7 @@ class AppMenu {
       role: 'help',
       submenu: [
         {
-          label: 'Learn More',
+          label: 'Source Code',
           click() {
             shell.openExternal(HELP_URL)
           }

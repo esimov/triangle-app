@@ -97,13 +97,13 @@ body {
 .dropZone #webcam-icon.inactive {
     opacity: 0;
 }
+.dropZone #webcam-icon .pulse.blue {
+    animation: pulse-blue 2s infinite;
+}
 .dropZone #webcam-icon .pulse,
 .webcam .camera .pulse {
     border-radius: 50%;
     box-shadow: 0 0 0 rgba(25, 118, 210, 0.4);
-}
-.dropZone #webcam-icon .pulse.blue {
-    animation: pulse-blue 2s infinite;
 }
 .dropZone #webcam-icon .pulse.white,
 .webcam .camera .pulse.white {
@@ -116,6 +116,10 @@ body {
     position: absolute;
     top:0; left:0;
     z-index: 9;
+}
+.webcam .camera video {
+    position: absolute;
+    top: 0; left: 0;
 }
 .webcam .camera .blitz.fa-camera {
     background-color: #fff;
