@@ -53,6 +53,8 @@ export default class Preview extends Component {
         arrowVisibility: false,
         message: ""
       });
+      // Send the received image to the result component
+      //PubSub.publish('onImageUpload', this.state);
     })
   }
 
@@ -117,7 +119,9 @@ export default class Preview extends Component {
         rotation : orientation,
         arrowVisibility : false
       });
+      // Send the received image to the result component
       PubSub.publish('onImageUpload', this.state);
+      
       // TODO activate it after triangulation is done...
       this.activateFileMenu(true);
     }, err => {

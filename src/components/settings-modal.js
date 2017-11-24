@@ -8,10 +8,9 @@ import PubSub from 'pubsub-js';
 export default class SettingsModal extends Component {
   constructor(props) {
     super(props);
-
+    
     const isWebcamPresent = this.isWebcamPresent();
     const storage = JSON.parse(localStorage.getItem('settings.state'));
-
     this.state = Object.assign({}, {
       status: this.props.state,
       isDarkTheme : false,
@@ -36,14 +35,8 @@ export default class SettingsModal extends Component {
 
   // Check if the current station has an integrated webcam.
   isWebcamPresent() {
-    const getUserMedia = (params) => (
-      new Promise((successCallback, errorCallback) => {
-        navigator.getUserMedia.call(navigator, params, successCallback, errorCallback);
-      })
-    );
-
-    getUserMedia()
-    .then((stream) => {
+    navigator.mediaDevices.getUserMedia({video:true})
+    .then((mediaStream) => {
       this.setState({
         webcamIsPresent: true
       })
