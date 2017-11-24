@@ -8,7 +8,7 @@ import PubSub from 'pubsub-js';
 export default class SettingsModal extends Component {
   constructor(props) {
     super(props);
-    
+
     const isWebcamPresent = this.isWebcamPresent();
     const storage = JSON.parse(localStorage.getItem('settings.state'));
     this.state = Object.assign({}, {
@@ -37,15 +37,19 @@ export default class SettingsModal extends Component {
   isWebcamPresent() {
     navigator.mediaDevices.getUserMedia({video:true})
     .then((mediaStream) => {
-      this.setState({
-        webcamIsPresent: true
-      })
-      return true;
+      if (mediaStream.active) {
+        this.setState({
+          webcamIsPresent: true
+        })
+        return true;
+      } else {
+        this.setState({
+          webcamIsPresent: false
+        })
+        return false;
+      }
     })
     .catch((err) => {
-      this.setState({
-        webcamIsPresent: false
-      })
       console.log(err);
     });
     return false;
