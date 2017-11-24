@@ -9,11 +9,14 @@ export default class SettingsModal extends Component {
   constructor(props) {
     super(props);
 
+    const isWebcamPresent = this.isWebcamPresent();
     const storage = JSON.parse(localStorage.getItem('settings.state'));
+
     this.state = Object.assign({}, {
       status: this.props.state,
       isDarkTheme : false,
-      isWebcamEnabled : true,
+      webcamIsPresent: true,
+      isWebcamEnabled : isWebcamPresent,
     }, storage);
 
     this.modal = {
@@ -29,6 +32,30 @@ export default class SettingsModal extends Component {
         marginBottom: 10
       }
     }
+  }
+
+  // Check if the current station has an integrated webcam.
+  isWebcamPresent() {
+    const getUserMedia = (params) => (
+      new Promise((successCallback, errorCallback) => {
+        navigator.getUserMedia.call(navigator, params, successCallback, errorCallback);
+      })
+    );
+
+    getUserMedia()
+    .then((stream) => {
+      this.setState({
+        webcamIsPresent: true
+      })
+      return true;
+    })
+    .catch((err) => {
+      this.setState({
+        webcamIsPresent: false
+      })
+      console.log(err);
+    });
+    return false;
   }
 
   // Update state status in response to prop changes
@@ -65,6 +92,20 @@ export default class SettingsModal extends Component {
 
   render() {
     const {isDarkTheme, isWebcamEnabled} = this.state
+    let webcamIsPresent = null;
+
+    if (this.state.webcamIsPresent) {
+      webcamIsPresent =
+        <div>
+          <Divider/>
+          <Toggle label="Use Webcam"
+            defaultToggled={isWebcamEnabled}
+            style={this.modal.toggleStyle}
+            onToggle={this.handleWebcamSwitch.bind(this)}
+          />
+        </div>
+    }
+
     return (
       <Dialog
         title="Settings"
@@ -88,12 +129,7 @@ export default class SettingsModal extends Component {
             style={this.modal.toggleStyle}
             onToggle={this.handleThemeSwitch.bind(this)}
           />
-          <Divider />
-          <Toggle label="Use Webcam"
-            defaultToggled={isWebcamEnabled}
-            style={this.modal.toggleStyle}
-            onToggle={this.handleWebcamSwitch.bind(this)}
-          />
+          {webcamIsPresent}
         </div>
       </Dialog>
     );
