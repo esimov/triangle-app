@@ -36,8 +36,8 @@ const styles = {
   slider: {
     position: "relative",
     width: 400,
-    height: 66,
-    top: 18
+    height: 63,
+    top: 15
   },
   toggle: {
     marginBottom: 12,

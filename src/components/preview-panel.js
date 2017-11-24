@@ -207,8 +207,8 @@ export default class Preview extends Component {
   render() {
     const dropZone = {
       position: "relative",
-      width: 200,
-      height: 200,
+      width: 250,
+      height: 250,
       borderStyle: "dotted",
       borderWidth: 1,
       borderRadius: 5,
