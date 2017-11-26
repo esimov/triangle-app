@@ -16,6 +16,12 @@ const customTheme = {
   }
 }
 
+const customDarkBaseTheme = {
+  palette: {
+    canvasColor: colors.grey900
+  }
+}
+
 class App extends Component {
   constructor(props) {
     super(props)
@@ -34,7 +40,7 @@ class App extends Component {
   }
 
   render() {
-    const baseTheme = this.state.isDarkTheme ? darkBaseTheme : lightBaseTheme; 
+    const baseTheme = this.state.isDarkTheme ? merge(darkBaseTheme, customDarkBaseTheme) : lightBaseTheme; 
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(merge(baseTheme, customTheme))}>
         <Main />
