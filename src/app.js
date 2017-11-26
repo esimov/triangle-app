@@ -1,21 +1,42 @@
 import React, { Component } from 'react';
 import * as colors from 'material-ui/styles/colors';
-import { getMuiTheme, MuiThemeProvider } from 'material-ui/styles';
+import { getMuiTheme, MuiThemeProvider, darkBaseTheme, lightBaseTheme } from 'material-ui/styles';
 import Main from './components/main';
+import PubSub from 'pubsub-js';
+import merge from 'lodash.merge';
 import 'font-awesome/css/font-awesome.css';
 
 // Theme
-const muiTheme = getMuiTheme({
+const customTheme = {
   palette: {
     primary1Color: colors.blue700,
-    accent1Color: colors.deepPurple500
+    accent1Color: colors.pinkA400,
+    accent2Color: colors.grey200,
+    accent3Color: colors.grey500
   }
-});
+}
 
 class App extends Component {
+  constructor(props) {
+    super(props)
+
+    // Get the saved settings from local storage
+    this.storage = JSON.parse(localStorage.getItem('settings.state'));
+    this.state = {
+      isDarkTheme: this.storage.isDarkTheme
+    }
+
+    PubSub.subscribe('is_dark_theme', (event, data) => {
+      this.setState({
+        isDarkTheme: data
+      })
+    })
+  }
+
   render() {
+    const baseTheme = this.state.isDarkTheme ? darkBaseTheme : lightBaseTheme; 
     return (
-      <MuiThemeProvider muiTheme={muiTheme}>
+      <MuiThemeProvider muiTheme={getMuiTheme(merge(baseTheme, customTheme))}>
         <Main />
       </MuiThemeProvider>
     );

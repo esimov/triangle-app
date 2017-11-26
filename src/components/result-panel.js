@@ -1,16 +1,27 @@
 import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
+import * as colors from 'material-ui/styles/colors';
 import PubSub from 'pubsub-js';
 import EXIF from "exif-js";
-import placeholderImage from '../image/placeholder-preview.png';
+import placeholderImage from '../image/placeholder-image.png';
 
 export default class Result extends Component {
   constructor() {
     super();
+
+    // Get the saved settings from local storage
+    this.storage = JSON.parse(localStorage.getItem('settings.state'));
     this.state = {
       processResult: placeholderImage,
+      isDarkTheme: this.storage.isDarkTheme,
       rotation: 0
     };
+
+    PubSub.subscribe('is_dark_theme', (event, data) => {
+      this.setState({
+        isDarkTheme: data
+      })
+    })
 
     PubSub.subscribe('onResult', (event, result) => {
       let exif = EXIF.readFromBinaryFile(this.base64ToArrayBuffer(result.loadedImg));
@@ -57,7 +68,8 @@ export default class Result extends Component {
       borderStyle: "dotted",
       borderWidth: 1,
       borderRadius: 5,
-      borderColor: "rgba(25, 118, 210, 0.3)",
+      borderColor: this.state.isDarkTheme ? colors.grey700 : "rgba(25, 118, 210, 0.3)",
+      backgroundColor: this.state.isDarkTheme ? colors.grey900 : "transparent",
       cursor: "default"
     };
 

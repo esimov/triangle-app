@@ -9,7 +9,7 @@ export default class SettingsModal extends Component {
   constructor(props) {
     super(props);
 
-    const isWebcamPresent = this.isWebcamPresent();
+    const isWebcamPresent = true;
     const storage = JSON.parse(localStorage.getItem('settings.state'));
     this.state = Object.assign({}, {
       status: this.props.state,
@@ -35,7 +35,7 @@ export default class SettingsModal extends Component {
 
   // Check if the current station has an integrated webcam.
   isWebcamPresent() {
-    navigator.mediaDevices.getUserMedia({video:true})
+    navigator.mediaDevices.getUserMedia({audio:true})
     .then((mediaStream) => {
       if (mediaStream.active) {
         this.setState({
@@ -78,6 +78,7 @@ export default class SettingsModal extends Component {
     this.setState({
       isDarkTheme: status
     })
+    PubSub.publish('is_dark_theme', status);
   }
 
   handleWebcamSwitch = (event, status) => {

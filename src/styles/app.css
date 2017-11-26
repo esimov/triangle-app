@@ -77,7 +77,6 @@ body {
 .dropZone .previewImg {
     position: absolute;
     top: 50%;
-    /* border-radius: 5px; */
 }
 .dropZone .dropIn {
     margin-top: 20%;

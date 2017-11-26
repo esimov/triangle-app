@@ -9,7 +9,6 @@ import PubSub from 'pubsub-js';
 import EXIF from 'exif-js';
 import Webcam from './webcam'
 import dropzoneStyles from '../styles/app.css';
-import placeholderImage from '../image/placeholder.png';
 
 const {remote} = window.require('electron');
 // Get remote window width and height
@@ -26,7 +25,7 @@ export default class Preview extends Component {
       isValid   : true,
       accepted  : [],
       rejected  : [],
-      loadedImg : placeholderImage,
+      loadedImg : "",
       rotation  : 0,
       message   : "Drop image here...",
       arrowVisibility : true,
@@ -133,7 +132,7 @@ export default class Preview extends Component {
   onDropRejected() {
     this.setState({
       isValid: false,
-      loadedImg: placeholderImage,
+      loadedImg: "",
       arrowVisibility: false,
       message: "Wrong file type!"
     });
@@ -205,6 +204,7 @@ export default class Preview extends Component {
   }
 
   render() {
+    const theme = JSON.parse(localStorage.getItem('settings.state'));
     const dropZone = {
       position: "relative",
       width: 250,
@@ -212,16 +212,21 @@ export default class Preview extends Component {
       borderStyle: "dotted",
       borderWidth: 1,
       borderRadius: 5,
-      borderColor: this.state.isValid ? "rgba(25, 118, 210, 0.3)" : colors.redA700,
-      backgroundColor : this.state.isValid ? "transparent" : colors.red50,
+      borderColor: this.state.isValid ? (theme.isDarkTheme ? colors.grey700 : "rgba(25, 118, 210, 0.3)") : colors.redA700,
+      backgroundColor : this.state.isValid ? (theme.isDarkTheme ? colors.grey900 : "transparent") : colors.red50,
       webcamStyle : {
         position: "absolute",
         bottom: 10, right: 10, padding: 0, zIndex: 9,
         display: this.state.isWebcamEnabled ? "inline-block" : "none",
         iconStyle : {
-          fontSize: 30,
+          fontSize: 24,
           cursor: "pointer",
-          color: this.state.accepted.length ? colors.grey200 : colors.blue700
+          padding: 8,
+          borderWidth: 1,
+          borderStyle: "solid",
+          borderColor: colors.blue700,
+          backgroundColor: colors.white,
+          color: colors.blue700
         }
       }
     };
