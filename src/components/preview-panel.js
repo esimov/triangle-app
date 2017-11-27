@@ -32,7 +32,7 @@ export default class Preview extends Component {
       isWebcamEnabled : false,
       webcamStatus : false,
       windowWidth : width,
-      windowHeight : height 
+      windowHeight : height
     }, storage);
 
     this.dropzoneRef = null;
@@ -120,7 +120,7 @@ export default class Preview extends Component {
       });
       // Send the received image to the result component
       PubSub.publish('onImageUpload', this.state);
-      
+
       // TODO activate it after triangulation is done...
       this.activateFileMenu(true);
     }, err => {
@@ -128,7 +128,7 @@ export default class Preview extends Component {
     })
   };
 
-  // Handle drop rejected event 
+  // Handle drop rejected event
   onDropRejected() {
     this.setState({
       isValid: false,
@@ -255,19 +255,19 @@ export default class Preview extends Component {
               <i className="material-icons">get_app</i>
             </span>
             <span className="previewMsg" style={{color:textColor}}>{this.state.message.toUpperCase()}</span>
-            <img 
-              id="previewImg" 
-              className="previewImg" 
-              src={this.state.loadedImg} 
+            <img
+              id="previewImg"
+              className="previewImg"
+              src={this.state.loadedImg}
               style={{
                 width: imageWidth,
                 transform: `translateY(-50%) rotate(${this.state.rotation}deg)`
               }}
             />
-            <FloatingActionButton 
-              mini={true} 
-              zDepth={1} 
-              style={{margin: 10}} 
+            <FloatingActionButton
+              mini={true}
+              zDepth={1}
+              style={{margin: 10}}
               backgroundColor={colors.blue700}
               onClick={() => this.dropzoneRef.open()}
             >
@@ -284,8 +284,8 @@ export default class Preview extends Component {
             <FontIcon className={"fa fa-camera pulse " + (this.state.accepted.length ? "white" : "blue")} />
           </IconButton>
         </div><br/>
-        <Webcam 
-          width={this.state.windowWidth} 
+        <Webcam
+          width={this.state.windowWidth}
           height={this.state.windowHeight}
           isActive={this.state.webcamStatus}
           onWebcamClose={this.closeWebcam.bind(this)}

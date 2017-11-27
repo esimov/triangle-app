@@ -26,10 +26,15 @@ class App extends Component {
   constructor(props) {
     super(props)
 
+    // Check if local storage is not empty, otherwise sets the default values.
+    if (!localStorage.getItem('settings.state')) {
+      localStorage.setItem('settings.state', JSON.stringify({isDarkTheme:false, isWebcamEnabled:false}));
+    }
+
     // Get the saved settings from local storage
-    this.storage = JSON.parse(localStorage.getItem('settings.state'));
+    const {isDarkTheme} = JSON.parse(localStorage.getItem('settings.state'));
     this.state = {
-      isDarkTheme: this.storage.isDarkTheme
+      isDarkTheme: isDarkTheme
     }
 
     PubSub.subscribe('is_dark_theme', (event, data) => {
@@ -40,7 +45,7 @@ class App extends Component {
   }
 
   render() {
-    const baseTheme = this.state.isDarkTheme ? merge(darkBaseTheme, customDarkBaseTheme) : lightBaseTheme; 
+    const baseTheme = this.state.isDarkTheme ? merge(darkBaseTheme, customDarkBaseTheme) : lightBaseTheme;
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(merge(baseTheme, customTheme))}>
         <Main />

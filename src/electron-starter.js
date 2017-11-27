@@ -1,5 +1,6 @@
 const { electron, app, BrowserWindow } = require('electron');
 const AppMenu = require('./menu');
+const AppTray = require('./tray');
 
 const path = require('path');
 const url = require('url');
@@ -73,6 +74,20 @@ function createWindow() {
         }
         mainWindow.webContents.send('app-info', appInfo);
     });
+
+    let trayIconSrc = path.join(__dirname, '/../assets/icons/tray_icon.png')
+    if (process.platform === 'darwin') {
+        trayIconSrc = path.join(__dirname, '/../assets/icons/tray_icon.png')
+    } else if (process.platform === 'win32') {
+        trayIconSrc = path.join(__dirname, '/../assets/icons/tray_icon.ico')
+    }
+
+    const tray = new AppTray({
+        src: trayIconSrc,
+        isDev: isDevMode,
+        mainWindow
+    })
+    tray.show()
 }
 
 // This method will be called when Electron has finished
@@ -96,6 +111,3 @@ app.on('activate', function () {
         createWindow()
     }
 });
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
