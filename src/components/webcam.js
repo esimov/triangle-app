@@ -251,19 +251,21 @@ export class Counter extends Component {
   componentDidMount() {
     // A simple time counter, showing the seconds remaining before the webcam snapshot is summoned.
     if (this.state.counterIsActive) {
+      this.synth.triggerAttackRelease('B4', '8n')
       let counter = this.state.counter;
       this.interval = setInterval(() => {
         if (counter === 1) {
+          this.synth.triggerAttackRelease('C2', '8n+8t')
           this.setState({
             blitz: true
           })
         }
         if (counter > 0) {
-          this.synth.triggerAttackRelease('B4', '8n')
           counter--;
           this.setState({
             counter: counter
           })
+          this.synth.triggerAttackRelease('B4', '8n')
         } else {
           let player = new Player({
             "url" : sound,
