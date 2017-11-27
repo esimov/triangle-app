@@ -213,7 +213,7 @@ export default class Preview extends Component {
       borderWidth: 1,
       borderRadius: 5,
       borderColor: this.state.isValid ? (theme.isDarkTheme ? colors.grey700 : "rgba(25, 118, 210, 0.3)") : colors.redA700,
-      backgroundColor : this.state.isValid ? (theme.isDarkTheme ? colors.grey900 : "transparent") : colors.red50,
+      backgroundColor : this.state.isValid ? (theme.isDarkTheme ? "rgba(17,17,17, 0.2)" : "transparent") : colors.red50,
       webcamStyle : {
         position: "absolute",
         bottom: 10, right: 10, padding: 0, zIndex: 9,

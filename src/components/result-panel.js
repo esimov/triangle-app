@@ -69,7 +69,7 @@ export default class Result extends Component {
       borderWidth: 1,
       borderRadius: 5,
       borderColor: this.state.isDarkTheme ? colors.grey700 : "rgba(25, 118, 210, 0.3)",
-      backgroundColor: this.state.isDarkTheme ? colors.grey900 : "transparent",
+      backgroundColor: this.state.isDarkTheme ? "rgba(17,17,17, 0.4)" : "transparent",
       cursor: "default"
     };
 
