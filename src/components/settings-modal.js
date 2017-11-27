@@ -9,13 +9,12 @@ export default class SettingsModal extends Component {
   constructor(props) {
     super(props);
 
-    const isWebcamPresent = true;
     const storage = JSON.parse(localStorage.getItem('settings.state'));
     this.state = Object.assign({}, {
       status: this.props.state,
       isDarkTheme : false,
       webcamIsPresent: true,
-      isWebcamEnabled : isWebcamPresent,
+      isWebcamEnabled : this.isWebcamPresent(),
     }, storage);
 
     this.modal = {
@@ -35,7 +34,7 @@ export default class SettingsModal extends Component {
 
   // Check if the current station has an integrated webcam.
   isWebcamPresent() {
-    navigator.mediaDevices.getUserMedia({audio:true})
+    navigator.mediaDevices.getUserMedia({video:true})
     .then((mediaStream) => {
       if (mediaStream.active) {
         this.setState({
