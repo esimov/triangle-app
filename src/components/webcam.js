@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 import IconButton from "material-ui/IconButton";
 import FontIcon from "material-ui/FontIcon";
 import * as colors from 'material-ui/styles/colors';
+import sound from '../sound/camera-shutter-click-08.mp3';
+const {Synth, Player} = require('tone');
 
 export default class Webcam extends Component {
   constructor(props) {
     super(props)
-
+  
     this.state = {
       constraints: { audio: false, video: { width: this.props.width, height: this.props.height } },
       isWebcamEnabled: false,
@@ -237,6 +239,7 @@ export class Counter extends Component {
   constructor(props) {
     super(props)
 
+    this.synth = new Synth().toMaster();
     this.state = {
       counterIsActive: this.props.counterIsActive,
       counter: this.props.counter,
@@ -256,11 +259,16 @@ export class Counter extends Component {
           })
         }
         if (counter > 0) {
+          this.synth.triggerAttackRelease('B4', '8n')
           counter--;
           this.setState({
             counter: counter
           })
         } else {
+          let player = new Player({
+            "url" : sound,
+            "autostart" : true,
+          }).toMaster();
           clearInterval(this.interval)
           this.setState({
             screenCaptured: true,

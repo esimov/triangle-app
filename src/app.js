@@ -40,7 +40,7 @@ class App extends Component {
   }
 
   render() {
-    const baseTheme = this.state.isDarkTheme ? merge(darkBaseTheme, customDarkBaseTheme) : lightBaseTheme;
+    const baseTheme = this.state.isDarkTheme ? merge(darkBaseTheme, customDarkBaseTheme) : lightBaseTheme; 
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(merge(baseTheme, customTheme))}>
         <Main />

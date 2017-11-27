@@ -19,7 +19,8 @@
     "react-dom": "^16.0.0",
     "react-dropzone": "^4.2.1",
     "react-jss": "^7.2.0",
-    "react-scripts": "^1.0.14"
+    "react-scripts": "^1.0.14",
+    "tone": "^0.11.11"
   },
   "devDependencies": {
     "devtron": "^1.4.0",
