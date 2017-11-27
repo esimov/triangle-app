@@ -10,7 +10,7 @@ import 'font-awesome/css/font-awesome.css';
 const customTheme = {
   palette: {
     primary1Color: colors.blue700,
-    accent1Color: colors.pinkA400,
+    accent1Color: colors.orange800,
     accent2Color: colors.grey200,
     accent3Color: colors.grey500
   }
@@ -40,7 +40,7 @@ class App extends Component {
   }
 
   render() {
-    const baseTheme = this.state.isDarkTheme ? merge(darkBaseTheme, customDarkBaseTheme) : lightBaseTheme; 
+    const baseTheme = this.state.isDarkTheme ? merge(darkBaseTheme, customDarkBaseTheme) : lightBaseTheme;
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(merge(baseTheme, customTheme))}>
         <Main />
