@@ -255,7 +255,6 @@ export class Counter extends Component {
       let counter = this.state.counter;
       this.interval = setInterval(() => {
         if (counter === 1) {
-          this.synth.triggerAttackRelease('C2', '8n+8t')
           this.setState({
             blitz: true
           })

@@ -25,7 +25,7 @@ const customDarkBaseTheme = {
 class App extends Component {
   constructor(props) {
     super(props)
-
+    
     // Check if local storage is not empty, otherwise sets the default values.
     if (!localStorage.getItem('settings.state')) {
       localStorage.setItem('settings.state', JSON.stringify({isDarkTheme:false, isWebcamEnabled:false}));

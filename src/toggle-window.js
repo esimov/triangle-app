@@ -1,7 +1,7 @@
 /**
  * Show or hide the browser window.
  */
-export default (appWindow) => {
+module.exports = (appWindow) => {
     if (appWindow.isVisible()) {
         appWindow.hide()
     } else {

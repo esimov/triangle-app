@@ -1,8 +1,8 @@
-import { Menu, Tray, app } from 'electron';
-import toggleWindow from './toggle-window';
-import checkForUpdates from './updater';
+const { Menu, Tray, app } = require('electron');
+const toggleWindow = require('./toggle-window');
+const checkForUpdates = require('./updater');
 
-export default class AppTray {
+class AppTray {
     /**
    * @param  {String} options.src Absolute path for tray icon
    * @param  {Boolean} options.isDev Development mode or not

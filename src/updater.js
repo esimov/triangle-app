@@ -1,7 +1,7 @@
-import { dialog, app, shell } from 'electron'
-import os from 'os'
-import semver from 'semver'
-import https from 'https'
+const { dialog, app, shell } = require('electron');
+const os = require('os');
+const semver = require('semver');
+const https = require('https');
 
 const currentVersion = app.getVersion()
 const DEFAULT_DOWNLOAD_URL = 'https://github.com/esimov/triangle-app/releases'
@@ -46,7 +46,7 @@ const getLatestRelease = () => {
   })
 }
 
-export default () => {
+module.exports = () => {
   getLatestRelease().then(release => {
     const version = semver.valid(release.tag_name)
     if (version && semver.gt(version, currentVersion)) {

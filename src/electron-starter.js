@@ -77,7 +77,7 @@ function createWindow() {
 
     let trayIconSrc = path.join(__dirname, '/../assets/icons/tray_icon.png')
     if (process.platform === 'darwin') {
-        trayIconSrc = path.join(__dirname, '/../assets/icons/tray_icon.png')
+        trayIconSrc = path.join(__dirname, '/../assets/icons/tray_icon@2x.png')
     } else if (process.platform === 'win32') {
         trayIconSrc = path.join(__dirname, '/../assets/icons/tray_icon.ico')
     }
