@@ -13,7 +13,7 @@ function createWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
         width: 1024,
-        height: 768,
+        height: (process.platform === 'darwin') ? 768 : 748,
         resizable: false,
         fullscreenable: true,
         icon: path.join(__dirname, '/../assets/icons/png/128x128.png')
@@ -53,7 +53,7 @@ function createWindow() {
             submenu: [{
                 label: 'Toggle Developer Tools',
                 accelerator: (function () {
-                    if (process.platform == 'darwin')
+                    if (process.platform === 'darwin')
                         return 'Alt+Command+I';
                     else
                         return 'Ctrl+Shift+I';
