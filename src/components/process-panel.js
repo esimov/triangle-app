@@ -7,6 +7,8 @@ import { blueGrey200 } from 'material-ui/styles/colors';
 import PubSub from 'pubsub-js';
 import Settings from './settings-panel';
 
+const request = require('request-promise');
+
 const style = {
   rightPanel: {
     float: "right"
@@ -56,12 +58,65 @@ export default class Process extends Component {
     ReactDOM.findDOMNode(Settings.restoreDefaults.refs.container).click();
   };
 
-  // Preview triangulated image
-  onPreview() {
-    PubSub.publish('onPreview', true);
-    //TODO Get request ....then
+  // Process triangulated image
+  onProcess() {
+    PubSub.publish('onProcess', true);
+
+    const address = "http://localhost:8080";
+    let options = {},
+        sliders = {},
+        toggleItems = {}
+
+    this.options.sliders.forEach((slider) => {
+      sliders[slider.name] = slider.currentVal;
+    }, this);
+
+    this.options.toggleItems.forEach((toggleItem) => {
+      toggleItems[toggleItem.name] = toggleItem.status;
+    }, this);
+
+
+    Object.assign(options, {
+      'image' : this.options.loadedImg,
+      'imagePath' : this.options.imgPath || "Webcam",
+      'wireframeType' : parseInt(this.options.wireframeType),
+      'strokeWidth' : parseInt(this.options.strokeWidth),
+      ...sliders,
+      ...toggleItems
+    })
+
+    console.log(options.image)
+    let self = this;
+    let callbackEvent = () => {
+      let evtSource = new EventSource(address + "/triangle");
+      evtSource.addEventListener("image", function (e) {
+        let data = JSON.parse(e.data);
+        console.log(data.src)
+        self.setState({
+          loadedImg: data.src
+        })
+
+        console.log(self.state);
+      })
+      evtSource.addEventListener("problem", function (e) {
+        console.log(e.data)
+      })
+    }
+
+    request.post({
+      url: address + "/images",
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+      },
+      form: options
+    }).then((res) => {
+      console.log(res);
+    }).catch((err) => {
+      callbackEvent()
+    })
+
     window.setTimeout(() => {
-      PubSub.publish('onPreview', false);
+      PubSub.publish('onProcess', false);
       PubSub.publish('onResult', this.options);
     }, 2000);
   };
@@ -89,7 +144,7 @@ export default class Process extends Component {
     });
     const options = JSON.stringify(this.options);
     console.log(this.options);
-  };
+  };5
 
   // Close save modal panel
   onClose() {
@@ -129,14 +184,14 @@ export default class Process extends Component {
         </span>
         <span style={style.rightPanel}>
           <RaisedButton
-            label="Preview"
+            label="Process"
             primary={true}
-            onClick={this.onPreview.bind(this)}
+            onClick={this.onProcess.bind(this)}
             disabled={this.state.btnDisabled}
             style={style.customBtnStyle}
           />
           <RaisedButton
-            label="Process"
+            label="Save"
             secondary={true}
             onClick={this.onModalOpen.bind(this)}
             disabled={this.state.btnDisabled}

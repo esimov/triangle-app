@@ -26,6 +26,7 @@ export default class Preview extends Component {
       accepted  : [],
       rejected  : [],
       loadedImg : "",
+      imgPath   : "",
       rotation  : 0,
       message   : "Drop image here...",
       arrowVisibility : true,
@@ -65,11 +66,12 @@ export default class Preview extends Component {
 
   // Handle file drop event
   onDrop(accepted, rejected) {
+    this.acceptedFile = accepted[0]
     this.setState({
       accepted: accepted,
-      rejected: rejected
+      rejected: rejected,
+      imgPath: this.acceptedFile.path
     });
-    this.acceptedFile = accepted[0]
   };
 
   // Handle drop accepted event

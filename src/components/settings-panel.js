@@ -49,7 +49,7 @@ const defaultValues = {
   // Slider items
   sliders : [
     {
-      name: "Blur Radius",
+      name: "blurRadius",
       title: "Blur Radius:",
       range: {
         min: 0,
@@ -60,7 +60,7 @@ const defaultValues = {
       currentVal: 4
     },
     {
-      name: "Sobel Threshold",
+      name: "sobelThreshold",
       title: "Sobel Threshold:",
       range: {
         min: 2,
@@ -71,7 +71,7 @@ const defaultValues = {
       currentVal: 10
     },
     {
-      name: "Noise",
+      name: "noise",
       title: "Noise:",
       range: {
         min: 0,
@@ -82,7 +82,7 @@ const defaultValues = {
       currentVal: 0
     },
     {
-      name: "Points Threshold",
+      name: "pointsThreshold",
       title: "Points Threshold:",
       range: {
         min: 0,
@@ -93,7 +93,7 @@ const defaultValues = {
       currentVal: 20
     },
     {
-      name: "Maximum Number of Points",
+      name: "maxPoints",
       title: "Maximum Number of Points:",
       range: {
         min: 700,
@@ -118,13 +118,13 @@ const defaultValues = {
   // Toggle items
   toggleItems : [
     {
-      name: "Grayscale",
+      name: "grayscale",
       label: "Grayscale:",
       toggled: false,
       status: false
     },
     {
-      name: "Solid Wireframe",
+      name: "solidWireframe",
       label: "Solid Wireframe:",
       toggled: false,
       status: false
@@ -146,7 +146,7 @@ export default class Settings extends Component {
   get initialState() {
     return Object.assign(defaultValues, {
       wirefameDisabled: true,
-      wireframeValue: 0,
+      strokeWidth: 0,
       wireframeType: 0
     });
   }
@@ -180,7 +180,7 @@ export default class Settings extends Component {
       newValue = 10;
     }
     this.setState({
-      wireframeValue: newValue
+      strokeWidth: newValue
     })
   };
 
@@ -192,7 +192,7 @@ export default class Settings extends Component {
     if (value === WITHOUT_WIREFRAME) {
       this.setState({
         wirefameDisabled: true,
-        wireframeValue: 0
+        strokeWidth: 0
       });
     } else {
       this.setState({
@@ -298,7 +298,7 @@ export default class Settings extends Component {
               name="wireframe-line-width"
               style={{width:200}}
               disabled={this.state.wirefameDisabled}
-              value={this.state.wireframeValue}
+              value={this.state.strokeWidth}
               onChange={this.handleValueChange.bind(this)}
               type="number"
             />

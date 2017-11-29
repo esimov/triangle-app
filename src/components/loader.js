@@ -10,7 +10,7 @@ export default class Loader extends Component {
       loading : false
     };
 
-    PubSub.subscribe('onPreview', (event, data) => {
+    PubSub.subscribe('onProcess', (event, data) => {
       this.setState({
         loading: data
       });
