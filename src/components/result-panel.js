@@ -26,30 +26,12 @@ export default class Result extends Component {
     })
 
     PubSub.subscribe('onResult', (event, result) => {
-      let exif = EXIF.readFromBinaryFile(this.base64ToArrayBuffer(result));
-      let orientation;
-
-      // Get the image orientation and rotate it.
-      switch (exif.Orientation) {
-        case 1:
-          orientation = 0;
-          break;
-        case 3:
-          orientation = 180;
-          break;
-        case 6:
-          orientation = 90;
-          break;
-        case 8:
-          orientation = -90;
-          break;
-      }
-      let img = this.getImage(result, (image) => {
+      let img = this.getImage(result.img, (data) => {
         this.setState({
-          resultImage: result,
-          rotation : orientation,
+          resultImage: result.img,
+          rotation : result.rotation,
           processed: true,
-          imgsize: {width: image.width, height: image.height}
+          imgsize: {width: data.width, height: data.height}
         });
       });
     });
@@ -60,19 +42,6 @@ export default class Result extends Component {
       return;
     }
     PubSub.publish('showBigImage', this.state.resultImage)
-  }
-
-  // Convert the base64 string to an ArrayBuffer
-  base64ToArrayBuffer(base64) {
-    base64 = base64.replace(/^data:([^;]+);base64,/gmi, '');
-    var binaryString = atob(base64);
-    var len = binaryString.length;
-    var bytes = new Uint8Array(len);
-
-    for (var i = 0; i < len; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-    return bytes.buffer;
   }
 
   /**

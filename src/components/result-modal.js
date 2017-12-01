@@ -14,31 +14,13 @@ export default class ResultModal extends Component {
     };
 
     PubSub.subscribe('showBigImage', (event, img) => {
+      console.log(img);
       this.setState({
         result: img
       })
     })
 
-    PubSub.subscribe('onResult', (event, data) => {
-      let exif = EXIF.readFromBinaryFile(this.base64ToArrayBuffer(data));
-      let orientation;
-
-      // Get the image orientation and rotate it.
-      switch (exif.Orientation) {
-        case 1:
-          orientation = 0;
-          break;
-        case 3:
-          orientation = 180;
-          break;
-        case 6:
-          orientation = 90;
-          break;
-        case 8:
-          orientation = -90;
-          break;
-      }
-
+    PubSub.subscribe('onResult', (event, result) => {
       let img = new Image();
       img.onload = (event) => {
         const windowWidth = window.innerWidth;
@@ -54,10 +36,10 @@ export default class ResultModal extends Component {
         this.setState({
           result: img.src,
           imgsize: {width: imgWidth, height: imgHeight},
-          rotation: orientation
+          rotation: result.rotation
         })
       }
-      img.src = data;
+      img.src = result.img;
     })
   }
 

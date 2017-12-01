@@ -71,12 +71,17 @@ export default class Preview extends Component {
 
   // Handle file drop event
   onDrop(accepted, rejected) {
-    this.acceptedFile = accepted[0]
     this.setState({
       accepted: accepted,
-      rejected: rejected,
-      imgPath: this.acceptedFile.path
+      rejected: rejected
     });
+    
+    if (accepted.length) {
+      this.acceptedFile = accepted[0]
+      this.setState({
+        imgPath: this.acceptedFile.path
+      })
+    }
   };
 
   // Handle drop accepted event

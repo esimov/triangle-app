@@ -92,7 +92,11 @@ export default class Process extends Component {
       evtSource.addEventListener('image', (e) => {
         let result = JSON.parse(e.data);
 
-        PubSub.publish('onResult', result.b64img);
+        PubSub.publish('onResult', {
+          img: result.b64img, 
+          rotation: this.options.rotation
+        });
+
         PubSub.publish('onProcess', false);
       })
 
@@ -104,7 +108,7 @@ export default class Process extends Component {
     request.post({
       url: address + "/images",
       headers: {
-        "content-type": "application/x-www-form-urlencoded",
+        "content-type" : "application/x-www-form-urlencoded"
       },
       form: options
     }).then((res) => {
@@ -157,14 +161,14 @@ export default class Process extends Component {
     const actions = [
       <RaisedButton
         label="Save"
-        primary={true}
+        secondary={true}
         onClick={this.onSave.bind(this)}
         keyboardFocused={true}
         style={style.customBtnStyle}
       />,
       <RaisedButton
         label="Cancel"
-        secondary={true}
+        primary={true}
         onClick={this.onClose.bind(this)}
         style={style.customBtnStyle}
       />
