@@ -265,8 +265,7 @@ func main() {
 		solidWireframe, _  := strconv.ParseBool(req.FormValue("solidWireframe"))
 		wireframeType, _   := strconv.Atoi(req.FormValue("wireframeType"))
 		strokeWidth, _	   := strconv.ParseFloat(req.FormValue("strokeWidth"), 64)
-		fmt.Println(grayscale)
-		fmt.Println(solidWireframe)
+
 		imgurl := req.FormValue("image")
 		imgPath := req.FormValue("imagePath")
 

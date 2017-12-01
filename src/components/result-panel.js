@@ -15,7 +15,8 @@ export default class Result extends Component {
       resultImage: placeholderImage,
       isDarkTheme: this.storage.isDarkTheme,
       processed: false,
-      rotation: 0
+      rotation: 0,
+      imgsize: {}
     };
 
     PubSub.subscribe('is_dark_theme', (event, data) => {
@@ -43,11 +44,14 @@ export default class Result extends Component {
           orientation = -90;
           break;
       }
-      this.setState({
-        resultImage: result,
-        rotation: orientation,
-        processed: true
-      })
+      let img = this.getImage(result, (image) => {
+        this.setState({
+          resultImage: result,
+          rotation : orientation,
+          processed: true,
+          imgsize: {width: image.width, height: image.height}
+        });
+      });
     });
   }
 
@@ -69,9 +73,41 @@ export default class Result extends Component {
       bytes[i] = binaryString.charCodeAt(i);
     }
     return bytes.buffer;
-  };
+  }
+
+  /**
+   * Return loaded image width & height
+   * @param {string} image
+   */
+  getImage(image, callback) {
+    let img, imgWidth, imgHeight;
+    const promise = new Promise((resolve, reject) => {
+      img = new Image();
+      img.onload = (event) => {
+        resolve(img)
+      }
+      img.src = image;
+    })
+    promise.then((img) => {
+      imgWidth = (img.width > img.height) ? "100%" : "auto";
+      imgHeight = (img.height > img.width) ? "100%" : "auto";
+
+      if (img.width === img.height) {
+        imgWidth = "100%";
+        imgHeight = "100%";
+      }
+
+      let resultImg = {
+        src    : img.src,
+        width  : imgWidth,
+        height : imgHeight
+      }
+      callback(resultImg);
+    })
+  }
 
   render() {
+    const {width, height} = this.state.imgsize;
     const resultZone = {
       position: "relative",
       borderStyle: "dotted",
@@ -85,7 +121,14 @@ export default class Result extends Component {
     return (
       <section className="imageRightPanel">
         <Paper className="resultZone" style={resultZone} zDepth={0} onClick={this.showBigImage.bind(this)}>
-          <img src={this.state.resultImage} className="resultImg" style={{transform: `translateY(-50%) rotate(${this.state.rotation}deg)`}} />
+          <img
+            src={this.state.resultImage}
+            className="resultImg"
+            style={{
+              width: width, height:height,
+              transform: `translate(-50%, -50%) rotate(${this.state.rotation}deg)`
+            }}
+          />
         </Paper>
       </section>
     );

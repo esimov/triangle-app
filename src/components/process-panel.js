@@ -39,6 +39,7 @@ export default class Process extends Component {
       this.options = data;
     });
     PubSub.subscribe('onImageUpload', (event, data) => {
+      console.log(data);
       this.image = data;
       this.options = Object.assign(this.options, this.image);
       this.setState({

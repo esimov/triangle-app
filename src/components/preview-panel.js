@@ -27,6 +27,7 @@ export default class Preview extends Component {
       rejected  : [],
       loadedImg : "",
       imgPath   : "",
+      imgsize   : {},
       rotation  : 0,
       message   : "Drop image here...",
       arrowVisibility : true,
@@ -47,14 +48,18 @@ export default class Preview extends Component {
     });
 
     PubSub.subscribe('file-open', (event, data) => {
-      this.setState({
-        loadedImg : data,
-        isValid: true,
-        arrowVisibility: false,
-        message: ""
+      let img = this.getImage(data, (image) => {
+        this.setState({
+          isValid: true,
+          arrowVisibility: false,
+          message: "",
+          loadedImg : image.src,
+          imgsize: {width: image.width, height: image.height}
+        });
+
+        // Send the received image to the result component
+        PubSub.publish('onImageUpload', this.state);
       });
-      // Send the received image to the result component
-      //PubSub.publish('onImageUpload', this.state);
     })
   }
 
@@ -115,13 +120,18 @@ export default class Preview extends Component {
           orientation = -90;
           break;
       }
-      this.setState({
-        loadedImg : result,
-        rotation : orientation,
-        arrowVisibility : false
+
+      let img = this.getImage(result, (image) => {
+        this.setState({
+          loadedImg : image.src,
+          rotation : orientation,
+          imgsize: {width: image.width, height: image.height},
+          arrowVisibility : false
+        });
+
+        // Send the received image to the result component
+        PubSub.publish('onImageUpload', this.state);
       });
-      // Send the received image to the result component
-      PubSub.publish('onImageUpload', this.state);
 
       // TODO activate it after triangulation is done...
       this.activateFileMenu(true);
@@ -192,7 +202,7 @@ export default class Preview extends Component {
       bytes[i] = binaryString.charCodeAt(i);
     }
     return bytes.buffer;
-  };
+  }
 
   // Change Save ans Save As... menu item status at runtime.
   activateFileMenu(status) {
@@ -203,6 +213,37 @@ export default class Preview extends Component {
         item.enabled = status ? true : false;
       }
     });
+  }
+
+  /**
+   * Return loaded image width & height
+   * @param {string} image
+   */
+  getImage(image, callback) {
+    let img, imgWidth, imgHeight;
+    const promise = new Promise((resolve, reject) => {
+      img = new Image();
+      img.onload = (event) => {
+        resolve(img)
+      }
+      img.src = image;
+    })
+    promise.then((img) => {
+      imgWidth = (img.width > img.height) ? "100%" : "auto";
+      imgHeight = (img.height > img.width) ? "100%" : "auto";
+
+      if (img.width === img.height) {
+        imgWidth = "100%";
+        imgHeight = "100%";
+      }
+
+      let resultImg = {
+        src    : img.src,
+        width  : imgWidth,
+        height : imgHeight
+      }
+      callback(resultImg);
+    })
   }
 
   render() {
@@ -234,7 +275,7 @@ export default class Preview extends Component {
     };
 
     let textColor = this.state.isValid ? colors.blue700 : colors.redA700;
-    let imageWidth = this.state.message === "" ? "100%" : "auto";
+    const {width, height} = this.state.imgsize;
 
     return (
       <section className="imageLeftPanel">
@@ -262,8 +303,8 @@ export default class Preview extends Component {
               className="previewImg"
               src={this.state.loadedImg}
               style={{
-                width: imageWidth,
-                transform: `translateY(-50%) rotate(${this.state.rotation}deg)`
+                width: width, height:height,
+                transform: `translate(-50%, -50%) rotate(${this.state.rotation}deg)`
               }}
             />
             <FloatingActionButton

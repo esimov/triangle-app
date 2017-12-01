@@ -61,11 +61,23 @@ export default class ResultModal extends Component {
     })
   }
 
+  // Focus result modal after the component has been updated.
+  componentDidUpdate() {
+    this.result.focus()
+  }
+
   // Close result modal.
   handleClose(event) {
     this.setState({
       result: null
     });
+  }
+
+  // Close result modal by pressing ESC key.
+  handleKeyPress(event) {
+    if (this.state.result && event.keyCode === 27) {
+      this.handleClose(event)
+    }
   }
 
   // Convert the base64 string to an ArrayBuffer
@@ -94,7 +106,13 @@ export default class ResultModal extends Component {
     }
 
     return (
-      <section id="resultImg" className={this.state.result ? "visible" : "hidden"}>
+      <section
+        id="resultImg"
+        tabIndex="0"
+        onKeyDown={this.handleKeyPress.bind(this)}
+        ref={(result) => {this.result = result}}
+        className={this.state.result ? "visible" : "hidden" }
+      >
         <div className="close">
           <IconButton tooltip="Close"
             style={styles.closeBtn}
