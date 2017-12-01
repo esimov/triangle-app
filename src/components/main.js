@@ -8,6 +8,7 @@ import Process from './process-panel';
 import AboutModal from './about-modal';
 import SettingsModal from './settings-modal';
 import Loader from './loader';
+import ResultModal from './result-modal';
 import logo from '../image/triangle-logo.png';
 
 const {ipcRenderer} = window.require('electron');
@@ -57,6 +58,7 @@ class Main extends Component {
     return (
       <div className="App">
         <Loader />
+        <ResultModal />
         <AboutModal state={this.state.aboutStatus} appInfo={this.state.appInfo}/>
         <SettingsModal state={this.state.settingsStatus}/>
         <Card containerStyle={{padding: 2}} className="cardWrapper" >

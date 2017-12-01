@@ -85,20 +85,18 @@ export default class Process extends Component {
       ...toggleItems
     })
 
-    console.log(options.image)
     let self = this;
     let callbackEvent = () => {
       let evtSource = new EventSource(address + "/triangle");
-      evtSource.addEventListener("image", function (e) {
-        let data = JSON.parse(e.data);
-        console.log(data.src)
-        self.setState({
-          loadedImg: data.src
-        })
 
-        console.log(self.state);
+      evtSource.addEventListener('image', (e) => {
+        let result = JSON.parse(e.data);
+
+        PubSub.publish('onResult', result.b64img);
+        PubSub.publish('onProcess', false);
       })
-      evtSource.addEventListener("problem", function (e) {
+
+      evtSource.addEventListener("problem", (e) => {
         console.log(e.data)
       })
     }
@@ -114,11 +112,6 @@ export default class Process extends Component {
     }).catch((err) => {
       callbackEvent()
     })
-
-    window.setTimeout(() => {
-      PubSub.publish('onProcess', false);
-      PubSub.publish('onResult', this.options);
-    }, 2000);
   };
 
   // Open save modal panel

@@ -8,7 +8,7 @@ const {Synth, Player} = require('tone');
 export default class Webcam extends Component {
   constructor(props) {
     super(props)
-  
+
     this.state = {
       constraints: { audio: false, video: { width: this.props.width, height: this.props.height } },
       isWebcamEnabled: false,
@@ -17,8 +17,8 @@ export default class Webcam extends Component {
       counter: 3,
       blitz: false
     };
-    this.track = null;
 
+    this.track = null;
     this.handleSnapshot = this.handleSnapshot.bind(this);
     this.handleScreenCapture = this.handleScreenCapture.bind(this);
     this.takePicture = this.takePicture.bind(this);
@@ -93,11 +93,11 @@ export default class Webcam extends Component {
       const video = document.querySelector('video');
       const photo = document.getElementById('photo');
       const { width, height } = this.state.constraints.video;
-  
+
       canvas.width = width;
       canvas.height = height;
       context.drawImage(video, 0, 0, width, height);
-  
+
       const data = canvas.toDataURL('image/png');
       photo.setAttribute('src', data);
       resolve(data);
@@ -161,7 +161,7 @@ export default class Webcam extends Component {
       webcam : {
         position: "absolute",
         display: "block",
-        left: -10, top: this.state.isWebcamEnabled ? -10 : -height-10, 
+        left: -10, top: this.state.isWebcamEnabled ? -10 : -height-10,
         width: window.innerWidth, height: window.innerHeight,
         backgroundColor: colors.black,
         zIndex: 999
@@ -183,9 +183,9 @@ export default class Webcam extends Component {
     const Camera = (props) => (
       <div className="camera">
         <video id="video" autoPlay="true" src={this.state.videoSrc} width={width} height={height}/>
-        <Counter 
-          counterIsActive={this.state.counterIsActive} 
-          counter={this.state.counter} 
+        <Counter
+          counterIsActive={this.state.counterIsActive}
+          counter={this.state.counter}
           handleScreenCapture={this.handleScreenCapture.bind(this)}
         />
         <IconButton
@@ -202,7 +202,7 @@ export default class Webcam extends Component {
         </IconButton>
       </div>
     )
-    
+
     const Photo = (props) => (
       <div className="output">
         <img id="photo" alt=""/>
@@ -210,16 +210,16 @@ export default class Webcam extends Component {
     )
 
     return (
-      <section 
-        className={"webcam " + (this.state.isWebcamEnabled ? "enabled" : "disabled")} 
-        style={styles.webcam} 
+      <section
+        className={"webcam " + (this.state.isWebcamEnabled ? "enabled" : "disabled")}
+        style={styles.webcam}
         tabIndex="0"
-        onKeyDown={this.handleKeyPress.bind(this)} 
+        onKeyDown={this.handleKeyPress.bind(this)}
         ref={(webcam) => {this.webcam = webcam}}
       >
         <div className="close">
-          <IconButton tooltip="Close" 
-            style={styles.closeBtn} 
+          <IconButton tooltip="Close"
+            style={styles.closeBtn}
             onKeyboardFocus={this.handleCloseWebcam.bind(this)}
             onClick={this.handleCloseWebcam.bind(this)}
           >
@@ -234,7 +234,7 @@ export default class Webcam extends Component {
   }
 }
 
-// Counter react component activated on webcam snapshot, receiving the state from it's parent (Webcam) 
+// Counter react component activated on webcam snapshot, receiving the state from it's parent (Webcam)
 export class Counter extends Component {
   constructor(props) {
     super(props)

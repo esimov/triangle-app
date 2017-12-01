@@ -12,8 +12,9 @@ export default class Result extends Component {
     // Get the saved settings from local storage
     this.storage = JSON.parse(localStorage.getItem('settings.state'));
     this.state = {
-      processResult: placeholderImage,
+      resultImage: placeholderImage,
       isDarkTheme: this.storage.isDarkTheme,
+      processed: false,
       rotation: 0
     };
 
@@ -24,7 +25,7 @@ export default class Result extends Component {
     })
 
     PubSub.subscribe('onResult', (event, result) => {
-      let exif = EXIF.readFromBinaryFile(this.base64ToArrayBuffer(result.loadedImg));
+      let exif = EXIF.readFromBinaryFile(this.base64ToArrayBuffer(result));
       let orientation;
 
       // Get the image orientation and rotate it.
@@ -43,10 +44,18 @@ export default class Result extends Component {
           break;
       }
       this.setState({
-        processResult: result.loadedImg,
-        rotation: orientation
+        resultImage: result,
+        rotation: orientation,
+        processed: true
       })
     });
+  }
+
+  showBigImage() {
+    if (!this.state.processed) {
+      return;
+    }
+    PubSub.publish('showBigImage', this.state.resultImage)
   }
 
   // Convert the base64 string to an ArrayBuffer
@@ -75,8 +84,8 @@ export default class Result extends Component {
 
     return (
       <section className="imageRightPanel">
-        <Paper className="resultZone" style={resultZone} zDepth={0}>
-          <img src={this.state.processResult} className="resultImg" style={{transform: `translateY(-50%) rotate(${this.state.rotation}deg)`}} />
+        <Paper className="resultZone" style={resultZone} zDepth={0} onClick={this.showBigImage.bind(this)}>
+          <img src={this.state.resultImage} className="resultImg" style={{transform: `translateY(-50%) rotate(${this.state.rotation}deg)`}} />
         </Paper>
       </section>
     );

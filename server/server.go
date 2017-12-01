@@ -13,12 +13,12 @@ import (
 	"net/http"
 	"sync"
 	"time"
-
-	"github.com/bmizerany/pat"
 	"strconv"
 	"image/jpeg"
 	"strings"
 	"encoding/base64"
+
+	"github.com/bmizerany/pat"
 )
 
 const (
@@ -58,6 +58,7 @@ type transformResult struct {
 	Image   []byte `json:"-"`
 	ImgURL  string `json:"img"`
 	SrcURL  string `json:"src"`
+	B64Img	string `json:"b64img"`
 }
 
 // transforms is an in-memory storage for transformed images
@@ -118,11 +119,14 @@ func transformer(in <-chan *transformRequest, out chan<- *event) {
 			var b bytes.Buffer
 			if err = png.Encode(&b, img); err == nil {
 				key := fmt.Sprintf("%x", sha1.Sum(b.Bytes()))[0:8]
+				imgBase64Str := base64.StdEncoding.EncodeToString(b.Bytes())
+
 				res := &transformResult{
 					Message: fmt.Sprintf("Ready: %s", req.ImgPath),
 					Image:   b.Bytes(),
 					ImgURL:  fmt.Sprintf("/image/%s", key),
 					SrcURL:  req.Image,
+					B64Img:	 "data:image/png;base64," + imgBase64Str,
 				}
 
 				var enc []byte
@@ -231,7 +235,7 @@ var workers = flag.Int("n", 1, "Transformation workers")
 var sseDuration = flag.Duration("k", time.Duration(4)*time.Second, "Keep alive sse duration")
 
 func main() {
-	log.SetPrefix("▲ TRIANGLE : ")
+	log.SetPrefix("\x1b[39m▲ TRIANGLE : ")
 	flag.Parse()
 
 	transforms.images = make(map[string]*transformResult)
@@ -261,7 +265,8 @@ func main() {
 		solidWireframe, _  := strconv.ParseBool(req.FormValue("solidWireframe"))
 		wireframeType, _   := strconv.Atoi(req.FormValue("wireframeType"))
 		strokeWidth, _	   := strconv.ParseFloat(req.FormValue("strokeWidth"), 64)
-
+		fmt.Println(grayscale)
+		fmt.Println(solidWireframe)
 		imgurl := req.FormValue("image")
 		imgPath := req.FormValue("imagePath")
 

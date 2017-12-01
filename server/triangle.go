@@ -1,4 +1,3 @@
-package main
 /* MIT License
 
 Copyright (c) 2017 Endre Simó
@@ -13,6 +12,8 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software
 */
+
+package main
 
 import (
 	"image"
@@ -31,10 +32,11 @@ const (
 )
 
 var (
-	blur, gray, sobel *image.NRGBA
-	triangles         []tri.Triangle
-	points            []tri.Point
-	lineColor         color.RGBA
+	blur, gray	*image.NRGBA
+	sobel, srcImg 	*image.NRGBA
+	triangles       []tri.Triangle
+	points          []tri.Point
+	lineColor       color.RGBA
 )
 
 // triangulate is the main workhorse. Transforms an image with the provided options.
@@ -58,6 +60,12 @@ func triangulate(src image.Image, opts options) image.Image {
 
 	triangles = delaunay.Init(width, height).Insert(points).GetTriangles()
 
+	if opts.Grayscale {
+		srcImg = gray
+	} else {
+		srcImg = img
+	}
+
 	for i := 0; i < len(triangles); i++ {
 		t := triangles[i]
 		p0, p1, p2 := t.Nodes[0], t.Nodes[1], t.Nodes[2]
@@ -72,7 +80,7 @@ func triangulate(src image.Image, opts options) image.Image {
 		cy := float64(p0.Y+p1.Y+p2.Y) * 0.33333
 
 		j := ((int(cx) | 0) + (int(cy)|0)*width) * 4
-		r, g, b := img.Pix[j], img.Pix[j+1], img.Pix[j+2]
+		r, g, b := srcImg.Pix[j], srcImg.Pix[j + 1], srcImg.Pix[j + 2]
 
 		if opts.SolidWireframe {
 			lineColor = color.RGBA{R: 0, G: 0, B: 0, A: 255}
@@ -102,8 +110,8 @@ func triangulate(src image.Image, opts options) image.Image {
 	}
 
 	end := time.Since(start)
-	log.Printf("Generated in: %.2fs", end.Seconds())
-	log.Printf("Total number of %d triangles generated out of %d points", len(triangles), len(points))
+	log.Printf("Generated in: \x1b[92m%.2fs\n", end.Seconds())
+	log.Printf("\x1b[39mTotal number of \x1b[92m%d \x1b[39mtriangles generated out of \x1b[92m%d \x1b[39mpoints\n", len(triangles), len(points))
 
 	return ctx.Image()
 }
