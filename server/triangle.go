@@ -109,11 +109,20 @@ func triangulate(src image.Image, opts options) image.Image {
 		ctx.Pop()
 	}
 
+	var finalImg image.Image
+	newimg := ctx.Image()
+	// Apply a noise on the final image. This will give it a more artistic look.
+	if opts.Noise > 0 {
+		finalImg = tri.Noise(opts.Noise, newimg, newimg.Bounds().Dx(), newimg.Bounds().Dy())
+	} else {
+		finalImg = newimg
+	}
+
 	end := time.Since(start)
 	log.Printf("Generated in: \x1b[92m%.2fs\n", end.Seconds())
 	log.Printf("\x1b[39mTotal number of \x1b[92m%d \x1b[39mtriangles generated out of \x1b[92m%d \x1b[39mpoints\n", len(triangles), len(points))
 
-	return ctx.Image()
+	return finalImg
 }
 
 // toNRGBA converts any image type to *image.NRGBA with min-point at (0, 0).

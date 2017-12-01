@@ -39,7 +39,6 @@ export default class Process extends Component {
       this.options = data;
     });
     PubSub.subscribe('onImageUpload', (event, data) => {
-      console.log(data);
       this.image = data;
       this.options = Object.assign(this.options, this.image);
       this.setState({
@@ -138,7 +137,7 @@ export default class Process extends Component {
     });
     const options = JSON.stringify(this.options);
     console.log(this.options);
-  };5
+  };
 
   // Close save modal panel
   onClose() {

@@ -176,8 +176,8 @@ export default class Settings extends Component {
     let newValue = value;
     if (value < 0) {
       newValue = 0;
-    } else if (value > 10) {
-      newValue = 10;
+    } else if (value > 5) {
+      newValue = 5;
     }
     this.setState({
       strokeWidth: newValue
