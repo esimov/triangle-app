@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import IconButton from "material-ui/IconButton";
 import * as colors from 'material-ui/styles/colors';
 import PubSub from 'pubsub-js';
-import EXIF from "exif-js";
 
 export default class ResultModal extends Component {
   constructor() {
@@ -14,7 +13,6 @@ export default class ResultModal extends Component {
     };
 
     PubSub.subscribe('showBigImage', (event, img) => {
-      console.log(img);
       this.setState({
         result: img
       })
@@ -23,14 +21,12 @@ export default class ResultModal extends Component {
     PubSub.subscribe('onResult', (event, result) => {
       let img = new Image();
       img.onload = (event) => {
-        const windowWidth = window.innerWidth;
-        const windowHeight = window.innerHeight;
-
-        let imgWidth = (img.width > window.innerWidth) ? "100%" : img.width;
-        let imgHeight = (img.height > window.innerHeight) ? "100%" : img.height;
-
-        if (img.height > img.width) {
-          imgWidth = "auto";
+        let imgWidth = (img.width > img.height) ? "100%" : "auto";
+        let imgHeight = (img.height > img.width) ? "100%" : "auto";
+  
+        if (img.width === img.height) {
+          imgWidth = "100%";
+          imgHeight = "100%";
         }
 
         this.setState({
@@ -62,19 +58,6 @@ export default class ResultModal extends Component {
     }
   }
 
-  // Convert the base64 string to an ArrayBuffer
-  base64ToArrayBuffer(base64) {
-    base64 = base64.replace(/^data:([^;]+);base64,/gmi, '');
-    var binaryString = atob(base64);
-    var len = binaryString.length;
-    var bytes = new Uint8Array(len);
-
-    for (var i = 0; i < len; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-    return bytes.buffer;
-  };
-
   render() {
     const {width, height} = this.state.imgsize;
     const styles = {
@@ -84,6 +67,12 @@ export default class ResultModal extends Component {
         color: colors.white,
         cursor: "pointer",
         zIndex: 99
+      },
+      image : {
+        width: width,
+        height: height, 
+        transform: `translate(-50%, -50%) rotate(${this.state.rotation}deg)`,
+        display: this.state.result ? "block" : "none"
       }
     }
 
@@ -105,7 +94,7 @@ export default class ResultModal extends Component {
           </IconButton>
         </div>
         <div className="container">
-          <img src={this.state.result} style={{width: width, height:height, transform: `translate(-50%, -50%) rotate(${this.state.rotation}deg)`}} />
+          <img src={this.state.result} style={styles.image} />
         </div>
       </section>
     );

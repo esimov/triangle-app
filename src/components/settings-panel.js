@@ -75,7 +75,7 @@ const defaultValues = {
       title: "Noise:",
       range: {
         min: 0,
-        max: 10,
+        max: 20,
         default: 0,
         step: 1
       },
@@ -97,7 +97,7 @@ const defaultValues = {
       title: "Maximum Number of Points:",
       range: {
         min: 700,
-        max: 6500,
+        max: 5500,
         default: 2500,
         step: 50
       },
@@ -252,7 +252,7 @@ export default class Settings extends Component {
             defaultValue={slider.range.default}
             step={slider.range.step}
             style={styles.slider}
-            value={parseInt(this.state.sliders[id].currentVal)}
+            value={parseInt(this.state.sliders[id].currentVal, 10)}
             // Extend the default event action parameters with the slider id. We need to capture the current item.
             onChange={this.handleSlider.bind(slider, id)}
           />

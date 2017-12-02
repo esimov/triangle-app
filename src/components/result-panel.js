@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
 import * as colors from 'material-ui/styles/colors';
 import PubSub from 'pubsub-js';
-import EXIF from "exif-js";
 import placeholderImage from '../image/placeholder-image.png';
 
 export default class Result extends Component {
@@ -49,17 +48,16 @@ export default class Result extends Component {
    * @param {string} image
    */
   getImage(image, callback) {
-    let img, imgWidth, imgHeight;
     const promise = new Promise((resolve, reject) => {
-      img = new Image();
+      let img = new Image();
       img.onload = (event) => {
         resolve(img)
       }
       img.src = image;
     })
     promise.then((img) => {
-      imgWidth = (img.width > img.height) ? "100%" : "auto";
-      imgHeight = (img.height > img.width) ? "100%" : "auto";
+      let imgWidth = (img.width > img.height) ? "100%" : "auto";
+      let imgHeight = (img.height > img.width) ? "100%" : "auto";
 
       if (img.width === img.height) {
         imgWidth = "100%";

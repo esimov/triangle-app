@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import FontIcon from 'material-ui/FontIcon';
-import {Card, CardHeader, CardText} from 'material-ui/Card';
+import {Card, CardText} from 'material-ui/Card';
 import Settings from './settings-panel';
 
 export default class Options extends Component {

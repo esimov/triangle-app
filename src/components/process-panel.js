@@ -79,13 +79,12 @@ export default class Process extends Component {
     Object.assign(options, {
       'image' : this.options.loadedImg,
       'imagePath' : this.options.imgPath || "Webcam",
-      'wireframeType' : parseInt(this.options.wireframeType),
-      'strokeWidth' : parseInt(this.options.strokeWidth),
+      'wireframeType' : parseInt(this.options.wireframeType, 10),
+      'strokeWidth' : parseInt(this.options.strokeWidth, 10),
       ...sliders,
       ...toggleItems
     })
 
-    let self = this;
     let callbackEvent = () => {
       let evtSource = new EventSource(address + "/triangle");
 
@@ -105,6 +104,7 @@ export default class Process extends Component {
       })
     }
 
+    // Send ajax request to image server
     request.post({
       url: address + "/images",
       headers: {
@@ -114,6 +114,8 @@ export default class Process extends Component {
     }).then((res) => {
       console.log(res);
     }).catch((err) => {
+      // We need to call the callback fucntion on error, 
+      // because we handle the response on EventSource
       callbackEvent()
     })
   };

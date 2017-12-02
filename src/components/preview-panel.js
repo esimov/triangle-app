@@ -75,7 +75,7 @@ export default class Preview extends Component {
       accepted: accepted,
       rejected: rejected
     });
-    
+
     if (accepted.length) {
       this.acceptedFile = accepted[0]
       this.setState({
@@ -225,17 +225,16 @@ export default class Preview extends Component {
    * @param {string} image
    */
   getImage(image, callback) {
-    let img, imgWidth, imgHeight;
     const promise = new Promise((resolve, reject) => {
-      img = new Image();
+      let img = new Image();
       img.onload = (event) => {
         resolve(img)
       }
       img.src = image;
     })
     promise.then((img) => {
-      imgWidth = (img.width > img.height) ? "100%" : "auto";
-      imgHeight = (img.height > img.width) ? "100%" : "auto";
+      let imgWidth = (img.width > img.height) ? "100%" : "auto";
+      let imgHeight = (img.height > img.width) ? "100%" : "auto";
 
       if (img.width === img.height) {
         imgWidth = "100%";
