@@ -4,7 +4,7 @@ import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import logo from '../image/triangle-logo.png';
 
-const {shell} = window.require('electron');
+const { shell } = window.require('electron');
 
 export default class AboutModal extends Component {
   constructor(props) {
@@ -62,7 +62,7 @@ export default class AboutModal extends Component {
         }
       >
         <div className="content">
-          <img alt={this.state.appInfo.name} src={logo}/>
+          <img alt={this.state.appInfo.name} src={logo} />
           <p>
             <span><strong>{this.state.appInfo.name}</strong></span>
             <span> version </span><span><strong>{this.state.appInfo.version}</strong></span>
@@ -71,13 +71,13 @@ export default class AboutModal extends Component {
 
           <div className="links">
             <IconButton href="http://www.esimov.com" tooltip="esimov" onClick={this.openLink.bind(this)}>
-              <FontIcon className="fa fa-home"/>
+              <FontIcon className="fa fa-home" />
             </IconButton>
             <IconButton href="https://github.com/esimov" tooltip="Github" onClick={this.openLink.bind(this)}>
               <FontIcon className="fa fa-github" />
             </IconButton>
             <IconButton href="https://twitter.com/simo_endre" tooltip="Twitter" onClick={this.openLink.bind(this)}>
-              <FontIcon className="fa fa-twitter"/>
+              <FontIcon className="fa fa-twitter" />
             </IconButton>
           </div>
         </div>

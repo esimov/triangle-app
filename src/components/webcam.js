@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import IconButton from "material-ui/IconButton";
 import FontIcon from "material-ui/FontIcon";
 import * as colors from 'material-ui/styles/colors';
-import sound from '../sound/camera-shutter-click-08.mp3';
-const {Synth, Player} = require('tone');
+import tick from '../sound/tick.mp3';
+import shutter from '../sound/camera-shutter-click.mp3';
+const { Synth, Player } = require('tone');
 
 export default class Webcam extends Component {
   constructor(props) {
@@ -26,9 +27,9 @@ export default class Webcam extends Component {
 
     // Change webcam screen width and height on window resize
     window.addEventListener('resize', () => {
-      const {remote} = window.require('electron');
+      const { remote } = window.require('electron');
       // Get remote window width and height
-      const {width, height} = remote.getCurrentWindow().getBounds();
+      const { width, height } = remote.getCurrentWindow().getBounds();
       this.setState({
         constraints: {
           video: {
@@ -148,7 +149,7 @@ export default class Webcam extends Component {
     })
     if (done) {
       // Need to delay the screenshot capture a fraction of the second, otherwise the `takePicture` method
-      // will be triggered at the same moment with the state change generating an empty image.
+      // will be triggered at the same moment with the state change, generating an empty image.
       setTimeout(() => {
         this.takePicture()
       }, 50)
@@ -156,24 +157,24 @@ export default class Webcam extends Component {
   }
 
   render() {
-    const {width, height} = this.state.constraints.video
+    const { width, height } = this.state.constraints.video
     const styles = {
-      webcam : {
+      webcam: {
         position: "absolute",
         display: "block",
-        left: -10, top: this.state.isWebcamEnabled ? -10 : -height-10,
+        left: -10, top: this.state.isWebcamEnabled ? -10 : -height - 10,
         width: window.innerWidth, height: window.innerHeight,
         backgroundColor: colors.black,
         zIndex: 999
       },
-      closeBtn : {
+      closeBtn: {
         position: "absolute",
         top: 0, left: 0,
         color: colors.white,
         cursor: "pointer",
         zIndex: 99
       },
-      captureBtn : {
+      captureBtn: {
         position: "absolute",
         left: "50%",
         bottom: 20
@@ -182,7 +183,7 @@ export default class Webcam extends Component {
 
     const Camera = (props) => (
       <div className="camera">
-        <video id="video" autoPlay="true" src={this.state.videoSrc} width={width} height={height}/>
+        <video id="video" autoPlay="true" src={this.state.videoSrc} width={width} height={height} />
         <Counter
           counterIsActive={this.state.counterIsActive}
           counter={this.state.counter}
@@ -205,7 +206,7 @@ export default class Webcam extends Component {
 
     const Photo = (props) => (
       <div className="output">
-        <img id="photo" alt=""/>
+        <img id="photo" alt="" />
       </div>
     )
 
@@ -215,7 +216,7 @@ export default class Webcam extends Component {
         style={styles.webcam}
         tabIndex="0"
         onKeyDown={this.handleKeyPress.bind(this)}
-        ref={(webcam) => {this.webcam = webcam}}
+        ref={(webcam) => { this.webcam = webcam }}
       >
         <div className="close">
           <IconButton tooltip="Close"
@@ -226,9 +227,9 @@ export default class Webcam extends Component {
             <i className="material-icons">close</i>
           </IconButton>
         </div>
-        <canvas id="canvas" hidden/>
+        <canvas id="canvas" hidden />
         <Camera onWebcamClick={this.handleSnapshot.bind(this)} />
-        <Photo/>
+        <Photo />
       </section>
     );
   }
@@ -251,9 +252,19 @@ export class Counter extends Component {
   componentDidMount() {
     // A simple time counter, showing the seconds remaining before the webcam snapshot is summoned.
     if (this.state.counterIsActive) {
-      this.synth.triggerAttackRelease('B4', '8n')
+      let tickSound = new Player({
+        "url": tick,
+        "autostart": true,
+      })
+      // Play tick sound.
+      tickSound.toMaster()
+
       let counter = this.state.counter;
       this.interval = setInterval(() => {
+        let tickSound = new Player({
+          "url": tick,
+          "autostart": true,
+        })
         if (counter === 1) {
           this.setState({
             blitz: true
@@ -264,12 +275,14 @@ export class Counter extends Component {
           this.setState({
             counter: counter
           })
-          this.synth.triggerAttackRelease('B4', '8n')
+          // Play tick sound.
+          tickSound.toMaster()
         } else {
-          let player = new Player({
-            "url" : sound,
-            "autostart" : true,
+          let shutterSound = new Player({
+            "url": shutter,
+            "autostart": true,
           }).toMaster();
+
           clearInterval(this.interval)
           this.setState({
             screenCaptured: true,
@@ -289,7 +302,7 @@ export class Counter extends Component {
 
   render() {
     const styles = {
-      counter : {
+      counter: {
         display: this.state.counterIsActive ? "block" : "none",
         position: "absolute",
         top: "50%",
@@ -300,7 +313,7 @@ export class Counter extends Component {
         color: colors.white,
         cursor: "default"
       },
-      blitzBtn : {
+      blitzBtn: {
         top: "50%", left: "50%",
         transform: "translate(-50%, -50%)",
         fontSize: 80,

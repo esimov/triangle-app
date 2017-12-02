@@ -10,9 +10,9 @@ import EXIF from 'exif-js';
 import Webcam from './webcam'
 import dropzoneStyles from '../styles/app.css';
 
-const {remote} = window.require('electron');
+const { remote } = window.require('electron');
 // Get remote window width and height
-const {width, height} = remote.getCurrentWindow().getBounds();
+const { width, height } = remote.getCurrentWindow().getBounds();
 // Get the saved settings from local storage
 const storage = JSON.parse(localStorage.getItem('webcam.state'));
 
@@ -21,20 +21,20 @@ export default class Preview extends Component {
     super(props)
 
     this.state = Object.assign({}, {
-      dragOver  : false,
-      isValid   : true,
-      accepted  : [],
-      rejected  : [],
-      loadedImg : "",
-      imgPath   : "",
-      imgsize   : {},
-      rotation  : 0,
-      message   : "Drop image here...",
-      arrowVisibility : true,
-      isWebcamEnabled : false,
-      webcamStatus : false,
-      windowWidth : width,
-      windowHeight : height
+      dragOver: false,
+      isValid: true,
+      accepted: [],
+      rejected: [],
+      loadedImg: "",
+      imgPath: "",
+      imgsize: {},
+      rotation: 0,
+      message: "Drop image here...",
+      webcamStatus: false,
+      windowWidth: width,
+      windowHeight: height,
+      arrowVisibility: true,
+      isWebcamEnabled: false
     }, storage);
 
     this.dropzoneRef = null;
@@ -53,8 +53,8 @@ export default class Preview extends Component {
           isValid: true,
           arrowVisibility: false,
           message: "",
-          loadedImg : image.src,
-          imgsize: {width: image.width, height: image.height}
+          loadedImg: image.src,
+          imgsize: { width: image.width, height: image.height }
         });
 
         // Send the received image to the result component
@@ -128,10 +128,10 @@ export default class Preview extends Component {
 
       let img = this.getImage(result, (image) => {
         this.setState({
-          loadedImg : image.src,
-          rotation : orientation,
-          imgsize: {width: image.width, height: image.height},
-          arrowVisibility : false
+          loadedImg: image.src,
+          rotation: orientation,
+          imgsize: { width: image.width, height: image.height },
+          arrowVisibility: false
         });
 
         // Send the received image to the result component
@@ -172,28 +172,31 @@ export default class Preview extends Component {
   startWebcam(event) {
     event.preventDefault();
     this.setState({
-      webcamStatus : true
+      webcamStatus: true
     })
   }
 
   // Close the webcam
   closeWebcam(event) {
     this.setState({
-      webcamStatus : false
+      webcamStatus: false
     })
   }
 
   receiveWebcamCapture(data) {
-    this.setState({
-      isValid: true,
-      loadedImg: data,
-      rotation: 0,
-      arrowVisibility: false,
-      webcamStatus: false,
-      accepted: [1],
-      message: ""
-    })
-    PubSub.publish('onImageUpload', this.state);
+    let img = this.getImage(data, (image) => {
+      this.setState({
+        isValid: true,
+        loadedImg: image.src,
+        rotation: 0,
+        webcamStatus: false,
+        arrowVisibility: false,
+        message: "",
+        accepted: [1],
+        imgsize: { width: image.width, height: image.height }
+      });
+      PubSub.publish('onImageUpload', this.state);
+    });
   }
 
   // Convert the base64 string to an ArrayBuffer
@@ -242,9 +245,9 @@ export default class Preview extends Component {
       }
 
       let resultImg = {
-        src    : img.src,
-        width  : imgWidth,
-        height : imgHeight
+        src: img.src,
+        width: imgWidth,
+        height: imgHeight
       }
       callback(resultImg);
     })
@@ -260,12 +263,12 @@ export default class Preview extends Component {
       borderWidth: 1,
       borderRadius: 5,
       borderColor: this.state.isValid ? (theme.isDarkTheme ? colors.grey700 : "rgba(25, 118, 210, 0.3)") : colors.redA700,
-      backgroundColor : this.state.isValid ? (theme.isDarkTheme ? "rgba(17,17,17, 0.2)" : "transparent") : colors.red50,
-      webcamStyle : {
+      backgroundColor: this.state.isValid ? (theme.isDarkTheme ? "rgba(17,17,17, 0.2)" : "transparent") : colors.red50,
+      webcamStyle: {
         position: "absolute",
         bottom: 10, right: 10, padding: 0, zIndex: 9,
         display: this.state.isWebcamEnabled ? "inline-block" : "none",
-        iconStyle : {
+        iconStyle: {
           fontSize: 24,
           cursor: "pointer",
           padding: 8,
@@ -279,18 +282,18 @@ export default class Preview extends Component {
     };
 
     let textColor = this.state.isValid ? colors.blue700 : colors.redA700;
-    const {width, height} = this.state.imgsize;
+    const { width, height } = this.state.imgsize;
 
     return (
       <section className="imageLeftPanel">
         <div className="dropZone">
           <Dropzone
-            ref={(node) => {this.dropzoneRef = node}}
+            ref={(node) => { this.dropzoneRef = node }}
             accept="image/jpeg, image/png"
             multiple={false}
             style={dropZone}
-            activeStyle={{backgroundColor:colors.green50}}
-            acceptStyle={{backgroundColor:"transparent"}}
+            activeStyle={{ backgroundColor: colors.green50 }}
+            acceptStyle={{ backgroundColor: "transparent" }}
             disableClick={true}
             onDrop={this.onDrop.bind(this)}
             onDragOver={this.onDragOver.bind(this)}
@@ -298,23 +301,23 @@ export default class Preview extends Component {
             onDropAccepted={this.onDropAccepted.bind(this)}
             onDropRejected={this.onDropRejected.bind(this)}
           >
-            <span className="dropIn" style={{display:this.state.arrowVisibility ? "block" : "none"}}>
+            <span className="dropIn" style={{ display: this.state.arrowVisibility ? "block" : "none" }}>
               <i className="material-icons">get_app</i>
             </span>
-            <span className="previewMsg" style={{color:textColor}}>{this.state.message.toUpperCase()}</span>
+            <span className="previewMsg" style={{ color: textColor }}>{this.state.message.toUpperCase()}</span>
             <img
               id="previewImg"
               className="previewImg"
               src={this.state.loadedImg}
               style={{
-                width: width, height:height,
+                width: width, height: height,
                 transform: `translate(-50%, -50%) rotate(${this.state.rotation}deg)`
               }}
             />
             <FloatingActionButton
               mini={true}
               zDepth={1}
-              style={{margin: 10}}
+              style={{ margin: 10 }}
               backgroundColor={colors.blue700}
               onClick={() => this.dropzoneRef.open()}
             >
@@ -330,7 +333,7 @@ export default class Preview extends Component {
           >
             <FontIcon className={"fa fa-camera pulse " + (this.state.accepted.length ? "white" : "blue")} />
           </IconButton>
-        </div><br/>
+        </div><br />
         <Webcam
           width={this.state.windowWidth}
           height={this.state.windowHeight}

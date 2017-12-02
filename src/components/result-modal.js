@@ -21,11 +21,11 @@ export default class ResultModal extends Component {
     PubSub.subscribe('onResult', (event, result) => {
       let img = new Image();
       img.onload = (event) => {
-        let imgWidth = (img.width > img.height) ? "100%" : "auto";
+        let imgWidth  = (img.width > img.height) ? "100%" : "auto";
         let imgHeight = (img.height > img.width) ? "100%" : "auto";
   
         if (img.width === img.height) {
-          imgWidth = "100%";
+          imgWidth  = "100%";
           imgHeight = "100%";
         }
 

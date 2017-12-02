@@ -28,9 +28,9 @@ export default class Result extends Component {
       let img = this.getImage(result.img, (data) => {
         this.setState({
           resultImage: result.img,
-          rotation : result.rotation,
+          rotation: result.rotation,
           processed: true,
-          imgsize: {width: data.width, height: data.height}
+          imgsize: { width: data.width, height: data.height }
         });
       });
     });
@@ -65,16 +65,16 @@ export default class Result extends Component {
       }
 
       let resultImg = {
-        src    : img.src,
-        width  : imgWidth,
-        height : imgHeight
+        src: img.src,
+        width: imgWidth,
+        height: imgHeight
       }
       callback(resultImg);
     })
   }
 
   render() {
-    const {width, height} = this.state.imgsize;
+    const { width, height } = this.state.imgsize;
     const resultZone = {
       position: "relative",
       borderStyle: "dotted",
@@ -92,7 +92,7 @@ export default class Result extends Component {
             src={this.state.resultImage}
             className="resultImg"
             style={{
-              width: width, height:height,
+              width: width, height: height,
               transform: `translate(-50%, -50%) rotate(${this.state.rotation}deg)`
             }}
           />

@@ -28,9 +28,9 @@ export default class Process extends Component {
   constructor() {
     super();
     this.state = {
-      open : false,
-      value : "",
-      errorMessage : "",
+      open: false,
+      value: "",
+      errorMessage: "",
       btnDisabled: true
     };
     this.image = null;
@@ -64,8 +64,8 @@ export default class Process extends Component {
 
     const address = "http://localhost:8080";
     let options = {},
-        sliders = {},
-        toggleItems = {}
+      sliders = {},
+      toggleItems = {}
 
     this.options.sliders.forEach((slider) => {
       sliders[slider.name] = slider.currentVal;
@@ -77,10 +77,10 @@ export default class Process extends Component {
 
 
     Object.assign(options, {
-      'image' : this.options.loadedImg,
-      'imagePath' : this.options.imgPath || "Webcam",
-      'wireframeType' : parseInt(this.options.wireframeType, 10),
-      'strokeWidth' : parseInt(this.options.strokeWidth, 10),
+      'image': this.options.loadedImg,
+      'imagePath': this.options.imgPath || "Webcam",
+      'wireframeType': parseInt(this.options.wireframeType, 10),
+      'strokeWidth': parseInt(this.options.strokeWidth, 10),
       ...sliders,
       ...toggleItems
     })
@@ -92,7 +92,7 @@ export default class Process extends Component {
         let result = JSON.parse(e.data);
 
         PubSub.publish('onResult', {
-          img: result.b64img, 
+          img: result.b64img,
           rotation: this.options.rotation
         });
 
@@ -108,7 +108,7 @@ export default class Process extends Component {
     request.post({
       url: address + "/images",
       headers: {
-        "content-type" : "application/x-www-form-urlencoded"
+        "content-type": "application/x-www-form-urlencoded"
       },
       form: options
     }).then((res) => {
@@ -154,7 +154,7 @@ export default class Process extends Component {
 
   handleInputChange(event) {
     this.setState({
-      value : event.target.value
+      value: event.target.value
     })
   };
 

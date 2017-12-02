@@ -10,7 +10,7 @@ import 'font-awesome/css/font-awesome.css';
 const customTheme = {
   palette: {
     primary1Color: colors.blue700,
-    accent1Color: colors.pinkA400,
+    accent1Color: colors.redA400,
     accent2Color: colors.grey200,
     accent3Color: colors.grey500
   }

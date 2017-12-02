@@ -12,9 +12,9 @@ export default class SettingsModal extends Component {
     const storage = JSON.parse(localStorage.getItem('settings.state'));
     this.state = Object.assign({}, {
       status: this.props.state,
-      isDarkTheme : false,
+      isDarkTheme: false,
       webcamIsPresent: true,
-      isWebcamEnabled : this.isWebcamPresent(),
+      isWebcamEnabled: this.isWebcamPresent(),
     }, storage);
 
     this.modal = {
@@ -34,23 +34,23 @@ export default class SettingsModal extends Component {
 
   // Check if the current station has an integrated webcam.
   isWebcamPresent() {
-    navigator.mediaDevices.getUserMedia({video:true})
-    .then((mediaStream) => {
-      if (mediaStream.active) {
-        this.setState({
-          webcamIsPresent: true
-        })
-        return true;
-      } else {
-        this.setState({
-          webcamIsPresent: false
-        })
-        return false;
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((mediaStream) => {
+        if (mediaStream.active) {
+          this.setState({
+            webcamIsPresent: true
+          })
+          return true;
+        } else {
+          this.setState({
+            webcamIsPresent: false
+          })
+          return false;
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     return false;
   }
 
@@ -88,13 +88,13 @@ export default class SettingsModal extends Component {
   }
 
   render() {
-    const {isDarkTheme, isWebcamEnabled} = this.state
+    const { isDarkTheme, isWebcamEnabled } = this.state
     let webcamIsPresent = null;
 
     if (this.state.webcamIsPresent) {
       webcamIsPresent =
         <div>
-          <Divider/>
+          <Divider />
           <Toggle label="Use Webcam"
             defaultToggled={isWebcamEnabled}
             style={this.modal.toggleStyle}

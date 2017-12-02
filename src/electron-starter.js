@@ -15,12 +15,12 @@ function createWindow() {
         width: 1024,
         height: (process.platform === 'darwin') ? 768 : 748,
         resizable: false,
-        fullscreenable: false,
+        fullscreenable: true,
         icon: path.join(__dirname, '/../assets/icons/png/128x128.png')
     });
 
     mainWindow.setResizable(false);
-    mainWindow.setFullScreenable(false);
+    mainWindow.setFullScreenable(true);
 
     // Load the index.html of the app.
     const startUrl = process.env.ELECTRON_START_URL || url.format({
