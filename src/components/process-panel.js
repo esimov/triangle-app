@@ -95,7 +95,8 @@ export default class Process extends Component {
           img: result.b64img,
           rotation: this.options.rotation
         });
-
+        // Close event source connection
+        evtSource.close();
         PubSub.publish('onProcess', false);
       })
 

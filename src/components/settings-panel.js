@@ -64,7 +64,7 @@ const defaultValues = {
       title: "Sobel Threshold:",
       range: {
         min: 2,
-        max: 60,
+        max: 40,
         default: 10,
         step: 1
       },
@@ -86,7 +86,7 @@ const defaultValues = {
       title: "Points Threshold:",
       range: {
         min: 0,
-        max: 100,
+        max: 40,
         default: 20,
         step: 1
       },
@@ -96,8 +96,8 @@ const defaultValues = {
       name: "maxPoints",
       title: "Maximum Number of Points:",
       range: {
-        min: 700,
-        max: 5500,
+        min: 500,
+        max: 7000,
         default: 2500,
         step: 50
       },
