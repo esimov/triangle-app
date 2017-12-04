@@ -23,10 +23,14 @@ export default class ResultModal extends Component {
       img.onload = (event) => {
         let imgWidth  = (img.width > img.height) ? "100%" : "auto";
         let imgHeight = (img.height > img.width) ? "100%" : "auto";
-  
+
         if (img.width === img.height) {
           imgWidth  = "100%";
           imgHeight = "100%";
+        }
+        if (img.width < window.innerWidth || img.height < window.innerHeight) {
+          imgWidth  = "auto";
+          imgHeight = "auto";
         }
 
         this.setState({
@@ -70,7 +74,7 @@ export default class ResultModal extends Component {
       },
       image : {
         width: width,
-        height: height, 
+        height: height,
         transform: `translate(-50%, -50%) rotate(${this.state.rotation}deg)`,
         display: this.state.result ? "block" : "none"
       }
