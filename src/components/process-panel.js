@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
+import Snackbar from 'material-ui/Snackbar';
 import Dialog from 'material-ui/Dialog';
 import TextField from 'material-ui/TextField';
 import { blueGrey200 } from 'material-ui/styles/colors';
@@ -8,6 +10,7 @@ import PubSub from 'pubsub-js';
 import Settings from './settings-panel';
 
 const request = require('request-promise');
+const TRIANGLE_PROCESS_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'http://localhost:8080';
 
 const style = {
   rightPanel: {
@@ -30,8 +33,12 @@ export default class Process extends Component {
     this.state = {
       open: false,
       value: "",
+      serverError: false,
       errorMessage: "",
-      btnDisabled: true
+      btnDisabled: true,
+      autoHideDuration: 4000,
+      snackbarMessage: 'The image has been triangulated successfully !',
+      snackbarOpen: false,
     };
     this.image = null;
 
@@ -61,8 +68,6 @@ export default class Process extends Component {
   // Process triangulated image
   onProcess() {
     PubSub.publish('onProcess', true);
-
-    const address = "http://localhost:8080";
     let options = {},
       sliders = {},
       toggleItems = {}
@@ -85,39 +90,31 @@ export default class Process extends Component {
       ...toggleItems
     })
 
-    let callbackEvent = () => {
-      let evtSource = new EventSource(address + "/triangle");
-
-      evtSource.addEventListener('image', (e) => {
-        let result = JSON.parse(e.data);
-
-        PubSub.publish('onResult', {
-          img: result.b64img,
-          rotation: this.options.rotation
-        });
-        // Close event source connection
-        evtSource.close();
-        PubSub.publish('onProcess', false);
-      })
-
-      evtSource.addEventListener("problem", (e) => {
-        console.log(e.data)
-      })
-    }
-
     // Send ajax request to image server
     request.post({
-      url: address + "/images",
+      url: TRIANGLE_PROCESS_URL + "/images",
       headers: {
         "content-type": "application/x-www-form-urlencoded"
       },
       form: options
     }).then((res) => {
-      console.log(res);
+      let result = JSON.parse(res);
+
+      PubSub.publish('onResult', {
+        img: result.b64img,
+        rotation: this.options.rotation,
+      });
+      this.setState({
+        snackbarOpen: true
+      })
+      PubSub.publish('onProcess', false);
     }).catch((err) => {
-      // We need to call the callback fucntion on error, 
-      // because we handle the response on EventSource
-      callbackEvent()
+      PubSub.publish('onProcess', false);
+      if (err.error) {
+        this.setState({
+          serverError: true
+        })  
+      }
     })
   };
 
@@ -157,6 +154,29 @@ export default class Process extends Component {
     this.setState({
       value: event.target.value
     })
+  };
+
+  handleCloseModal(event) {
+    this.setState({serverError: false});
+  };
+
+  handleActionTouchTap() {
+    this.setState({
+      snackbarOpen: false,
+    });
+  };
+
+  handleChangeDuration(event) {
+    const value = event.target.value;
+    this.setState({
+      autoHideDuration: value.length > 0 ? parseInt(value) : 0,
+    });
+  };
+
+  handleRequestClose() {
+    this.setState({
+      snackbarOpen: false,
+    });
   };
 
   // Render
@@ -204,7 +224,6 @@ export default class Process extends Component {
             open={this.state.open}
             onRequestClose={this.onClose.bind(this)}
           >
-            <span>File name:</span><br />
             <TextField
               hintText="File Name"
               errorText={this.state.errorMessage}
@@ -216,6 +235,29 @@ export default class Process extends Component {
               onChange={this.handleInputChange.bind(this)}
             /><br />
           </Dialog>
+          <Dialog
+            title="Server Error"
+            actions={
+              <FlatButton
+                label="OK"
+                primary={true}
+                keyboardFocused={true}
+                onClick={this.handleCloseModal.bind(this)}
+              />
+            }
+            modal={false}
+            open={this.state.serverError}
+            onRequestClose={this.handleCloseModal.bind(this)}
+          >
+            The server is down or stopped handling requests. Please contact the server administrator.
+          </Dialog>
+          <Snackbar
+            open={this.state.snackbarOpen}
+            message={this.state.snackbarMessage}
+            autoHideDuration={this.state.autoHideDuration}
+            onActionTouchTap={this.handleActionTouchTap.bind(this)}
+            onRequestClose={this.handleRequestClose.bind(this)}
+          />
         </span>
       </section>
     );
