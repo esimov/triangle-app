@@ -10,7 +10,9 @@ import PubSub from 'pubsub-js';
 import Settings from './settings-panel';
 
 const request = require('request-promise');
-const TRIANGLE_PROCESS_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : 'http://localhost:8080';
+const TRIANGLE_PROCESS_URL = 
+    process.env.NODE_ENV === 'development' ? 
+    'http://localhost:8080' : 'http://localhost:8080';
 
 const style = {
   rightPanel: {
@@ -37,7 +39,7 @@ export default class Process extends Component {
       errorMessage: "",
       btnDisabled: true,
       autoHideDuration: 4000,
-      snackbarMessage: 'The image has been triangulated successfully !',
+      snackbarMessage: 'The image has been triangulated successfully',
       snackbarOpen: false,
     };
     this.image = null;

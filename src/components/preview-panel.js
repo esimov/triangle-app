@@ -11,6 +11,8 @@ import Webcam from './webcam'
 import dropzoneStyles from '../styles/app.css';
 
 const { remote } = window.require('electron');
+const fs = window.require('fs');
+
 // Get remote window width and height
 const { width, height } = remote.getCurrentWindow().getBounds();
 // Get the saved settings from local storage
@@ -54,6 +56,7 @@ export default class Preview extends Component {
           arrowVisibility: false,
           message: "",
           loadedImg: image.src,
+          imgPath: data,
           imgsize: { width: image.width, height: image.height }
         });
 
@@ -199,7 +202,10 @@ export default class Preview extends Component {
     });
   }
 
-  // Convert the base64 string to an ArrayBuffer
+  /**
+   * Convert the base64 string to an ArrayBuffer
+   * @param {string} base64 
+   */
   base64ToArrayBuffer(base64) {
     base64 = base64.replace(/^data:([^;]+);base64,/gmi, '');
     var binaryString = atob(base64);
@@ -227,7 +233,23 @@ export default class Preview extends Component {
    * Return loaded image width & height
    * @param {string} image
    */
-  getImage(image, callback) {
+  getImage(image, callback) { 
+    if (!this.isBase64(image)) {
+      fs.readFile(image, (err, data) => {
+        let b64img = Buffer.from(data).toString('base64')
+        this.createNewImage("data:image/jpeg;base64," + b64img, callback)
+      })
+    } else {
+      this.createNewImage(image, callback);
+    }
+  }
+
+  /**
+   * Generate a new image object having as source the provided base64 encoded image.
+   * @param {string} image 
+   * @param {function} callback 
+   */
+  createNewImage(image, callback) {
     const promise = new Promise((resolve, reject) => {
       let img = new Image();
       img.onload = (event) => {
@@ -251,6 +273,14 @@ export default class Preview extends Component {
       }
       callback(resultImg);
     })
+  }
+
+  // Check if the loaded image is base64 encoded
+  isBase64(img) {
+    if(/data:image\/(jpeg|png);base64/.test(img)) {
+      return true;
+    }
+    return false;
   }
 
   render() {
