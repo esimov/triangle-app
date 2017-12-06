@@ -251,7 +251,8 @@ export default class Preview extends Component {
           orientation = -90;
           break;
       }
-
+      // In order to overcome the uploaded image rotation issue on MacOS, 
+      // we create a canvas element, draw the image into it and rotate based on exif information.
       let canvas = document.createElement('canvas');
       let ctx = canvas.getContext('2d');
       let result = null;
