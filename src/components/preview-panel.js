@@ -30,7 +30,6 @@ export default class Preview extends Component {
       loadedImg: "",
       imgPath: "",
       imgsize: {},
-      rotation: 0,
       message: "Drop image here...",
       webcamStatus: false,
       windowWidth: width,
@@ -55,9 +54,8 @@ export default class Preview extends Component {
           isValid: true,
           arrowVisibility: false,
           message: "",
-          loadedImg: image.src,
-          imgPath: data,
-          imgsize: { width: image.width, height: image.height }
+          loadedImg: image,
+          imgPath: data
         });
 
         // Send the received image to the result component
@@ -108,32 +106,9 @@ export default class Preview extends Component {
       }
     });
     promise.then(result => {
-      // Retrieve the EXIF information and rotate the image accordingly.
-      // If we don't do this, FileReader will show each image in landscape mode.
-      let exif = EXIF.readFromBinaryFile(this.base64ToArrayBuffer(result));
-      let orientation;
-
-      // Get the image orientation and rotate it.
-      switch (exif.Orientation) {
-        case 1:
-          orientation = 0;
-          break;
-        case 3:
-          orientation = 180;
-          break;
-        case 6:
-          orientation = 90;
-          break;
-        case 8:
-          orientation = -90;
-          break;
-      }
-
       let img = this.getImage(result, (image) => {
         this.setState({
-          loadedImg: image.src,
-          rotation: orientation,
-          imgsize: { width: image.width, height: image.height },
+          loadedImg: image,
           arrowVisibility: false
         });
 
@@ -187,19 +162,17 @@ export default class Preview extends Component {
   }
 
   receiveWebcamCapture(data) {
-    let img = this.getImage(data, (image) => {
-      this.setState({
-        isValid: true,
-        loadedImg: image.src,
-        rotation: 0,
-        webcamStatus: false,
-        arrowVisibility: false,
-        message: "",
-        accepted: [1],
-        imgsize: { width: image.width, height: image.height }
-      });
-      PubSub.publish('onImageUpload', this.state);
+    this.setState({
+      isValid: true,
+      loadedImg: data,
+      webcamStatus: false,
+      arrowVisibility: false,
+      message: "",
+      accepted: [1]
     });
+
+    // Send the received image to the result component
+    PubSub.publish('onImageUpload', this.state);
   }
 
   /**
@@ -257,27 +230,55 @@ export default class Preview extends Component {
       }
       img.src = image;
     })
-    promise.then((img) => {
-      let imgWidth = (img.width > img.height) ? "100%" : "auto";
-      let imgHeight = (img.height > img.width) ? "100%" : "auto";
+    promise.then((image) => {
+      // Retrieve the image EXIF information and rotate to it's normal position.
+      // If we don't do this, FileReader will show each image in landscape mode.
+      let exif = EXIF.readFromBinaryFile(this.base64ToArrayBuffer(image.src));
+      let orientation;
 
-      if (img.width === img.height) {
-        imgWidth = "100%";
-        imgHeight = "100%";
+      // Get the image orientation and rotate it.
+      switch (exif.Orientation) {
+        case 1:
+          orientation = 0;
+          break;
+        case 3:
+          orientation = 180;
+          break;
+        case 6:
+          orientation = 90;
+          break;
+        case 8:
+          orientation = -90;
+          break;
       }
 
-      let resultImg = {
-        src: img.src,
-        width: imgWidth,
-        height: imgHeight
-      }
-      callback(resultImg);
+      let canvas = document.createElement('canvas');
+      let ctx = canvas.getContext('2d');
+      let result = null;
+
+      var w = image.width;
+      var h = image.height;
+      var rads = orientation * Math.PI/180;
+      var c = Math.cos(rads);
+      var s = Math.sin(rads);
+      if (s < 0) { s = -s; }
+      if (c < 0) { c = -c; }
+      // Use translated width and height for new canvas
+      canvas.width = h * s + w * c;
+      canvas.height = h * c + w * s;
+      // Draw the rect in the center of the newly sized canvas
+      ctx.translate(canvas.width/2, canvas.height/2);
+      ctx.rotate(orientation * Math.PI / 180);
+      ctx.drawImage(image, -image.width/2, -image.height/2);
+      result = canvas.toDataURL()
+
+      callback(result);
     })
   }
 
   // Check if the loaded image is base64 encoded
-  isBase64(img) {
-    if(/data:image\/(jpeg|png);base64/.test(img)) {
+  isBase64(image) {
+    if(/data:image\/(jpeg|png);base64/.test(image)) {
       return true;
     }
     return false;
@@ -340,8 +341,8 @@ export default class Preview extends Component {
               className="previewImg"
               src={this.state.loadedImg}
               style={{
-                width: width, height: height,
-                transform: `translate(-50%, -50%) rotate(${this.state.rotation}deg)`
+                maxWidth:"100%", maxHeight:"100%",
+                transform: `translate(-50%, -50%)`
               }}
             />
             <FloatingActionButton

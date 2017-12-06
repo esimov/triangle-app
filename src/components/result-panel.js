@@ -14,8 +14,6 @@ export default class Result extends Component {
       resultImage: placeholderImage,
       isDarkTheme: this.storage.isDarkTheme,
       processed: false,
-      rotation: 0,
-      imgsize: {}
     };
 
     PubSub.subscribe('is_dark_theme', (event, data) => {
@@ -25,13 +23,9 @@ export default class Result extends Component {
     })
 
     PubSub.subscribe('onResult', (event, result) => {
-      let img = this.getImage(result.img, (data) => {
-        this.setState({
-          resultImage: result.img,
-          rotation: result.rotation,
-          processed: true,
-          imgsize: { width: data.width, height: data.height }
-        });
+      this.setState({
+        resultImage: result.img,
+        processed: true,
       });
     });
   }
@@ -43,38 +37,7 @@ export default class Result extends Component {
     PubSub.publish('showBigImage', this.state.resultImage)
   }
 
-  /**
-   * Return loaded image width & height
-   * @param {string} image
-   */
-  getImage(image, callback) {
-    const promise = new Promise((resolve, reject) => {
-      let img = new Image();
-      img.onload = (event) => {
-        resolve(img)
-      }
-      img.src = image;
-    })
-    promise.then((img) => {
-      let imgWidth = (img.width > img.height) ? "100%" : "auto";
-      let imgHeight = (img.height > img.width) ? "100%" : "auto";
-
-      if (img.width === img.height) {
-        imgWidth = "100%";
-        imgHeight = "100%";
-      }
-
-      let resultImg = {
-        src: img.src,
-        width: imgWidth,
-        height: imgHeight
-      }
-      callback(resultImg);
-    })
-  }
-
   render() {
-    const { width, height } = this.state.imgsize;
     const resultZone = {
       position: "relative",
       borderStyle: "dotted",
@@ -92,8 +55,8 @@ export default class Result extends Component {
             src={this.state.resultImage}
             className="resultImg"
             style={{
-              width: width, height: height,
-              transform: `translate(-50%, -50%) rotate(${this.state.rotation}deg)`
+              maxWidth:"100%", maxHeight:"100%",
+              transform: `translate(-50%, -50%)`
             }}
           />
         </Paper>

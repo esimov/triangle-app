@@ -101,10 +101,8 @@ export default class Process extends Component {
       form: options
     }).then((res) => {
       let result = JSON.parse(res);
-
       PubSub.publish('onResult', {
-        img: result.b64img,
-        rotation: this.options.rotation,
+        img: result.b64img
       });
       this.setState({
         snackbarOpen: true
@@ -171,7 +169,7 @@ export default class Process extends Component {
   handleChangeDuration(event) {
     const value = event.target.value;
     this.setState({
-      autoHideDuration: value.length > 0 ? parseInt(value) : 0,
+      autoHideDuration: value.length > 0 ? parseInt(value, 10) : 0,
     });
   };
 

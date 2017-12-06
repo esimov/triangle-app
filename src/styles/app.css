@@ -135,7 +135,6 @@ body {
 }
 .resultZone .resultImg {
     position: absolute;
-    width: 100%;
     top: 50%; left: 50%;
     cursor: pointer;
     transform: translateY(-50%);
@@ -175,9 +174,16 @@ body {
 #resultImg.visible {
     top: 0;
 }
-#resultImg img {
+#resultImg .container {
     position: absolute;
     top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0 auto;
+    display: block;
+}
+#resultImg .container .smallImage {
+    width: auto!important;
+    height: auto!important;
 }
 
 .about-modal .close,

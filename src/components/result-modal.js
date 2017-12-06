@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import IconButton from "material-ui/IconButton";
 import * as colors from 'material-ui/styles/colors';
+import ReactImageMagnify from 'react-image-magnify';
 import PubSub from 'pubsub-js';
 
 export default class ResultModal extends Component {
@@ -8,8 +9,7 @@ export default class ResultModal extends Component {
     super();
     this.state = {
       result: null,
-      imgsize: {},
-      rotation: 0
+      imgSize: {}
     };
 
     PubSub.subscribe('showBigImage', (event, img) => {
@@ -21,22 +21,9 @@ export default class ResultModal extends Component {
     PubSub.subscribe('onResult', (event, result) => {
       let img = new Image();
       img.onload = (event) => {
-        let imgWidth  = (img.width > img.height) ? "100%" : "auto";
-        let imgHeight = (img.height > img.width) ? "100%" : "auto";
-
-        if (img.width === img.height) {
-          imgWidth  = "100%";
-          imgHeight = "100%";
-        }
-        if (img.width < window.innerWidth || img.height < window.innerHeight) {
-          imgWidth  = "auto";
-          imgHeight = "auto";
-        }
-
         this.setState({
           result: img.src,
-          imgsize: {width: imgWidth, height: imgHeight},
-          rotation: result.rotation
+          imgSize: { width: img.width, height: img.height }
         })
       }
       img.src = result.img;
@@ -63,19 +50,16 @@ export default class ResultModal extends Component {
   }
 
   render() {
-    const {width, height} = this.state.imgsize;
+    const { width, height } = this.state.imgSize;
     const styles = {
-      closeBtn : {
+      closeBtn: {
         position: "absolute",
         top: 0, left: 0,
         color: colors.white,
         cursor: "pointer",
         zIndex: 99
       },
-      image : {
-        width: width,
-        height: height,
-        transform: `translate(-50%, -50%) rotate(${this.state.rotation}deg)`,
+      image: {
         display: this.state.result ? "block" : "none"
       }
     }
@@ -85,8 +69,8 @@ export default class ResultModal extends Component {
         id="resultImg"
         tabIndex="0"
         onKeyDown={this.handleKeyPress.bind(this)}
-        ref={(result) => {this.result = result}}
-        className={this.state.result ? "visible" : "hidden" }
+        ref={(result) => { this.result = result }}
+        className={this.state.result ? "visible" : "hidden"}
       >
         <div className="close">
           <IconButton tooltip="Close"
@@ -98,7 +82,27 @@ export default class ResultModal extends Component {
           </IconButton>
         </div>
         <div className="container">
-          <img src={this.state.result} style={styles.image} />
+          <ReactImageMagnify {...{
+            smallImage: {
+              alt: 'Triangulated Image',
+              isFluidWidth: true,
+              src: `${this.state.result}`
+            },
+            largeImage: {
+              alt: 'Triangulated Image',
+              src: `${this.state.result}`,
+              width: `${width}`,
+              height: `${height}`,
+            },
+            isHintEnabled: true,
+            enlargedImagePosition: 'over'
+          }}
+          imageStyle={{
+            maxWidth: `${window.innerWidth}`+"px",
+            maxHeight: `${window.innerHeight}`+"px"
+          }}
+          imageClassName="smallImage"
+          />
         </div>
       </section>
     );

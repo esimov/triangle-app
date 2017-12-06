@@ -8,6 +8,8 @@
   "keywords": [
     "electron",
     "reactjs",
+    "golang",
+    "delaunay",
     "triangulation"
   ],
   "dependencies": {
@@ -16,8 +18,10 @@
     "material-ui": "^0.19.4",
     "pubsub-js": "^1.5.7",
     "react": "^16.0.0",
+    "react-color": "^2.13.8",
     "react-dom": "^16.0.0",
     "react-dropzone": "^4.2.1",
+    "react-image-magnify": "^2.3.2",
     "react-jss": "^7.2.0",
     "react-scripts": "^1.0.14",
     "request": "^2.83.0",
