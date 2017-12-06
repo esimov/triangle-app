@@ -58,7 +58,7 @@ export default class Preview extends Component {
           imgPath: data
         });
 
-        // Send the received image to the result component
+        // Send the received image to the process panel
         PubSub.publish('onImageUpload', this.state);
       });
     })
@@ -112,7 +112,7 @@ export default class Preview extends Component {
           arrowVisibility: false
         });
 
-        // Send the received image to the result component
+        // Send the received image to the process panel
         PubSub.publish('onImageUpload', this.state);
       });
 
@@ -171,7 +171,7 @@ export default class Preview extends Component {
       accepted: [1]
     });
 
-    // Send the received image to the result component
+    // Send the received image to the process panel
     PubSub.publish('onImageUpload', this.state);
   }
 
@@ -271,7 +271,7 @@ export default class Preview extends Component {
       ctx.translate(canvas.width/2, canvas.height/2);
       ctx.rotate(orientation * Math.PI / 180);
       ctx.drawImage(image, -image.width/2, -image.height/2);
-      result = canvas.toDataURL()
+      result = canvas.toDataURL('image/jpeg', 0.8)
 
       callback(result);
     })
