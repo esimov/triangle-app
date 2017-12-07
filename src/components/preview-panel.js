@@ -189,7 +189,7 @@ export default class Preview extends Component {
   }
 
   /**
-   * Return loaded image width & height
+   * Create and return a new image to obtain it's width & height
    * @param {string} image
    */
   getImage(image, callback) {
@@ -373,4 +373,5 @@ export function activateFileMenu(status) {
       item.enabled = status ? true : false;
     }
   });
+  remote.Menu.setApplicationMenu(menu);
 }

@@ -38,16 +38,22 @@ class AppMenu {
           label: 'Save',
           sublabel: 'changeable',
           accelerator: 'CmdOrCtrl+S',
-          enabled: false,
           click() {
-            // TODO trigger save dialog
+            if (focusedWindow) {
+              const {dialog} = require('electron');
+              dialog.showSaveDialog({
+                filters: [{
+                  name:'Image',
+                  extensions: ['jpg', 'png']
+                }]
+              })
+            }
           }
         },
         {
           label: 'Save as...',
           sublabel: 'changeable',
           accelerator: 'CmdOrCtrl+Shift+S',
-          enabled: false,
           click(item, focusedWindow) {
             if (focusedWindow) {
               const {dialog} = require('electron');
