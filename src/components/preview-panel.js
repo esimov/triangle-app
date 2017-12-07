@@ -40,7 +40,7 @@ export default class Preview extends Component {
 
     this.dropzoneRef = null;
     this.acceptedFile = null;
-    this.activateFileMenu(false);
+    activateFileMenu(false);
 
     PubSub.subscribe('webcam_enabled', (event, data) => {
       this.setState({
@@ -115,9 +115,6 @@ export default class Preview extends Component {
         // Send the received image to the process panel
         PubSub.publish('onImageUpload', this.state);
       });
-
-      // TODO activate it after triangulation is done...
-      this.activateFileMenu(true);
     }, err => {
       console.log(err)
     })
@@ -189,17 +186,6 @@ export default class Preview extends Component {
       bytes[i] = binaryString.charCodeAt(i);
     }
     return bytes.buffer;
-  }
-
-  // Change Save ans Save As... menu item status at runtime.
-  activateFileMenu(status) {
-    let menu = remote.Menu.getApplicationMenu();
-    let menuItems = process.platform === "darwin" ? menu.items[1].submenu.items : menu.items[0].submenu.items;
-    menuItems.map((item) => {
-      if (item.sublabel === 'changeable') {
-        item.enabled = status ? true : false;
-      }
-    });
   }
 
   /**
@@ -376,4 +362,15 @@ export default class Preview extends Component {
       </section>
     );
   }
+}
+
+// Change Save ans Save As... menu item status at runtime.
+export function activateFileMenu(status) {
+  let menu = remote.Menu.getApplicationMenu();
+  let menuItems = (navigator.platform.indexOf('Mac') !== -1) ? menu.items[1].submenu.items : menu.items[0].submenu.items;
+  menuItems.map((item) => {
+    if (item.sublabel === 'changeable') {
+      item.enabled = status ? true : false;
+    }
+  });
 }

@@ -8,6 +8,7 @@ import TextField from 'material-ui/TextField';
 import { blueGrey200 } from 'material-ui/styles/colors';
 import PubSub from 'pubsub-js';
 import Settings from './settings-panel';
+import { activateFileMenu } from './preview-panel';
 
 const request = require('request-promise');
 const TRIANGLE_PROCESS_URL = 
@@ -37,7 +38,8 @@ export default class Process extends Component {
       value: "",
       serverError: false,
       errorMessage: "",
-      btnDisabled: true,
+      processBtnDisabled: true,
+      saveBtnDisabled: true,
       autoHideDuration: 4000,
       snackbarMessage: 'The image has been triangulated successfully',
       snackbarOpen: false,
@@ -51,13 +53,13 @@ export default class Process extends Component {
       this.image = data;
       this.options = Object.assign(this.options, this.image);
       this.setState({
-        btnDisabled: false
+        processBtnDisabled: false
       })
     });
     PubSub.subscribe('onInvalidImage', (event, data) => {
       this.image = null;
       this.setState({
-        btnDisabled: true
+        processBtnDisabled: true
       })
     });
   }
@@ -105,8 +107,10 @@ export default class Process extends Component {
         img: result.b64img
       });
       this.setState({
+        saveBtnDisabled: false,
         snackbarOpen: true
       })
+      activateFileMenu(true);
       PubSub.publish('onProcess', false);
     }).catch((err) => {
       PubSub.publish('onProcess', false);
@@ -207,14 +211,14 @@ export default class Process extends Component {
             label="Process"
             primary={true}
             onClick={this.onProcess.bind(this)}
-            disabled={this.state.btnDisabled}
+            disabled={this.state.processBtnDisabled}
             style={style.customBtnStyle}
           />
           <RaisedButton
             label="Save"
             secondary={true}
             onClick={this.onModalOpen.bind(this)}
-            disabled={this.state.btnDisabled}
+            disabled={this.state.saveBtnDisabled}
             style={style.customBtnStyle}
           />
           <Dialog
