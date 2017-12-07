@@ -174,7 +174,7 @@ export default class Preview extends Component {
 
   /**
    * Convert the base64 string to an ArrayBuffer
-   * @param {string} base64 
+   * @param {string} base64
    */
   base64ToArrayBuffer(base64) {
     base64 = base64.replace(/^data:([^;]+);base64,/gmi, '');
@@ -192,7 +192,7 @@ export default class Preview extends Component {
    * Return loaded image width & height
    * @param {string} image
    */
-  getImage(image, callback) { 
+  getImage(image, callback) {
     if (!this.isBase64(image)) {
       fs.readFile(image, (err, data) => {
         let b64img = Buffer.from(data).toString('base64')
@@ -205,8 +205,8 @@ export default class Preview extends Component {
 
   /**
    * Generate a new image object having as source the provided base64 encoded image.
-   * @param {string} image 
-   * @param {function} callback 
+   * @param {string} image
+   * @param {function} callback
    */
   createNewImage(image, callback) {
     const promise = new Promise((resolve, reject) => {
@@ -220,7 +220,7 @@ export default class Preview extends Component {
       // Retrieve the image EXIF information and rotate to it's normal position.
       // If we don't do this, FileReader will show each image in landscape mode.
       let exif = EXIF.readFromBinaryFile(this.base64ToArrayBuffer(image.src));
-      let orientation;
+      let orientation = 0;
 
       // Get the image orientation and rotate it.
       switch (exif.Orientation) {
@@ -237,7 +237,7 @@ export default class Preview extends Component {
           orientation = -90;
           break;
       }
-      // In order to overcome the uploaded image rotation issue on MacOS, 
+      // In order to overcome the uploaded image rotation issue on MacOS,
       // we create a canvas element, draw the image into it and rotate based on exif information.
       let canvas = document.createElement('canvas');
       let ctx = canvas.getContext('2d');

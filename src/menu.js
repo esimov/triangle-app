@@ -19,14 +19,15 @@ class AppMenu {
             if (focusedWindow) {
               const {dialog} = require('electron');
               dialog.showOpenDialog(
-                {properties: ['openFile', 'openDirectory', 'multiSelections']},
+                {properties: ['openFile', 'multiSelections']},
                 //{filters: [{name: 'Images', extensions: ['jpg', 'png']}]},
                 (filePaths) => {
                   if (filePaths) {
                     // Get the last file selected and send it trough IPC action to web renderer
                     AppMenu.action('file-open', filePaths[filePaths.length-1])
                   }
-              });
+                }
+              );
             }
           }
         },
