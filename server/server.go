@@ -32,6 +32,7 @@ import (
 
 	"github.com/bmizerany/pat"
 	"os"
+	"image/color"
 )
 
 // options received from get request
@@ -44,6 +45,7 @@ type options struct {
 	Grayscale	bool
 	SolidWireframe	bool
 	WireframeType	int
+	WireframeColor	color.RGBA
 	StrokeWidth	float64
 }
 
@@ -158,6 +160,7 @@ func main() {
 			Grayscale: 	 grayscale,
 			SolidWireframe:  solidWireframe,
 			WireframeType: 	 wireframeType,
+			WireframeColor:	 req.FormValue("wireframeColor"),
 			StrokeWidth: 	 strokeWidth,
 		}
 		log.Printf("Transformer accepted for %q", imgPath)

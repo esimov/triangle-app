@@ -5,6 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import SelectField from 'material-ui/SelectField';
 import TextField from 'material-ui/TextField';
 import MenuItem from 'material-ui/MenuItem';
+import { TwitterPicker } from 'react-color';
 import * as colors from 'material-ui/styles/colors';
 import PubSub from 'pubsub-js';
 
@@ -146,6 +147,8 @@ export default class Settings extends Component {
   get initialState() {
     return Object.assign(defaultValues, {
       wirefameDisabled: true,
+      isSolidWireframe: false,
+      solidWireframeColor: {r:0, g:0, b:0, a:1},
       strokeWidth: 0,
       wireframeType: 0
     });
@@ -169,6 +172,11 @@ export default class Settings extends Component {
     this.setState({
       toggleItems
     });
+    if (id == 1) {
+      this.setState({
+        isSolidWireframe: !this.state.isSolidWireframe
+      })
+    }
   };
 
   // Wireframe input field event handler
@@ -216,6 +224,12 @@ export default class Settings extends Component {
     });
   };
 
+  handleOnColorChange(color, event) {
+    this.setState({
+      solidWireframeColor: color.rgb
+    });
+  }
+
   // Restore default values
   restoreDefaults() {
     this.setState(this.initialState);
@@ -227,11 +241,8 @@ export default class Settings extends Component {
     Settings.restoreDefaults = this.resetElement;
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    //console.log(this.initialState)
-  }
-
   render() {
+    const wireframeColors = ['#000000', '#FF6900', '#FCB900', '#00D084', '#8ED1FC', '#0693E3', '#ABB8C3', '#EB144C', '#F78DA7', '#9900EF'];
     let sliderItems, toggleItems;
 
     sliderItems = this.state.sliders.map((slider, id) => {
@@ -282,7 +293,11 @@ export default class Settings extends Component {
             {sliderItems}
           </div>
           <div style={styles.rightPanel}>
-          {toggleItems}
+            {toggleItems}
+            <div style={{ display: this.state.isSolidWireframe ? "block" : "none" }}>
+              <div>Wireframe Color</div><br/>
+              <TwitterPicker colors={wireframeColors} onChangeComplete={this.handleOnColorChange.bind(this)}/>
+            </div>
             <SelectField
               floatingLabelText="Wireframe mode"
               value={this.state.wireframeType}
