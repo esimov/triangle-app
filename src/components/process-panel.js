@@ -4,25 +4,21 @@ import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 import Dialog from 'material-ui/Dialog';
-import TextField from 'material-ui/TextField';
-import { blueGrey200 } from 'material-ui/styles/colors';
 import PubSub from 'pubsub-js';
 import Settings from './settings-panel';
 import { activateFileMenu } from './preview-panel';
 
+const { remote } = window.require('electron');
 const request = require('request-promise');
-const TRIANGLE_PROCESS_URL = 
-    process.env.NODE_ENV === 'development' ? 
+const fs = require('fs');
+
+const TRIANGLE_PROCESS_URL =
+    process.env.NODE_ENV === 'development' ?
     'http://localhost:8080' : 'http://localhost:8080';
 
 const style = {
   rightPanel: {
     float: "right"
-  },
-
-  customInputStyle: {
-    borderColor: blueGrey200,
-    color: blueGrey200
   },
 
   customBtnStyle: {
@@ -33,8 +29,8 @@ const style = {
 export default class Process extends Component {
   constructor() {
     super();
+    console.log(fs);
     this.state = {
-      open: false,
       value: "",
       serverError: false,
       errorMessage: "",
@@ -43,6 +39,7 @@ export default class Process extends Component {
       autoHideDuration: 4000,
       snackbarMessage: 'The image has been triangulated successfully',
       snackbarOpen: false,
+      triangulatedImg: ""
     };
     this.image = null;
 
@@ -108,7 +105,8 @@ export default class Process extends Component {
       });
       this.setState({
         saveBtnDisabled: false,
-        snackbarOpen: true
+        snackbarOpen: true,
+        triangulatedImg: result.b64img
       })
       activateFileMenu(true);
       PubSub.publish('onProcess', false);
@@ -117,46 +115,41 @@ export default class Process extends Component {
       if (err.error) {
         this.setState({
           serverError: true
-        })  
+        })
       }
     })
   };
 
-  // Open save modal panel
-  onModalOpen() {
-    this.setState({
-      open: true
-    });
-  };
-
-  // Save triangulated image
-  onSave() {
-    if (this.state.value === "") {
-      this.inputName.focus();
-      this.setState({
-        errorMessage: "This field is required"
-      });
-      return false;
-    }
-    this.setState({
-      value: "",
-      errorMessage: "",
-      open: false
-    });
-    const options = JSON.stringify(this.options);
-    console.log(this.options);
-  };
-
-  // Close save modal panel
-  onClose() {
-    this.setState({
-      open: false
-    });
-  };
-
-  handleInputChange(event) {
-    this.setState({
-      value: event.target.value
+  // Open electron save dialog
+  onSaveHandle() {
+    remote.dialog.showSaveDialog({
+      filters: [{
+        name:'Image',
+        extensions: ['jpg', 'png']
+      }]
+    }, (filePath) => {
+      // Send request only when saved is pressed.
+      if (filePath) {
+        // Because we cannot access `fs` inside react we will save the image on Go backend, send as a post request.
+        request.post({
+          url: TRIANGLE_PROCESS_URL + "/save",
+          headers: {
+            "content-type": "application/x-www-form-urlencoded"
+          },
+          form: {
+            url: filePath,
+            b64img: this.state.triangulatedImg
+          }
+        }).then((res) => {
+          console.log(res)
+        }).catch((err) => {
+          if (err.error) {
+            this.setState({
+              serverError: true
+            })
+          }
+        });
+      }
     })
   };
 
@@ -185,22 +178,6 @@ export default class Process extends Component {
 
   // Render
   render() {
-    const actions = [
-      <RaisedButton
-        label="Save"
-        secondary={true}
-        onClick={this.onSave.bind(this)}
-        keyboardFocused={true}
-        style={style.customBtnStyle}
-      />,
-      <RaisedButton
-        label="Cancel"
-        primary={true}
-        onClick={this.onClose.bind(this)}
-        style={style.customBtnStyle}
-      />
-    ];
-
     return (
       <section className="Process">
         <span style={style.leftPanel}>
@@ -217,28 +194,10 @@ export default class Process extends Component {
           <RaisedButton
             label="Save"
             secondary={true}
-            onClick={this.onModalOpen.bind(this)}
+            onClick={this.onSaveHandle.bind(this)}
             disabled={this.state.saveBtnDisabled}
             style={style.customBtnStyle}
           />
-          <Dialog
-            title="Save triangulated image"
-            actions={actions}
-            modal={false}
-            open={this.state.open}
-            onRequestClose={this.onClose.bind(this)}
-          >
-            <TextField
-              hintText="File Name"
-              errorText={this.state.errorMessage}
-              floatingLabelText="File Name"
-              floatingLabelStyle={style.customInputStyle}
-              floatingLabelFocusStyle={style.customInputStyle}
-              value={this.state.value}
-              ref={(inputName) => this.inputName = inputName}
-              onChange={this.handleInputChange.bind(this)}
-            /><br />
-          </Dialog>
           <Dialog
             title="Server Error"
             actions={

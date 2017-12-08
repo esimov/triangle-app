@@ -31,6 +31,7 @@ import (
 	"encoding/base64"
 
 	"github.com/bmizerany/pat"
+	"os"
 )
 
 // options received from get request
@@ -60,20 +61,44 @@ type transformResult struct {
 	B64Img	string `json:"b64img"`
 }
 
-// downloadAndTransformImage does an HTTP GET for rawurl
-// and if it is a jpeg or png image it applies the transform
-func downloadAndTransformImage(rawurl string, opts options, transform func(image.Image, options) image.Image) (image.Image, error) {
+// Receive a HTTP Post, applies the transform options and returns the triangulated image in B64 form
+func downloadAndTransformImage(b64img string, opts options, transform func(image.Image, options) image.Image) (image.Image, error) {
+	decodedImg, err := decodeB64Img(b64img)
+	if err != nil {
+		return nil, err
+	}
+	return transform(decodedImg, opts), nil
+}
+
+// Save the triangulated image locally. On success it returns the image path, otherwise the error message.
+func saveTriangulatedImage(b64img string, imgPath string) error {
+	fn, err := os.Create(imgPath)
+	decodedImg, err := decodeB64Img(b64img)
+	if err != nil {
+		fmt.Printf("Error creating image file %v.", err)
+		return err
+	}
+
+	if err := jpeg.Encode(fn, decodedImg, &jpeg.Options{100}); err != nil {
+		fmt.Printf("Error encoding the triangulated image %v", err)
+		return err
+	}
+	return nil
+}
+
+// Transform the base url image to the encoded *.jpeg or *.png file.
+func decodeB64Img(b64img string) (image.Image, error) {
 	var decodedImg image.Image
 
 	// Obtain the image type from the data url
-	idx := strings.Index(rawurl, ",")
-	imgType := strings.TrimSuffix(rawurl[5:idx], ";base64")
+	idx := strings.Index(b64img, ",")
+	imgType := strings.TrimSuffix(b64img[5:idx], ";base64")
 
 	// Decode the string
-	rawImage := string(rawurl)[idx+1:]
+	rawImage := string(b64img)[idx+1:]
 	unbased, err := base64.StdEncoding.DecodeString(rawImage)
 	if err != nil {
-		log.Panicln("Cannot decode base64 image!")
+		fmt.Printf("Cannot decode base64 image! %v", err)
 	}
 	res := bytes.NewReader(unbased)
 
@@ -92,11 +117,13 @@ func downloadAndTransformImage(rawurl string, opts options, transform func(image
 			return nil, err
 		}
 	}
-	return transform(decodedImg, opts), nil
+	return decodedImg, nil
 }
 
+// Server address. It defaults to 8080 port.
 var addr = flag.String("a", ":8080", "Server address")
 
+// Main function
 func main() {
 	log.SetPrefix("\x1b[39m▲ TRIANGLE : ")
 	flag.Parse()
@@ -161,6 +188,28 @@ func main() {
 				}
 			}
 		}
+	}))
+
+	m.Post("/save", http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		req.ParseForm()
+		if req.Form == nil {
+			http.Error(w, "Invalid request form.", 400)
+			return
+		}
+		imgurl := req.FormValue("url")
+		b64img := req.FormValue("b64img")
+
+		err := saveTriangulatedImage(b64img, imgurl)
+		if err != nil {
+			fmt.Fprintf(w, "Saving triangulated image failed, %v", err)
+		}
+		log.Printf("The triangulated image has been saved to: %v", imgurl)
+
+		w.Header().Set("Content-Type", "text/plain")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.WriteHeader(http.StatusOK)
+
+		fmt.Fprintf(w, "The triangulated image has been saved into: %s", string(imgurl))
 	}))
 
 	log.Printf("Starting server on port%s", *addr)
