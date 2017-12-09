@@ -145,15 +145,15 @@ func main() {
 			return
 		}
 
-		blurRadius, _ := strconv.Atoi(req.FormValue("blurRadius"))
-		sobelThreshold, _ := strconv.Atoi(req.FormValue("sobelThreshold"))
-		noise, _ := strconv.Atoi(req.FormValue("noise"))
-		pointsTreshold, _ := strconv.Atoi(req.FormValue("pointsThreshold"))
-		maxPoints, _ := strconv.Atoi(req.FormValue("maxPoints"))
-		grayscale, _ := strconv.ParseBool(req.FormValue("grayscale"))
-		solidWireframe, _ := strconv.ParseBool(req.FormValue("solidWireframe"))
-		wireframeType, _ := strconv.Atoi(req.FormValue("wireframeType"))
-		strokeWidth, _ := strconv.ParseFloat(req.FormValue("strokeWidth"), 64)
+		blurRadius, _ 		:= strconv.Atoi(req.FormValue("blurRadius"))
+		sobelThreshold, _ 	:= strconv.Atoi(req.FormValue("sobelThreshold"))
+		noise, _		 	:= strconv.Atoi(req.FormValue("noise"))
+		pointsTreshold, _ 	:= strconv.Atoi(req.FormValue("pointsThreshold"))
+		maxPoints, _ 		:= strconv.Atoi(req.FormValue("maxPoints"))
+		grayscale, _ 		:= strconv.ParseBool(req.FormValue("grayscale"))
+		solidWireframe, _ 	:= strconv.ParseBool(req.FormValue("solidWireframe"))
+		wireframeType, _ 	:= strconv.Atoi(req.FormValue("wireframeType"))
+		strokeWidth, _ 		:= strconv.ParseFloat(req.FormValue("strokeWidth"), 64)
 
 		// Decode json encoded wireframe color into RGBA type.
 		var wfcol wireframeColor
@@ -166,15 +166,15 @@ func main() {
 		imgPath := req.FormValue("imagePath")
 
 		opts := &options{
-			BlurRadius:     blurRadius,
+			BlurRadius:		 blurRadius,
 			SobelThreshold:  sobelThreshold,
-			Noise:         noise,
+			Noise:			 noise,
 			PointsThreshold: pointsTreshold,
-			MaxPoints:     maxPoints,
-			Grayscale:     grayscale,
+			MaxPoints:		 maxPoints,
+			Grayscale:		 grayscale,
 			SolidWireframe:  solidWireframe,
-			WireframeType:     wireframeType,
-			WireframeColor:    color.RGBA{wfcol.R, wfcol.G, wfcol.B, wfcol.A},
+			WireframeType:	 wireframeType,
+			WireframeColor:	 color.RGBA{wfcol.R, wfcol.G, wfcol.B, wfcol.A},
 			StrokeWidth:     strokeWidth,
 		}
 		log.Printf("Transformer accepted for %q", imgPath)
@@ -191,7 +191,7 @@ func main() {
 					Image:   b.Bytes(),
 					ImgURL:  fmt.Sprintf("/image/%s", key),
 					SrcURL:  imgPath,
-					B64Img:     "data:image/png;base64," + imgBase64Str,
+					B64Img:  "data:image/png;base64," + imgBase64Str,
 				}
 
 				var enc []byte
