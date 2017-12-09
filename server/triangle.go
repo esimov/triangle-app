@@ -19,6 +19,7 @@ import (
 	"image/color"
 	"log"
 	"time"
+	"fmt"
 
 	tri "github.com/esimov/triangle"
 	"github.com/fogleman/gg"
@@ -40,6 +41,7 @@ var (
 
 // triangulate is the main workhorse. Transforms an image with the provided options.
 func triangulate(src image.Image, opts options) image.Image {
+	fmt.Println(opts.WireframeColor)
 	width, height := src.Bounds().Dx(), src.Bounds().Dy()
 	ctx := gg.NewContext(width, height)
 	ctx.DrawRectangle(0, 0, float64(width), float64(height))
@@ -80,9 +82,10 @@ func triangulate(src image.Image, opts options) image.Image {
 
 		j := ((int(cx) | 0) + (int(cy)|0)*width) * 4
 		r, g, b := srcImg.Pix[j], srcImg.Pix[j + 1], srcImg.Pix[j + 2]
+		wfcol := opts.WireframeColor
 
 		if opts.SolidWireframe {
-			lineColor = color.RGBA{R: 0, G: 0, B: 0, A: 255}
+			lineColor = color.RGBA{R: wfcol.R, G: wfcol.G, B: wfcol.B, A: 255}
 		} else {
 			lineColor = color.RGBA{R: r, G: g, B: b, A: 255}
 		}
@@ -94,7 +97,7 @@ func triangulate(src image.Image, opts options) image.Image {
 			ctx.Fill()
 		case WITH_WIREFRAME:
 			ctx.SetFillStyle(gg.NewSolidPattern(color.RGBA{R: r, G: g, B: b, A: 255}))
-			ctx.SetStrokeStyle(gg.NewSolidPattern(color.RGBA{R: 0, G: 0, B: 0, A: 20}))
+			ctx.SetStrokeStyle(gg.NewSolidPattern(lineColor))
 			ctx.SetLineWidth(opts.StrokeWidth)
 			ctx.FillPreserve()
 			ctx.StrokePreserve()

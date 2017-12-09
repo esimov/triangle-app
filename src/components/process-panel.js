@@ -84,13 +84,12 @@ export default class Process extends Component {
     Object.assign(options, {
       'image': this.options.loadedImg,
       'imagePath': this.options.imgPath || "Webcam",
-      'wireframeType': parseInt(this.options.wireframeType, 10),
       'strokeWidth': parseInt(this.options.strokeWidth, 10),
-      'wireframeColor': this.options.solidWireframeColor,
+      'wireframeType': parseInt(this.options.wireframeType, 10),
+      'wireframeColor': JSON.stringify(this.options.solidWireframeColor),
       ...sliders,
       ...toggleItems
     })
-    console.log(options);
     // Send ajax request to image server
     request.post({
       url: TRIANGLE_PROCESS_URL + "/images",

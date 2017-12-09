@@ -149,6 +149,7 @@ export default class Settings extends Component {
       wirefameDisabled: true,
       isSolidWireframe: false,
       solidWireframeColor: {r:0, g:0, b:0, a:1},
+      backgroundColor: "#ABB8C3",
       strokeWidth: 0,
       wireframeType: 0
     });
@@ -226,7 +227,8 @@ export default class Settings extends Component {
 
   handleOnColorChange(color, event) {
     this.setState({
-      solidWireframeColor: color.rgb
+      solidWireframeColor: color.rgb,
+      backgroundColor: color.hex
     });
   }
 
@@ -242,7 +244,7 @@ export default class Settings extends Component {
   }
 
   render() {
-    const wireframeColors = ['#000000', '#FF6900', '#FCB900', '#00D084', '#8ED1FC', '#0693E3', '#ABB8C3', '#EB144C', '#F78DA7', '#9900EF'];
+    const wireframeColors = ['#000000', '#555555', '#697689', '#999999', '#D9E3F0', '#EDF4F7', '#004DCF', '#DB3E00', '#008B02', '#FFEB3B'];
     let sliderItems, toggleItems;
 
     sliderItems = this.state.sliders.map((slider, id) => {
@@ -296,7 +298,11 @@ export default class Settings extends Component {
             {toggleItems}
             <div style={{ display: this.state.isSolidWireframe ? "block" : "none" }}>
               <div>Wireframe Color</div><br/>
-              <TwitterPicker colors={wireframeColors} onChangeComplete={this.handleOnColorChange.bind(this)}/>
+              <TwitterPicker 
+                colors={wireframeColors} 
+                color={ this.state.backgroundColor }
+                onChangeComplete={this.handleOnColorChange.bind(this)}
+              />
             </div>
             <SelectField
               floatingLabelText="Wireframe mode"

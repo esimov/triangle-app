@@ -24,43 +24,50 @@ import (
 	_ "image/jpeg"
 	"image/png"
 	"log"
+	"os"
 	"net/http"
 	"strconv"
 	"image/jpeg"
 	"strings"
 	"encoding/base64"
+	"image/color"
 
 	"github.com/bmizerany/pat"
-	"os"
-	"image/color"
 )
 
 // options received from get request
 type options struct {
-	BlurRadius   	int
-	SobelThreshold 	int
-	Noise		int
-	PointsThreshold	int
-	MaxPoints	int
-	Grayscale	bool
-	SolidWireframe	bool
-	WireframeType	int
-	WireframeColor	color.RGBA
-	StrokeWidth	float64
+	BlurRadius      int
+	SobelThreshold  int
+	Noise           int
+	PointsThreshold int
+	MaxPoints       int
+	Grayscale       bool
+	SolidWireframe  bool
+	WireframeType   int
+	WireframeColor  color.RGBA
+	StrokeWidth     float64
+}
+
+type wireframeColor struct {
+	R uint8 `json:"r"`
+	G uint8 `json:"g"`
+	B uint8 `json:"b"`
+	A uint8 `json:"a"`
 }
 
 // transformRequest is the result of an image transformation
 // Message is a human readable message for the user
 // Image is the actual transformed image
 // ImgURL is the url for the transformed image
-// A json serialization of transformResult is return to the browser
-// as a server side event
+// B64Img is the image encoded as a base64 url
+// A json serialization of transformResult is return to the browser as a server side event
 type transformResult struct {
 	Message string `json:"message"`
 	Image   []byte `json:"-"`
 	ImgURL  string `json:"img"`
 	SrcURL  string `json:"src"`
-	B64Img	string `json:"b64img"`
+	B64Img  string `json:"b64img"`
 }
 
 // Receive a HTTP Post, applies the transform options and returns the triangulated image in B64 form
@@ -97,7 +104,7 @@ func decodeB64Img(b64img string) (image.Image, error) {
 	imgType := strings.TrimSuffix(b64img[5:idx], ";base64")
 
 	// Decode the string
-	rawImage := string(b64img)[idx+1:]
+	rawImage := string(b64img)[idx + 1:]
 	unbased, err := base64.StdEncoding.DecodeString(rawImage)
 	if err != nil {
 		fmt.Printf("Cannot decode base64 image! %v", err)
@@ -138,30 +145,37 @@ func main() {
 			return
 		}
 
-		blurRadius, _ 	   := strconv.Atoi(req.FormValue("blurRadius"))
-		sobelThreshold, _  := strconv.Atoi(req.FormValue("sobelThreshold"))
-		noise, _ 	   := strconv.Atoi(req.FormValue("noise"))
-		pointsTreshold, _  := strconv.Atoi(req.FormValue("pointsThreshold"))
-		maxPoints, _ 	   := strconv.Atoi(req.FormValue("maxPoints"))
-		grayscale, _ 	   := strconv.ParseBool(req.FormValue("grayscale"))
-		solidWireframe, _  := strconv.ParseBool(req.FormValue("solidWireframe"))
-		wireframeType, _   := strconv.Atoi(req.FormValue("wireframeType"))
-		strokeWidth, _	   := strconv.ParseFloat(req.FormValue("strokeWidth"), 64)
+		blurRadius, _ := strconv.Atoi(req.FormValue("blurRadius"))
+		sobelThreshold, _ := strconv.Atoi(req.FormValue("sobelThreshold"))
+		noise, _ := strconv.Atoi(req.FormValue("noise"))
+		pointsTreshold, _ := strconv.Atoi(req.FormValue("pointsThreshold"))
+		maxPoints, _ := strconv.Atoi(req.FormValue("maxPoints"))
+		grayscale, _ := strconv.ParseBool(req.FormValue("grayscale"))
+		solidWireframe, _ := strconv.ParseBool(req.FormValue("solidWireframe"))
+		wireframeType, _ := strconv.Atoi(req.FormValue("wireframeType"))
+		strokeWidth, _ := strconv.ParseFloat(req.FormValue("strokeWidth"), 64)
+
+		// Decode json encoded wireframe color into RGBA type.
+		var wfcol wireframeColor
+		err := json.Unmarshal([]byte(req.FormValue("wireframeColor")), &wfcol)
+		if err != nil {
+			log.Printf("Cannot decode wireframe color %v", err)
+		}
 
 		imgurl := req.FormValue("image")
 		imgPath := req.FormValue("imagePath")
 
 		opts := &options{
-			BlurRadius: 	 blurRadius,
+			BlurRadius:     blurRadius,
 			SobelThreshold:  sobelThreshold,
-			Noise: 		 noise,
+			Noise:         noise,
 			PointsThreshold: pointsTreshold,
-			MaxPoints: 	 maxPoints,
-			Grayscale: 	 grayscale,
+			MaxPoints:     maxPoints,
+			Grayscale:     grayscale,
 			SolidWireframe:  solidWireframe,
-			WireframeType: 	 wireframeType,
-			WireframeColor:	 req.FormValue("wireframeColor"),
-			StrokeWidth: 	 strokeWidth,
+			WireframeType:     wireframeType,
+			WireframeColor:    color.RGBA{wfcol.R, wfcol.G, wfcol.B, wfcol.A},
+			StrokeWidth:     strokeWidth,
 		}
 		log.Printf("Transformer accepted for %q", imgPath)
 
@@ -177,7 +191,7 @@ func main() {
 					Image:   b.Bytes(),
 					ImgURL:  fmt.Sprintf("/image/%s", key),
 					SrcURL:  imgPath,
-					B64Img:	 "data:image/png;base64," + imgBase64Str,
+					B64Img:     "data:image/png;base64," + imgBase64Str,
 				}
 
 				var enc []byte
