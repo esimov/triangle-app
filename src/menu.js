@@ -38,15 +38,9 @@ class AppMenu {
           label: 'Save',
           sublabel: 'changeable',
           accelerator: 'CmdOrCtrl+S',
-          click() {
+          click(item, focusedWindow) {
             if (focusedWindow) {
-              const {dialog} = require('electron');
-              dialog.showSaveDialog({
-                filters: [{
-                  name:'Image',
-                  extensions: ['jpg', 'png']
-                }]
-              })
+              AppMenu.action('file-save', true)
             }
           }
         },
@@ -62,6 +56,10 @@ class AppMenu {
                   name:'Image',
                   extensions: ['jpg', 'png']
                 }]
+              }, (filePath) => {
+                if (filePath) {
+                  AppMenu.action('file-save-as', filePath)
+                }
               })
             }
           }

@@ -9,6 +9,7 @@ import Settings from './settings-panel';
 import { activateFileMenu } from './preview-panel';
 
 const { remote } = window.require('electron');
+const {ipcRenderer} = window.require('electron');
 const request = require('request-promise');
 const fs = require('fs');
 
@@ -38,7 +39,8 @@ export default class Process extends Component {
       autoHideDuration: 4000,
       snackbarMessage: 'The image has been triangulated successfully',
       snackbarOpen: false,
-      triangulatedImg: ""
+      triangulatedImg: "",
+      filePath: null
     };
     this.image = null;
 
@@ -60,6 +62,18 @@ export default class Process extends Component {
     });
   }
 
+  componentDidMount() {
+    ipcRenderer.on('file-save', (event, result) => {
+      if (result) {
+        this.onSaveHandle();
+      }
+    });
+
+    ipcRenderer.on('file-save-as', (event, filePath) => {
+      this.saveTriangulatedImage(filePath);
+    });
+  }
+
   // Restore default settings
   restoreDefaults() {
     ReactDOM.findDOMNode(Settings.restoreDefaults.refs.container).click();
@@ -69,8 +83,8 @@ export default class Process extends Component {
   onProcess() {
     PubSub.publish('onProcess', true);
     let options = {},
-      sliders = {},
-      toggleItems = {}
+        sliders = {},
+        toggleItems = {}
 
     this.options.sliders.forEach((slider) => {
       sliders[slider.name] = slider.currentVal;
@@ -119,8 +133,19 @@ export default class Process extends Component {
     })
   };
 
-  // Open electron save dialog
+  // Save handler
   onSaveHandle() {
+    // If image has already been saved simply override it.
+    if (this.state.filePath) {
+      this.saveTriangulatedImage(this.state.filePath);
+    } else {
+      // Open electron save dialog
+      this.openSaveDialog();
+    }
+  };
+
+  // Open electron save dialog
+  openSaveDialog() {
     remote.dialog.showSaveDialog({
       filters: [{
         name:'Image',
@@ -129,28 +154,35 @@ export default class Process extends Component {
     }, (filePath) => {
       // Send request only when saved is pressed.
       if (filePath) {
-        // Because we cannot access `fs` inside react we will save the image on Go backend, send as a post request.
-        request.post({
-          url: TRIANGLE_PROCESS_URL + "/save",
-          headers: {
-            "content-type": "application/x-www-form-urlencoded"
-          },
-          form: {
-            url: filePath,
-            b64img: this.state.triangulatedImg
-          }
-        }).then((res) => {
-          console.log(res)
-        }).catch((err) => {
-          if (err.error) {
-            this.setState({
-              serverError: true
-            })
-          }
-        });
+        this.saveTriangulatedImage(filePath);
       }
     })
-  };
+  }
+
+  // Save triangulated image into a local folder
+  saveTriangulatedImage(filePath) {
+    // Because we cannot access `fs` inside react we will save the image on Go backend, send as a post request.
+    request.post({
+      url: TRIANGLE_PROCESS_URL + "/save",
+      headers: {
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      form: {
+        url: filePath,
+        b64img: this.state.triangulatedImg
+      }
+    }).then((res) => {
+      this.setState({
+        filePath: filePath
+      })
+    }).catch((err) => {
+      if (err.error) {
+        this.setState({
+          serverError: true
+        })
+      }
+    });
+  }
 
   handleCloseModal(event) {
     this.setState({serverError: false});

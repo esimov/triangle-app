@@ -19,8 +19,6 @@ import (
 	"image/color"
 	"log"
 	"time"
-	"fmt"
-
 	tri "github.com/esimov/triangle"
 	"github.com/fogleman/gg"
 )
@@ -41,7 +39,6 @@ var (
 
 // triangulate is the main workhorse. Transforms an image with the provided options.
 func triangulate(src image.Image, opts options) image.Image {
-	fmt.Println(opts.WireframeColor)
 	width, height := src.Bounds().Dx(), src.Bounds().Dy()
 	ctx := gg.NewContext(width, height)
 	ctx.DrawRectangle(0, 0, float64(width), float64(height))
@@ -98,13 +95,13 @@ func triangulate(src image.Image, opts options) image.Image {
 		case WITH_WIREFRAME:
 			ctx.SetFillStyle(gg.NewSolidPattern(color.RGBA{R: r, G: g, B: b, A: 255}))
 			ctx.SetStrokeStyle(gg.NewSolidPattern(lineColor))
-			ctx.SetLineWidth(opts.StrokeWidth)
+			ctx.SetLineWidth(opts.StrokeWidth * 0.1)
 			ctx.FillPreserve()
 			ctx.StrokePreserve()
 			ctx.Stroke()
 		case WIREFRAME_ONLY:
 			ctx.SetStrokeStyle(gg.NewSolidPattern(lineColor))
-			ctx.SetLineWidth(opts.StrokeWidth)
+			ctx.SetLineWidth(opts.StrokeWidth * 0.1)
 			ctx.StrokePreserve()
 			ctx.Stroke()
 		}

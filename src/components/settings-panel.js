@@ -53,7 +53,7 @@ const defaultValues = {
       name: "blurRadius",
       title: "Blur Radius:",
       range: {
-        min: 0,
+        min: 1,
         max: 20,
         default: 4,
         step: 1
