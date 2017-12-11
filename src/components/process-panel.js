@@ -40,7 +40,7 @@ export default class Process extends Component {
       snackbarMessage: 'The image has been triangulated successfully',
       snackbarOpen: false,
       triangulatedImg: "",
-      filePath: null
+      filePath: ""
     };
     this.image = null;
 

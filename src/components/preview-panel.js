@@ -241,7 +241,7 @@ export default class Preview extends Component {
       // we create a canvas element, draw the image into it and rotate based on exif information.
       let canvas = document.createElement('canvas');
       let ctx = canvas.getContext('2d');
-      let result = null;
+      let result = "";
 
       var w = image.width;
       var h = image.height;

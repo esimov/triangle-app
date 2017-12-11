@@ -8,13 +8,13 @@ export default class ResultModal extends Component {
   constructor() {
     super();
     this.state = {
-      result: null,
+      imgSource: "",
       imgSize: {}
     };
 
     PubSub.subscribe('showBigImage', (event, img) => {
       this.setState({
-        result: img
+        imgSource: img
       })
     })
 
@@ -22,7 +22,7 @@ export default class ResultModal extends Component {
       let img = new Image();
       img.onload = (event) => {
         this.setState({
-          result: img.src,
+          imgSource: img.src,
           imgSize: { width: img.width, height: img.height }
         })
       }
@@ -38,13 +38,13 @@ export default class ResultModal extends Component {
   // Close result modal.
   handleClose(event) {
     this.setState({
-      result: null
+      imgSource: ""
     });
   }
 
   // Close result modal by pressing ESC key.
   handleKeyPress(event) {
-    if (this.state.result && event.keyCode === 27) {
+    if (this.state.imgSource && event.keyCode === 27) {
       this.handleClose(event)
     }
   }
@@ -60,7 +60,7 @@ export default class ResultModal extends Component {
         zIndex: 99
       },
       image: {
-        display: this.state.result ? "block" : "none"
+        display: this.state.imgSource ? "block" : "none"
       }
     }
 
@@ -70,7 +70,7 @@ export default class ResultModal extends Component {
         tabIndex="0"
         onKeyDown={this.handleKeyPress.bind(this)}
         ref={(result) => { this.result = result }}
-        className={this.state.result ? "visible" : "hidden"}
+        className={this.state.imgSource ? "visible" : "hidden"}
       >
         <div className="close">
           <IconButton tooltip="Close"
@@ -86,11 +86,11 @@ export default class ResultModal extends Component {
             smallImage: {
               alt: 'Triangulated Image',
               isFluidWidth: true,
-              src: `${this.state.result}`
+              src: `${this.state.imgSource}`
             },
             largeImage: {
               alt: 'Triangulated Image',
-              src: `${this.state.result}`,
+              src: `${this.state.imgSource}`,
               width: `${width}`,
               height: `${height}`,
             },
