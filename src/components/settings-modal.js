@@ -96,7 +96,7 @@ export default class SettingsModal extends Component {
         <div>
           <Divider />
           <Toggle label="Use Webcam"
-            defaultToggled={isWebcamEnabled}
+            toggled={isWebcamEnabled}
             style={this.modal.toggleStyle}
             onToggle={this.handleWebcamSwitch.bind(this)}
           />
@@ -122,7 +122,7 @@ export default class SettingsModal extends Component {
       >
         <div className="content">
           <Toggle label="Dark Theme"
-            defaultToggled={isDarkTheme}
+            toggled={isDarkTheme}
             style={this.modal.toggleStyle}
             onToggle={this.handleThemeSwitch.bind(this)}
           />
