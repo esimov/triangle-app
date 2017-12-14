@@ -105,15 +105,15 @@ const defaultValues = {
       currentVal: 2500
     },
     {
-      name: "Sobel Filter Threshold",
-      title: "Sobel Filter Threshold:",
+      name: "coordCenter",
+      title: "Coordinate Center (x0.1):",
       range: {
-        min: 2,
-        max: 50,
-        default: 10,
-        step: 0.1
+        min: 29,
+        max: 33,
+        default: 33,
+        step: 1
       },
-      currentVal: 10
+      currentVal: 33
     }
   ],
   // Toggle items
@@ -137,9 +137,16 @@ export default class Settings extends Component {
   constructor(props) {
     super(props);
     this.state = this.initialState;
+    this.defaultSettings = this.getDefaultSettings(this.initialState);
     this.handleSlider = this.handleSlider.bind(this);
     this.handleToggleSwitch = this.handleToggleSwitch.bind(this);
     this.handleSliderChange = this.handleSliderChange.bind(this);
+  }
+
+  // Set default values after first render
+  componentDidMount() {
+    this.setState(this.initialState);
+    Settings.restoreDefaults = this.resetElement;
   }
 
   static restoreDefaults;
@@ -153,6 +160,16 @@ export default class Settings extends Component {
       strokeWidth: 0,
       wireframeType: 0
     });
+  }
+
+  // Return default settings
+  getDefaultSettings(settings) {
+    return JSON.parse(JSON.stringify(settings))
+  }
+
+  // Restore default values
+  restoreDefaultSettings() {
+    this.setState(this.getDefaultSettings(this.defaultSettings));
   }
 
   // Update slider values
@@ -169,6 +186,7 @@ export default class Settings extends Component {
   handleToggleSwitch(id, event, checked) {
     const toggleItems = this.state.toggleItems;
     toggleItems[id].status = checked;
+    toggleItems[id].toggled = checked;
 
     this.setState({
       toggleItems
@@ -210,37 +228,31 @@ export default class Settings extends Component {
     }
   };
 
-  handleSliderChange(id, event, value) {
+  // Slider change handler
+  handleSliderChange(id, event, val) {
     const sliders = this.state.sliders;
-
+    let value = parseInt(val, 10)
+    
+    if (Number.isNaN(value)) {
+      value = sliders[id].range.min;
+    }
     if (value < sliders[id].range.min) {
       value = sliders[id].range.min;
     } else if (value > sliders[id].range.max) {
       value = sliders[id].range.max;
     }
     sliders[id].currentVal = value;
-
     this.setState({
       sliders
     });
   };
 
+  // Color change handler
   handleOnColorChange(color, event) {
     this.setState({
       solidWireframeColor: color.rgb,
       backgroundColor: color.hex
     });
-  }
-
-  // Restore default values
-  restoreDefaults() {
-    this.setState(this.initialState);
-  }
-
-  // Set default values after first render
-  componentDidMount() {
-    this.setState(this.initialState);
-    Settings.restoreDefaults = this.resetElement;
   }
 
   render() {
@@ -250,7 +262,7 @@ export default class Settings extends Component {
     sliderItems = this.state.sliders.map((slider, id) => {
       return (
         <div style={styles.main} key={slider.name} >
-          <span style={styles.text}>{slider.title}
+          <span style={styles.text}> {slider.title}
             <TextField type="number"
               name={slider.name}
               underlineShow={false}
@@ -278,7 +290,7 @@ export default class Settings extends Component {
         <div style={this.mainStyle} key={toggleItem.name} >
           <Toggle label={toggleItem.label}
             style={styles.toggle}
-            defaultToggled={toggleItem.toggled}
+            toggled={toggleItem.toggled}
             // Extend the default event action parameters with the togggle id. We need to capture the current item.
             onToggle={this.handleToggleSwitch.bind(toggleItem, id)}
           />
@@ -323,7 +335,7 @@ export default class Settings extends Component {
               onChange={this.handleValueChange.bind(this)}
               type="number"
             />
-            <RaisedButton label="Restore Defaults" onClick={this.restoreDefaults.bind(this)} style={{display:"none"}} ref={reset => this.resetElement = reset} />
+            <RaisedButton label="Restore Defaults" onClick={this.restoreDefaultSettings.bind(this)} style={{display:"none"}} ref={reset => this.resetElement = reset} />
           </div>
         </div>
     );

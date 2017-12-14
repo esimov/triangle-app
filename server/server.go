@@ -42,6 +42,7 @@ type options struct {
 	Noise           int
 	PointsThreshold int
 	MaxPoints       int
+	CoordCenter		float64
 	Grayscale       bool
 	SolidWireframe  bool
 	WireframeType   int
@@ -150,6 +151,7 @@ func main() {
 		noise, _		 	:= strconv.Atoi(req.FormValue("noise"))
 		pointsTreshold, _ 	:= strconv.Atoi(req.FormValue("pointsThreshold"))
 		maxPoints, _ 		:= strconv.Atoi(req.FormValue("maxPoints"))
+		coordCenter, _ 		:= strconv.ParseFloat(req.FormValue("coordCenter"), 64)
 		grayscale, _ 		:= strconv.ParseBool(req.FormValue("grayscale"))
 		solidWireframe, _ 	:= strconv.ParseBool(req.FormValue("solidWireframe"))
 		wireframeType, _ 	:= strconv.Atoi(req.FormValue("wireframeType"))
@@ -171,6 +173,7 @@ func main() {
 			Noise:			 noise,
 			PointsThreshold: pointsTreshold,
 			MaxPoints:		 maxPoints,
+			CoordCenter:	 coordCenter * 0.01,
 			Grayscale:		 grayscale,
 			SolidWireframe:  solidWireframe,
 			WireframeType:	 wireframeType,

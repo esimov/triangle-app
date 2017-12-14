@@ -30,11 +30,11 @@ const (
 )
 
 var (
-	blur, gray	*image.NRGBA
-	sobel, srcImg 	*image.NRGBA
+	blur, gray    *image.NRGBA
+	sobel, srcImg    *image.NRGBA
 	triangles       []tri.Triangle
 	points          []tri.Point
-	lineColor       color.RGBA
+	lineColor color.RGBA
 )
 
 // triangulate is the main workhorse. Transforms an image with the provided options.
@@ -74,10 +74,10 @@ func triangulate(src image.Image, opts options) image.Image {
 		ctx.LineTo(float64(p2.X), float64(p2.Y))
 		ctx.LineTo(float64(p0.X), float64(p0.Y))
 
-		cx := float64(p0.X+p1.X+p2.X) * 0.33333
-		cy := float64(p0.Y+p1.Y+p2.Y) * 0.33333
+		cx := float64(p0.X + p1.X + p2.X) * opts.CoordCenter
+		cy := float64(p0.Y + p1.Y + p2.Y) * opts.CoordCenter
 
-		j := ((int(cx) | 0) + (int(cy)|0)*width) * 4
+		j := ((int(cx) | 0) + (int(cy) | 0) * width) * 4
 		r, g, b := srcImg.Pix[j], srcImg.Pix[j + 1], srcImg.Pix[j + 2]
 		wfcol := opts.WireframeColor
 
@@ -145,9 +145,9 @@ func toNRGBA(img image.Image) *image.NRGBA {
 		rowSize := srcBounds.Dx() * 4
 		for dstY := 0; dstY < dstH; dstY++ {
 			di := dst.PixOffset(0, dstY)
-			si := src.PixOffset(srcMinX, srcMinY+dstY)
+			si := src.PixOffset(srcMinX, srcMinY + dstY)
 			for dstX := 0; dstX < dstW; dstX++ {
-				copy(dst.Pix[di:di+rowSize], src.Pix[si:si+rowSize])
+				copy(dst.Pix[di:di + rowSize], src.Pix[si:si + rowSize])
 			}
 		}
 	case *image.YCbCr:
@@ -159,23 +159,23 @@ func toNRGBA(img image.Image) *image.NRGBA {
 				siy := src.YOffset(srcX, srcY)
 				sic := src.COffset(srcX, srcY)
 				r, g, b := color.YCbCrToRGB(src.Y[siy], src.Cb[sic], src.Cr[sic])
-				dst.Pix[di+0] = r
-				dst.Pix[di+1] = g
-				dst.Pix[di+2] = b
-				dst.Pix[di+3] = 0xff
+				dst.Pix[di + 0] = r
+				dst.Pix[di + 1] = g
+				dst.Pix[di + 2] = b
+				dst.Pix[di + 3] = 0xff
 				di += 4
 			}
 		}
 	case *image.Gray:
 		for dstY := 0; dstY < dstH; dstY++ {
 			di := dst.PixOffset(0, dstY)
-			si := src.PixOffset(srcMinX, srcMinY+dstY)
+			si := src.PixOffset(srcMinX, srcMinY + dstY)
 			for dstX := 0; dstX < dstW; dstX++ {
 				c := src.Pix[si]
-				dst.Pix[di+0] = c
-				dst.Pix[di+1] = c
-				dst.Pix[di+2] = c
-				dst.Pix[di+3] = 0xff
+				dst.Pix[di + 0] = c
+				dst.Pix[di + 1] = c
+				dst.Pix[di + 2] = c
+				dst.Pix[di + 3] = 0xff
 				di += 4
 				si += 2
 			}
@@ -184,11 +184,11 @@ func toNRGBA(img image.Image) *image.NRGBA {
 		for dstY := 0; dstY < dstH; dstY++ {
 			di := dst.PixOffset(0, dstY)
 			for dstX := 0; dstX < dstW; dstX++ {
-				c := color.NRGBAModel.Convert(img.At(srcMinX+dstX, srcMinY+dstY)).(color.NRGBA)
-				dst.Pix[di+0] = c.R
-				dst.Pix[di+1] = c.G
-				dst.Pix[di+2] = c.B
-				dst.Pix[di+3] = c.A
+				c := color.NRGBAModel.Convert(img.At(srcMinX + dstX, srcMinY + dstY)).(color.NRGBA)
+				dst.Pix[di + 0] = c.R
+				dst.Pix[di + 1] = c.G
+				dst.Pix[di + 2] = c.B
+				dst.Pix[di + 3] = c.A
 				di += 4
 			}
 		}
