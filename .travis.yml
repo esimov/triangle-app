@@ -1,0 +1,41 @@
+sudo: required
+dist: trusty
+
+language: node_js
+node_js:
+  - "8"
+os:
+  - linux
+  - osx
+  - windows
+
+branches:
+  only:
+    - master
+
+env:
+  - TARGET_ARCH=x64
+
+matrix:
+  include:
+    - os: linux
+      env: TARGET_ARCH=arm
+    - os: linux
+      env: TARGET_ARCH=ia32
+    - os: linux
+      env: TARGET_ARCH=arm64
+  allow_failures:
+    - os: osx
+
+before_install:
+  - npm install -g yarn
+
+cache: yarn
+
+install:
+- yarn
+
+script:
+- yarn run build
+- yarn run electron
+- yarn run test
