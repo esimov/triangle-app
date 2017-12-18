@@ -16,7 +16,7 @@ After Go is installed run the bellow commands to get `▲Triangle` as a backend 
 $ go get github.com/esimov/triangle/
 ```
 
-A less cumbersome and more straightforward solution would be to have the image server installed on a remote host and communicate with via `http`. In a future release I will consider to use a free Go host provider or if someone is willing to donate a cloud space, hosting Go, I would be very thankful.
+A less cumbersome and more straightforward solution would be to have the image server installed on a remote host and communicate with via `http`. In a future release I will consider to use a free Go host provider or *if someone is willing to donate a cloud space, hosting Go*, I would be very thankful.
 
 ### Install & build the application
 If you do not want to build the application yourself you can jump straight to the [release](https://github.com/esimov/triangle-app/releases) page and download the distribution you wish. The three main OS are supported: **Windows**, **MacOS** and **Ubuntu**. Otherwise, you can build the application yourself. Follow along.
