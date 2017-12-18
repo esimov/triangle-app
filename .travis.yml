@@ -37,6 +37,6 @@ install:
 - yarn
 
 script:
-- yarn run build
-- yarn run electron
+- CI="" yarn run build
+- CI="" yarn run electron
 - yarn run test
