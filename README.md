@@ -10,7 +10,7 @@ $ export GOPATH="$HOME/go"
 $ export PATH="$PATH:$GOPATH/bin"
 ```
 
-After Go is installed run the bellow commands to get `▲Triangle` Go application.
+After Go is installed run the bellow commands to get `▲Triangle` as a backend service.
 
 ```bash
 $ go get github.com/esimov/triangle/
