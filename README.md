@@ -83,6 +83,10 @@ After the installation was done, open the terminal window and start the image se
 ```bash
 $ go run server.go triangle.go
 ```
+
+<img src="https://user-images.githubusercontent.com/883386/34115187-86aeee5a-e41d-11e7-80d1-68d107c4bb58.jpg" width=420/>
+<img src="https://user-images.githubusercontent.com/883386/34116133-5060e63e-e420-11e7-8d2c-d5823af90bf5.jpg" width=420/>
+
 ## License
 
 This project is under the Apache License 2.0. See the [LICENSE](https://github.com/esimov/triangle-app/blob/master/LICENSE) file for the full license text. 
