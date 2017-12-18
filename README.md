@@ -84,8 +84,10 @@ After the installation was done, open the terminal window and start the image se
 $ go run server.go triangle.go
 ```
 
-<img src="https://user-images.githubusercontent.com/883386/34115187-86aeee5a-e41d-11e7-80d1-68d107c4bb58.jpg" width=420/>
-<img src="https://user-images.githubusercontent.com/883386/34116133-5060e63e-e420-11e7-8d2c-d5823af90bf5.jpg" width=420/>
+#### Examples
+
+<img align="left" src="https://user-images.githubusercontent.com/883386/34115187-86aeee5a-e41d-11e7-80d1-68d107c4bb58.jpg" width=420 />
+<img src="https://user-images.githubusercontent.com/883386/34116133-5060e63e-e420-11e7-8d2c-d5823af90bf5.jpg" width=420 />
 
 ## License
 
