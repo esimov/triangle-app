@@ -1,5 +1,8 @@
 # ![Triangle logo](https://user-images.githubusercontent.com/883386/32769128-4d9625c6-c923-11e7-9a96-030f2f0efff3.png)
 Desktop application for [▲Triangle](https://github.com/esimov/triangle).
+<p align="center">
+<img src="https://user-images.githubusercontent.com/883386/34100521-59d39458-e3eb-11e7-8ee5-21b1da7784da.gif"/>
+</p>  
 
 Triangle is a desktop application built on top of [▲Triangle](https://github.com/esimov/triangle) using `electron`, `react` and `node.js` to commincate with `Go`, the later running as a backend service. For this reason you have to make sure Go is installed. Then set your `GOPATH`, and make sure `$GOPATH/bin` is on your `PATH`.
 
