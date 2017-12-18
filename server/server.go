@@ -44,7 +44,7 @@ type options struct {
 	Noise           int
 	PointsThreshold int
 	MaxPoints       int
-	CoordCenter		float64
+	CoordCenter	float64
 	Grayscale       bool
 	SolidWireframe  bool
 	WireframeType   int
@@ -148,16 +148,16 @@ func main() {
 			return
 		}
 
-		blurRadius, _ 		:= strconv.Atoi(req.FormValue("blurRadius"))
-		sobelThreshold, _ 	:= strconv.Atoi(req.FormValue("sobelThreshold"))
-		noise, _		 	:= strconv.Atoi(req.FormValue("noise"))
-		pointsTreshold, _ 	:= strconv.Atoi(req.FormValue("pointsThreshold"))
-		maxPoints, _ 		:= strconv.Atoi(req.FormValue("maxPoints"))
-		coordCenter, _ 		:= strconv.ParseFloat(req.FormValue("coordCenter"), 64)
-		grayscale, _ 		:= strconv.ParseBool(req.FormValue("grayscale"))
-		solidWireframe, _ 	:= strconv.ParseBool(req.FormValue("solidWireframe"))
-		wireframeType, _ 	:= strconv.Atoi(req.FormValue("wireframeType"))
-		strokeWidth, _ 		:= strconv.ParseFloat(req.FormValue("strokeWidth"), 64)
+		blurRadius, _ 	  := strconv.Atoi(req.FormValue("blurRadius"))
+		sobelThreshold, _ := strconv.Atoi(req.FormValue("sobelThreshold"))
+		noise, _	  := strconv.Atoi(req.FormValue("noise"))
+		pointsTreshold, _ := strconv.Atoi(req.FormValue("pointsThreshold"))
+		maxPoints, _	  := strconv.Atoi(req.FormValue("maxPoints"))
+		coordCenter, _	  := strconv.ParseFloat(req.FormValue("coordCenter"), 64)
+		grayscale, _	  := strconv.ParseBool(req.FormValue("grayscale"))
+		solidWireframe, _ := strconv.ParseBool(req.FormValue("solidWireframe"))
+		wireframeType, _  := strconv.Atoi(req.FormValue("wireframeType"))
+		strokeWidth, _	  := strconv.ParseFloat(req.FormValue("strokeWidth"), 64)
 
 		// Decode json encoded wireframe color into RGBA type.
 		var wfcol wireframeColor
@@ -170,13 +170,13 @@ func main() {
 		imgPath := req.FormValue("imagePath")
 
 		opts := &options{
-			BlurRadius:		 blurRadius,
+			BlurRadius:	 blurRadius,
 			SobelThreshold:  sobelThreshold,
-			Noise:			 noise,
+			Noise:		 noise,
 			PointsThreshold: pointsTreshold,
-			MaxPoints:		 maxPoints,
+			MaxPoints:	 maxPoints,
 			CoordCenter:	 coordCenter * 0.01,
-			Grayscale:		 grayscale,
+			Grayscale:	 grayscale,
 			SolidWireframe:  solidWireframe,
 			WireframeType:	 wireframeType,
 			WireframeColor:	 color.RGBA{wfcol.R, wfcol.G, wfcol.B, wfcol.A},

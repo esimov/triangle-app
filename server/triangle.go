@@ -32,11 +32,11 @@ const (
 )
 
 var (
-	blur, gray    *image.NRGBA
-	sobel, srcImg    *image.NRGBA
+	blur, gray    	*image.NRGBA
+	sobel, srcImg   *image.NRGBA
 	triangles       []tri.Triangle
 	points          []tri.Point
-	lineColor color.RGBA
+	lineColor 	color.RGBA
 )
 
 // triangulate is the main workhorse. Transforms an image with the provided options.
