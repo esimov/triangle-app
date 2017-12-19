@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/esimov/triangle-app.svg?branch=master)](https://travis-ci.org/esimov/triangle-app)
 
-Triangle is a desktop application built on top of `electron` communicating with a backend image server. For this reason you have to make sure Go is installed. Then set your `GOPATH`, and make sure `$GOPATH/bin` is on your `PATH`.
+Triangle is a desktop application built on top of `electron` communicating with a backend image server. For this reason you have to make sure Go is installed.
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/883386/34100521-59d39458-e3eb-11e7-8ee5-21b1da7784da.gif"/>
@@ -15,16 +15,14 @@ $ export GOPATH="$HOME/go"
 $ export PATH="$PATH:$GOPATH/bin"
 ```
 
-Then run the backend service.
+Then install the main application.
 
 ```bash
 $ go get github.com/esimov/triangle/
 ```
 
-A less cumbersome and more straightforward solution would be to have the image server installed on a remote host and communicate with via `http`. In a future release I will consider to use a free Go host provider or *if someone is willing to donate a cloud space, hosting Go*, I would be very thankful.
-
 ### Install & build the application
-If you do not want to build the application yourself you can jump straight to the [release](https://github.com/esimov/triangle-app/releases) page and download the distribution you wish. The three main OS are supported: **Windows**, **MacOS** and **Ubuntu**. Otherwise, you can build the application yourself. Follow along.
+If you do not want to build the application yourself you can jump straight to the [release](https://github.com/esimov/triangle-app/releases) page and download the distribution you wish: **Windows**, **MacOS** and **Ubuntu**. Otherwise, you can build the application yourself. Follow along.
 
 #### Install
 
