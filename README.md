@@ -10,6 +10,8 @@ Triangle is a desktop application built on top of `electron` communicating with 
 
 ### Install Go
 
+After instalation set your `GOPATH`, and make sure `$GOPATH/bin` is on your `PATH`.
+
 ```bash
 $ export GOPATH="$HOME/go"
 $ export PATH="$PATH:$GOPATH/bin"
