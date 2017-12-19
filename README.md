@@ -15,14 +15,14 @@ $ export GOPATH="$HOME/go"
 $ export PATH="$PATH:$GOPATH/bin"
 ```
 
-Then install the main application.
+Then get the main application.
 
 ```bash
 $ go get github.com/esimov/triangle/
 ```
 
 ### Install & build the application
-If you do not want to build the application yourself you can jump straight to the [release](https://github.com/esimov/triangle-app/releases) page and download the distribution you wish: **Windows**, **MacOS** and **Ubuntu**. Otherwise, you can build the application yourself. Follow along.
+If you do not want to build the application yourself you can jump straight to the [release](https://github.com/esimov/triangle-app/releases) page and download the distribution you wish: **Windows**, **MacOS** and **Ubuntu** are supported. Otherwise, you can build the application yourself. Follow along.
 
 #### Install
 
@@ -77,7 +77,7 @@ $ yarn run dist
 This will generate the binary files depending on the platform under the command is executed.
 
 #### Runing
-After the installation was done, open the terminal window and start the image server by selecting the folder where the Go project was installed and run:
+Open terminal window and start the image server by selecting the folder where the Go project was installed and run:
 
 ```bash
 $ go run server.go triangle.go
