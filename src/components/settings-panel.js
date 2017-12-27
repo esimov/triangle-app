@@ -106,7 +106,7 @@ const defaultValues = {
     },
     {
       name: "coordCenter",
-      title: "Coordinate Center (x0.1):",
+      title: "Coordinate Center (x0.1) %:",
       range: {
         min: 29,
         max: 33,
