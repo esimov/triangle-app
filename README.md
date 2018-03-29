@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/esimov/triangle-app.svg?branch=master)](https://travis-ci.org/esimov/triangle-app)
 
-Triangle is a desktop application built on top of `electron` communicating with a backend image server. For this reason you have to make sure Go is installed.
+Triangle is a desktop application built on top of `electron` communicating with a backend server written in Go. For this reason you have to make sure Go is installed.
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/883386/34100521-59d39458-e3eb-11e7-8ee5-21b1da7784da.gif"/>
@@ -17,14 +17,8 @@ $ export GOPATH="$HOME/go"
 $ export PATH="$PATH:$GOPATH/bin"
 ```
 
-Then get the main application.
-
-```bash
-$ go get github.com/esimov/triangle/
-```
-
 ### Install & build the application
-If you do not want to build the application yourself you can jump straight to the [release](https://github.com/esimov/triangle-app/releases) page and download the distribution you wish: **Windows**, **MacOS** and **Ubuntu** are supported. Otherwise, you can build the application yourself. Follow along.
+In case you do not want to build the application yourself you can jump straight to the [release](https://github.com/esimov/triangle-app/releases) page and download the binary file. **Windows**, **MacOS** and **Ubuntu** are supported. Otherwise, you can build the application yourself. 
 
 #### Install
 
@@ -34,9 +28,9 @@ $ yarn install
 ```
 > Note: the app was compiled, bundled and build using node.js v8.9.1. I got some issues running with node v6.x.
 
-I strongly recommend to use `yarn` instead of `npm` (i got some really strange issues trying to build the application using `npm`).
+I strongly recommend to use `yarn` instead of `npm` (i got some strange issues during the build process when i used `npm`).
 
-The following `run` commands are supported:
+The following commands are supported:
 
 ```bash
 $ yarn run
