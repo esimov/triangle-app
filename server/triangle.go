@@ -53,7 +53,7 @@ func triangulate(src image.Image, opts options) image.Image {
 	start := time.Now()
 	log.Print("Generating triangulated image...")
 
-	blur = tri.Stackblur(img, uint32(width), uint32(height), uint32(opts.BlurRadius))
+	blur = tri.StackBlur(img, uint32(opts.BlurRadius))
 	gray = tri.Grayscale(blur)
 	sobel = tri.SobelFilter(gray, float64(opts.SobelThreshold))
 	points = tri.GetEdgePoints(sobel, opts.PointsThreshold, opts.MaxPoints)
