@@ -1,9 +1,10 @@
 sudo: required
 dist: trusty
+warnings_are_errors: false
 
 language: node_js
 node_js:
-  - "8"
+  - "8.9.1"
 os:
   - linux
   - osx
@@ -36,6 +37,5 @@ install:
 - yarn
 
 script:
-- yarn run build
-- yarn run electron
+- CI="" yarn run build
 - yarn run test
