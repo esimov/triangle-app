@@ -87,5 +87,3 @@ $ go run server.go triangle.go
 ## License
 
 This project is under the Apache License 2.0. See the [LICENSE](https://github.com/esimov/triangle-app/blob/master/LICENSE) file for the full license text. 
-
-Apache 2.0 © [Endre Simo](https://github.com/esimov)
