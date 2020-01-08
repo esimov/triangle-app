@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/esimov/triangle-app.svg?branch=master)](https://travis-ci.org/esimov/triangle-app)
 
-Triangle is the desktop application of https://github.com/esimov/triangle built on top of `electron`. It communicates with a backend server written in Go. For this reason you have to make sure Go is installed.
+Triangle is a desktop application for https://github.com/esimov/triangle built on top of `electron`. It communicates with a backend server written in Go. For this reason you have to make sure Go is installed on your local environment.
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/883386/34100521-59d39458-e3eb-11e7-8ee5-21b1da7784da.gif"/>
@@ -70,8 +70,8 @@ $ yarn run dist
 ```
 This command generates the binary files depending on the current operating system.
 
-#### Runing
-Open a terminal window and start the image server by selecting the folder where the Go project was installed and type:
+#### Runing the web server
+Open a new terminal and select the `server` folder from the application root directory then type:
 
 ```bash
 $ go run server.go triangle.go
