@@ -36,7 +36,7 @@
     "electron-compile": "^6.4.2",
     "electron-forge": "^4.1.2",
     "electron-prebuilt-compile": "1.7.9",
-    "foreman": "^2.0.0"
+    "foreman": ">=3.0.1"
   },
   "homepage": "./",
   "main": "src/electron-starter.js",
