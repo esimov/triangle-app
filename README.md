@@ -79,8 +79,10 @@ $ go run server.go triangle.go
 
 #### Examples
 
-<img align="left" src="https://user-images.githubusercontent.com/883386/34115187-86aeee5a-e41d-11e7-80d1-68d107c4bb58.jpg" width=420 />
-<img src="https://user-images.githubusercontent.com/883386/34116133-5060e63e-e420-11e7-8d2c-d5823af90bf5.jpg" width=420 />
+<a href="https://github.com/esimov/triangle/blob/master/output/sample_3.png"><img src="https://github.com/esimov/triangle/blob/master/output/sample_3.png" width=420/></a>
+<a href="https://github.com/esimov/triangle/blob/master/output/sample_4.png"><img src="https://github.com/esimov/triangle/blob/master/output/sample_4.png" width=420/></a>
+<a href="https://github.com/esimov/triangle/blob/master/output/sample_5.png"><img src="https://github.com/esimov/triangle/blob/master/output/sample_5.png" width=420/></a>
+<a href="https://github.com/esimov/triangle/blob/master/output/sample_6.png"><img src="https://github.com/esimov/triangle/blob/master/output/sample_6.png" width=420/></a>
 
 ## License
 
