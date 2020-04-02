@@ -27,6 +27,7 @@ matrix:
       env: TARGET_ARCH=arm64
   allow_failures:
     - os: osx
+    - os: windows
 
 before_install:
   - npm install -g yarn
