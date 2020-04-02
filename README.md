@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/esimov/triangle-app.svg?branch=master)](https://travis-ci.org/esimov/triangle-app)
 
-Triangle is the desktop application of https://github.com/esimov/triangle built on top of `electron`. It communicates with a backend server written in Go. For this reason you have to make sure Go is installed.
+Triangle is a desktop application for https://github.com/esimov/triangle built on top of `electron`. It communicates with a backend server written in Go. For this reason you have to make sure Go is installed on your local environment.
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/883386/34100521-59d39458-e3eb-11e7-8ee5-21b1da7784da.gif"/>
@@ -70,8 +70,8 @@ $ yarn run dist
 ```
 This command generates the binary files depending on the current operating system.
 
-#### Runing
-Open a terminal window and start the image server by selecting the folder where the Go project was installed and type:
+#### Runing the web server
+Open a new terminal and select the `server` folder from the application root directory then type:
 
 ```bash
 $ go run server.go triangle.go
@@ -79,8 +79,10 @@ $ go run server.go triangle.go
 
 #### Examples
 
-<img align="left" src="https://user-images.githubusercontent.com/883386/34115187-86aeee5a-e41d-11e7-80d1-68d107c4bb58.jpg" width=420 />
-<img src="https://user-images.githubusercontent.com/883386/34116133-5060e63e-e420-11e7-8d2c-d5823af90bf5.jpg" width=420 />
+<a href="https://github.com/esimov/triangle/blob/master/output/sample_3.png"><img src="https://github.com/esimov/triangle/blob/master/output/sample_3.png" width=420/></a>
+<a href="https://github.com/esimov/triangle/blob/master/output/sample_4.png"><img src="https://github.com/esimov/triangle/blob/master/output/sample_4.png" width=420/></a>
+<a href="https://github.com/esimov/triangle/blob/master/output/sample_5.png"><img src="https://github.com/esimov/triangle/blob/master/output/sample_5.png" width=420/></a>
+<a href="https://github.com/esimov/triangle/blob/master/output/sample_6.png"><img src="https://github.com/esimov/triangle/blob/master/output/sample_6.png" width=420/></a>
 
 ## License
 
