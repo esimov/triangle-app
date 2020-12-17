@@ -26,7 +26,7 @@ In case you do not want to build the application yourself you can jump straight 
 $ git clone https://github.com/esimov/triangle-app
 $ yarn install
 ```
-> Note: the app was compiled, bundled and build using node.js v8.9.1. It's strongly recommend to use `yarn` instead of `npm` (i got some strange issues during the build process using `npm`).
+> Note: the app was compiled, bundled and build using node.js v8.9.1. It's strongly recommend to use `yarn` instead of `npm` (I got some strange issues during the build process using `npm`).
 
 The following commands are supported:
 
@@ -79,10 +79,10 @@ $ go run server.go triangle.go
 
 #### Examples
 
-<a href="https://github.com/esimov/triangle/blob/master/output/sample_3.png"><img src="https://github.com/esimov/triangle/blob/master/output/sample_3.png" width=420/></a>
-<a href="https://github.com/esimov/triangle/blob/master/output/sample_4.png"><img src="https://github.com/esimov/triangle/blob/master/output/sample_4.png" width=420/></a>
-<a href="https://github.com/esimov/triangle/blob/master/output/sample_5.png"><img src="https://github.com/esimov/triangle/blob/master/output/sample_5.png" width=420/></a>
-<a href="https://github.com/esimov/triangle/blob/master/output/sample_6.png"><img src="https://github.com/esimov/triangle/blob/master/output/sample_6.png" width=420/></a>
+<a href="https://github.com/esimov/triangle/blob/master/output/sample_3.png"><img src="https://github.com/esimov/triangle/blob/master/output/sample_3.png" width=418/></a>
+<a href="https://github.com/esimov/triangle/blob/master/output/sample_4.png"><img src="https://github.com/esimov/triangle/blob/master/output/sample_4.png" width=418/></a>
+<a href="https://github.com/esimov/triangle/blob/master/output/sample_5.png"><img src="https://github.com/esimov/triangle/blob/master/output/sample_5.png" width=418/></a>
+<a href="https://github.com/esimov/triangle/blob/master/output/sample_6.png"><img src="https://github.com/esimov/triangle/blob/master/output/sample_6.png" width=418/></a>
 
 ## License
 
