@@ -1,15 +1,19 @@
 package triangle
 
 import (
+	"errors"
 	"fmt"
 	"image"
 	"image/color"
+	"image/jpeg"
 	"image/png"
 	"io"
 	"os"
+	"path/filepath"
 	"text/template"
 
 	"github.com/fogleman/gg"
+	"golang.org/x/image/bmp"
 )
 
 const (
@@ -21,7 +25,7 @@ const (
 	WireframeOnly
 )
 
-// Processor type with processing options
+// Processor encompasses all of the currently supported processing options.
 type Processor struct {
 	BlurRadius      int
 	SobelThreshold  int
@@ -30,10 +34,11 @@ type Processor struct {
 	Wireframe       int
 	Noise           int
 	StrokeWidth     float64
-	IsSolid         bool
+	IsStrokeSolid   bool
 	Grayscale       bool
 	OutputToSVG     bool
-	OutputInWeb     bool
+	ShowInBrowser   bool
+	BgColor         string
 }
 
 // Line defines the SVG line parameters.
@@ -64,31 +69,52 @@ type SVG struct {
 	Processor
 }
 
-// Drawer interface which defines the Draw method.
-// This method needs to be implemented by every struct which defines a Draw method.
-// This is meant for code reusing and modularity. In our case the image can be triangulated as raster image or SVG.
+// Drawer interface defines the Draw method.
+// This has to be implemented by every struct which declares a Draw method.
+// By using this method the image can be triangulated as raster type or SVG.
 type Drawer interface {
-	Draw(io.Reader, io.Writer) ([]Triangle, []Point, error)
+	Draw(interface{}, io.Writer) ([]Triangle, []Point, error)
 }
 
-// Draw triangulate the source image and output the result to an image file.
+// Draw is an interface method which triangulates the source type and outputs the result even to an image or a pixel data.
+// The input could be an image file or a pixel data. This is the reason why interface is used as argument type.
 // It returns the number of triangles generated, the number of points and the error in case exists.
-func (im *Image) Draw(input io.Reader, output io.Writer, closure func()) ([]Triangle, []Point, error) {
-	var srcImg *image.NRGBA
+func (im *Image) Draw(input interface{}, output interface{}, fn func()) (image.Image, []Triangle, []Point, error) {
+	var (
+		err    error
+		src    interface{}
+		srcImg *image.NRGBA
+	)
 
-	src, _, err := image.Decode(input)
-	if err != nil {
-		return nil, nil, err
+	switch input.(type) {
+	case *os.File:
+		src, _, err = image.Decode(input.(io.Reader))
+		if err != nil {
+			return nil, nil, nil, err
+		}
+	default:
+		src = input
 	}
 
-	width, height := src.Bounds().Dx(), src.Bounds().Dy()
+	width, height := src.(image.Image).Bounds().Dx(), src.(image.Image).Bounds().Dy()
+	if width <= 1 || height <= 1 {
+		err := errors.New("The image width and height must be greater than 1px.\n")
+		return nil, nil, nil, err
+	}
+
+	// Define a new context and fill it with a background color.
 	ctx := gg.NewContext(width, height)
 	ctx.DrawRectangle(0, 0, float64(width), float64(height))
-	ctx.SetRGBA(1, 1, 1, 1)
+	if im.BgColor != "" {
+		ctx.SetRGBA(1, 1, 1, 1)
+	} else {
+		ctx.SetRGBA(0, 0, 0, 0)
+	}
+
 	ctx.Fill()
 
 	delaunay := &Delaunay{}
-	img := toNRGBA(src)
+	img := ToNRGBA(src.(image.Image))
 
 	blur := StackBlur(img, uint32(im.BlurRadius))
 	gray := Grayscale(blur)
@@ -115,10 +141,9 @@ func (im *Image) Draw(input io.Reader, output io.Writer, closure func()) ([]Tria
 		cy := float64(p0.Y+p1.Y+p2.Y) * 0.33333
 
 		j := ((int(cx) | 0) + (int(cy)|0)*width) * 4
-		r, g, b := srcImg.Pix[j], srcImg.Pix[j+1], srcImg.Pix[j+2]
-
+		r, g, b, a := srcImg.Pix[j], srcImg.Pix[j+1], srcImg.Pix[j+2], srcImg.Pix[j+3]
 		var strokeColor color.RGBA
-		if im.IsSolid {
+		if im.IsStrokeSolid {
 			strokeColor = color.RGBA{R: 0, G: 0, B: 0, A: 255}
 		} else {
 			strokeColor = color.RGBA{R: r, G: g, B: b, A: 255}
@@ -126,18 +151,30 @@ func (im *Image) Draw(input io.Reader, output io.Writer, closure func()) ([]Tria
 
 		switch im.Wireframe {
 		case WithoutWireframe:
-			ctx.SetFillStyle(gg.NewSolidPattern(color.RGBA{R: r, G: g, B: b, A: 255}))
+			if a != 0 {
+				ctx.SetFillStyle(gg.NewSolidPattern(color.RGBA{R: r, G: g, B: b, A: 255}))
+			} else if im.BgColor != "" {
+				ctx.SetHexColor(im.BgColor)
+			}
 			ctx.FillPreserve()
 			ctx.Fill()
 		case WithWireframe:
-			ctx.SetFillStyle(gg.NewSolidPattern(color.RGBA{R: r, G: g, B: b, A: 255}))
-			ctx.SetStrokeStyle(gg.NewSolidPattern(color.RGBA{R: 0, G: 0, B: 0, A: 20}))
+			if a != 0 {
+				ctx.SetFillStyle(gg.NewSolidPattern(color.RGBA{R: r, G: g, B: b, A: 255}))
+				ctx.SetStrokeStyle(gg.NewSolidPattern(color.RGBA{R: 0, G: 0, B: 0, A: 20}))
+			} else if im.BgColor != "" {
+				ctx.SetHexColor(im.BgColor)
+			}
 			ctx.SetLineWidth(im.StrokeWidth)
 			ctx.FillPreserve()
 			ctx.StrokePreserve()
 			ctx.Stroke()
 		case WireframeOnly:
-			ctx.SetStrokeStyle(gg.NewSolidPattern(strokeColor))
+			if a != 0 {
+				ctx.SetStrokeStyle(gg.NewSolidPattern(strokeColor))
+			} else if im.BgColor != "" {
+				ctx.SetHexColor(im.BgColor)
+			}
 			ctx.SetLineWidth(im.StrokeWidth)
 			ctx.StrokePreserve()
 			ctx.Stroke()
@@ -145,25 +182,42 @@ func (im *Image) Draw(input io.Reader, output io.Writer, closure func()) ([]Tria
 		ctx.Pop()
 	}
 
-	newimg := ctx.Image()
-	// Apply a noise on the final image. This will give it a more artistic look.
-	if im.Noise > 0 {
-		noisyImg := Noise(im.Noise, newimg, newimg.Bounds().Dx(), newimg.Bounds().Dy())
-		if err = png.Encode(output, noisyImg); err != nil {
-			return nil, nil, err
+	newImg := ctx.Image()
+	switch output.(type) {
+	case *os.File:
+		// Apply a noise on the final image.
+		if im.Noise > 0 {
+			newImg = Noise(im.Noise, newImg, newImg.Bounds().Dx(), newImg.Bounds().Dy())
 		}
-	} else {
-		if err = png.Encode(output, newimg); err != nil {
-			return nil, nil, err
+
+		ext := filepath.Ext(output.(*os.File).Name())
+		switch ext {
+		case "", ".jpg", ".jpeg":
+			if err = jpeg.Encode(output.(io.Writer), newImg, &jpeg.Options{Quality: 100}); err != nil {
+				return nil, nil, nil, err
+			}
+		case ".png":
+			if err = png.Encode(output.(io.Writer), newImg); err != nil {
+				return nil, nil, nil, err
+			}
+		case ".bmp":
+			if err = bmp.Encode(output.(io.Writer), newImg); err != nil {
+				return nil, nil, nil, err
+			}
+		default:
+			return nil, nil, nil, errors.New("unsupported image format")
 		}
 	}
-	closure()
-	return triangles, points, err
+	fn()
+	return newImg, triangles, points, err
 }
 
-// Draw triangulate the source image and output the result to an SVG file.
+// Draw triangulates the source image and outputs the result to an SVG file.
+// It has the same method signature as the rester Draw method, only that accepts a callback function
+// for further processing, like opening the generated SVG file in the web browser.
+// Everyone can define it's own callback function, depending on each one personal needs.
 // It returns the number of triangles generated, the number of points and the error in case exists.
-func (svg *SVG) Draw(input io.Reader, output io.Writer, closure func()) ([]Triangle, []Point, error) {
+func (svg *SVG) Draw(input io.Reader, output io.Writer, fn func()) (image.Image, []Triangle, []Point, error) {
 	const SVGTemplate = `<?xml version="1.0" ?>
 	<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
 	  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
@@ -191,7 +245,7 @@ func (svg *SVG) Draw(input io.Reader, output io.Writer, closure func()) ([]Trian
 
 	src, _, err := image.Decode(input)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
 	width, height := src.Bounds().Dx(), src.Bounds().Dy()
@@ -201,7 +255,7 @@ func (svg *SVG) Draw(input io.Reader, output io.Writer, closure func()) ([]Trian
 	ctx.Fill()
 
 	delaunay := &Delaunay{}
-	img := toNRGBA(src)
+	img := ToNRGBA(src)
 
 	blur := StackBlur(img, uint32(svg.BlurRadius))
 	gray := Grayscale(blur)
@@ -223,7 +277,7 @@ func (svg *SVG) Draw(input io.Reader, output io.Writer, closure func()) ([]Trian
 		j := ((int(cx) | 0) + (int(cy)|0)*width) * 4
 		r, g, b := srcImg.Pix[j], srcImg.Pix[j+1], srcImg.Pix[j+2]
 
-		if svg.IsSolid {
+		if svg.IsStrokeSolid {
 			strokeColor = color.RGBA{R: 0, G: 0, B: 0, A: 255}
 		} else {
 			strokeColor = color.RGBA{R: r, G: g, B: b, A: 255}
@@ -255,12 +309,13 @@ func (svg *SVG) Draw(input io.Reader, output io.Writer, closure func()) ([]Trian
 		fmt.Printf("Error: %v\n", err)
 		os.Exit(1)
 	}
-	closure()
-	return triangles, points, err
+	// Trigger the callback function after the generation is completed.
+	fn()
+	return nil, triangles, points, err
 }
 
-// toNRGBA converts any image type to *image.NRGBA with min-point at (0, 0).
-func toNRGBA(img image.Image) *image.NRGBA {
+// ToNRGBA converts any image type to *image.NRGBA with min-point at (0, 0).
+func ToNRGBA(img image.Image) *image.NRGBA {
 	srcBounds := img.Bounds()
 	if srcBounds.Min.X == 0 && srcBounds.Min.Y == 0 {
 		if src0, ok := img.(*image.NRGBA); ok {

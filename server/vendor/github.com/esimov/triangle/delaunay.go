@@ -1,21 +1,21 @@
 package triangle
 
-// Point defines a struct having as components the point X and Y coordinate position.
-type Point struct {
-	x, y int
-}
+import "image"
 
-// Node struct having as components the node X and Y coordinate position.
+// Point defines a struct having as components the point X and Y coordinate position.
+type Point = image.Point
+
+// Node defines a struct having as components the node X and Y coordinate position.
 type Node struct {
 	X, Y int
 }
 
-// Struct which defines a circle geometry element.
+// circle defines the basic circle element.
 type circle struct {
 	x, y, radius int
 }
 
-// newNode creates a new node.
+// newNode instantiate a new node.
 func newNode(x, y int) Node {
 	return Node{x, y}
 }
@@ -37,14 +37,14 @@ func (n Node) isEq(p Node) bool {
 	return false
 }
 
-// Edge struct having as component the node list.
+// edge struct having as component the node list.
 type edge struct {
-	nodes []Node
+	nodes [2]Node
 }
 
 // newEdge creates a new edge.
-func newEdge(p0, p1 Node) []Node {
-	nodes := []Node{p0, p1}
+func newEdge(p0, p1 Node) [2]Node {
+	nodes := [...]Node{p0, p1}
 	return nodes
 }
 
@@ -62,8 +62,8 @@ func (e edge) isEq(edge edge) bool {
 	return false
 }
 
-// Triangle struct which defines the basic components of a triangle.
-// It's constructed from the nodes, it's edges and the circumcircle which describes the triangle circumference.
+// Triangle defines the basic components of a triangle, having as elements
+// the nodes, its edges and the circumcircle which describes the triangle circumference.
 type Triangle struct {
 	Nodes  []Node
 	edges  []edge
@@ -72,13 +72,13 @@ type Triangle struct {
 
 var t = Triangle{}
 
-// newTriangle creates a new triangle which circumcircle encloses the point to be added.
+// newTriangle creates a new triangle which circumcircle encloses the points to be added.
 func (t Triangle) newTriangle(p0, p1, p2 Node) Triangle {
 	t.Nodes = []Node{p0, p1, p2}
 	t.edges = []edge{{newEdge(p0, p1)}, {newEdge(p1, p2)}, {newEdge(p2, p0)}}
 
 	// Create a circumscribed circle of this triangle.
-	// The circumcircle of a triangle is the circle which has the three vertices of the triangle lying on its circumference.
+	// The circumcircle of a triangle is the circle which has the three vertices of the triangle laying on its circumference.
 	circle := t.circle
 	ax, ay := p1.X-p0.X, p1.Y-p0.Y
 	bx, by := p2.X-p0.X, p2.Y-p0.Y
@@ -101,14 +101,14 @@ func (t Triangle) newTriangle(p0, p1, p2 Node) Triangle {
 	return t
 }
 
-// Delaunay is the main entry struct which defines the delaunay system.
+// Delaunay defines the main components of the triangulation.
 type Delaunay struct {
 	width     int
 	height    int
 	triangles []Triangle
 }
 
-// Init initialize the delaunay structure.
+// Init initialize the Delaunay structure.
 func (d *Delaunay) Init(width, height int) *Delaunay {
 	d.width = width
 	d.height = height
@@ -127,11 +127,12 @@ func (d *Delaunay) clear() {
 	p3 := newNode(0, d.height)
 
 	// Create the supertriangle, an artificial triangle which encompasses all the points.
-	// At the end of the triangulation process any triangles which share edges with the supertriangle are deleted from the triangle list.
+	// At the end of the triangulation process any triangles which
+	// share edges with the supertriangle are deleted from the triangle list.
 	d.triangles = []Triangle{t.newTriangle(p0, p1, p2), t.newTriangle(p0, p2, p3)}
 }
 
-// Insert new triangles into the delaunay triangles slice.
+// Insert will insert new triangles into the triangles slice.
 func (d *Delaunay) Insert(points []Point) *Delaunay {
 	var (
 		i, j, k      int
@@ -143,17 +144,17 @@ func (d *Delaunay) Insert(points []Point) *Delaunay {
 	)
 
 	for k = 0; k < len(points); k++ {
-		x = points[k].x
-		y = points[k].y
+		x = points[k].X
+		y = points[k].Y
 
 		triangles := d.triangles
-		edges = nil
-		temps = nil
+		edges = edges[:0]
+		temps = temps[:0]
 
 		for i = 0; i < len(d.triangles); i++ {
 			t := triangles[i]
 
-			//Check whether the points are inside the triangle circumcircle.
+			// Check whether the points are inside the triangle circumcircle or not.
 			circle := t.circle
 			dx = circle.x - x
 			dy = circle.y - y
@@ -181,7 +182,7 @@ func (d *Delaunay) Insert(points []Point) *Delaunay {
 					continue edgesLoop
 				}
 			}
-			// Insert new edge into the polygon slice.
+			// Insert a new edge into the polygon slice.
 			polygon = append(polygon, edge)
 
 		}
@@ -194,7 +195,7 @@ func (d *Delaunay) Insert(points []Point) *Delaunay {
 	return d
 }
 
-// GetTriangles return the generated triangles.
+// GetTriangles returns the generated triangles.
 func (d *Delaunay) GetTriangles() []Triangle {
 	return d.triangles
 }

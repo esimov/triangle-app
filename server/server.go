@@ -12,39 +12,39 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
-*/
+ */
 
 package main
 
 import (
 	"bytes"
 	"crypto/sha1"
+	"encoding/base64"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"image"
+	"image/color"
+	"image/jpeg"
 	_ "image/jpeg"
 	"image/png"
 	"log"
-	"os"
 	"net/http"
+	"os"
 	"strconv"
-	"image/jpeg"
 	"strings"
-	"encoding/base64"
-	"image/color"
 
-	"github.com/bmizerany/pat"
+	"github.com/gorilla/pat"
 )
 
-// options received from get request
+// options received from a Get request
 type options struct {
 	BlurRadius      int
 	SobelThreshold  int
 	Noise           int
 	PointsThreshold int
 	MaxPoints       int
-	CoordCenter	float64
+	CoordCenter     float64
 	Grayscale       bool
 	SolidWireframe  bool
 	WireframeType   int
@@ -59,12 +59,12 @@ type wireframeColor struct {
 	A uint8 `json:"a"`
 }
 
-// transformRequest is the result of an image transformation
+// transformResult is the result of an image transformation
 // Message is a human readable message for the user
 // Image is the actual transformed image
-// ImgURL is the url for the transformed image
+// ImgURL is the url of the transformed image
 // B64Img is the image encoded as a base64 url
-// A json serialization of transformResult is return to the browser as a server side event
+// A json serialization of transformResult is returned to the browser as a server side event
 type transformResult struct {
 	Message string `json:"message"`
 	Image   []byte `json:"-"`
@@ -73,91 +73,31 @@ type transformResult struct {
 	B64Img  string `json:"b64img"`
 }
 
-// Receive a HTTP Post, applies the transform options and returns the triangulated image in B64 form
-func downloadAndTransformImage(b64img string, opts options, transform func(image.Image, options) image.Image) (image.Image, error) {
-	decodedImg, err := decodeB64Img(b64img)
-	if err != nil {
-		return nil, err
-	}
-	return transform(decodedImg, opts), nil
-}
-
-// Save the triangulated image locally. On success it returns the image path, otherwise the error message.
-func saveTriangulatedImage(b64img string, imgPath string) error {
-	fn, err := os.Create(imgPath)
-	decodedImg, err := decodeB64Img(b64img)
-	if err != nil {
-		fmt.Printf("Error creating image file %v.", err)
-		return err
-	}
-
-	if err := jpeg.Encode(fn, decodedImg, &jpeg.Options{100}); err != nil {
-		fmt.Printf("Error encoding the triangulated image %v", err)
-		return err
-	}
-	return nil
-}
-
-// Transform the base url image to the encoded *.jpeg or *.png file.
-func decodeB64Img(b64img string) (image.Image, error) {
-	var decodedImg image.Image
-
-	// Obtain the image type from the data url
-	idx := strings.Index(b64img, ",")
-	imgType := strings.TrimSuffix(b64img[5:idx], ";base64")
-
-	// Decode the string
-	rawImage := string(b64img)[idx + 1:]
-	unbased, err := base64.StdEncoding.DecodeString(rawImage)
-	if err != nil {
-		fmt.Printf("Cannot decode base64 image! %v", err)
-	}
-	res := bytes.NewReader(unbased)
-
-	// Encode the byte string to the corresponding image type
-	switch imgType {
-	case "image/png":
-		decodedImg, err = png.Decode(res)
-		if err != nil {
-			fmt.Printf("Error encoding png image %v.", err)
-			return nil, err
-		}
-	case "image/jpeg":
-		decodedImg, err = jpeg.Decode(res)
-		if err != nil {
-			fmt.Printf("Error encoding jpeg image %v.", err)
-			return nil, err
-		}
-	}
-	return decodedImg, nil
-}
-
 // Server address. It defaults to 8080 port.
 var addr = flag.String("a", ":8080", "Server address")
 
-// Main function
 func main() {
 	log.SetPrefix("\x1b[39m▲ TRIANGLE : ")
 	flag.Parse()
 
-	m := pat.New()
-	m.Post("/images", http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+	router := pat.New()
+	router.Post("/images", http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		req.ParseForm()
 		if req.Form == nil {
 			http.Error(w, "Please send a valid request form", 400)
 			return
 		}
 
-		blurRadius, _ 	  := strconv.Atoi(req.FormValue("blurRadius"))
+		blurRadius, _ := strconv.Atoi(req.FormValue("blurRadius"))
 		sobelThreshold, _ := strconv.Atoi(req.FormValue("sobelThreshold"))
-		noise, _	  := strconv.Atoi(req.FormValue("noise"))
+		noise, _ := strconv.Atoi(req.FormValue("noise"))
 		pointsTreshold, _ := strconv.Atoi(req.FormValue("pointsThreshold"))
-		maxPoints, _	  := strconv.Atoi(req.FormValue("maxPoints"))
-		coordCenter, _	  := strconv.ParseFloat(req.FormValue("coordCenter"), 64)
-		grayscale, _	  := strconv.ParseBool(req.FormValue("grayscale"))
+		maxPoints, _ := strconv.Atoi(req.FormValue("maxPoints"))
+		coordCenter, _ := strconv.ParseFloat(req.FormValue("coordCenter"), 64)
+		grayscale, _ := strconv.ParseBool(req.FormValue("grayscale"))
 		solidWireframe, _ := strconv.ParseBool(req.FormValue("solidWireframe"))
-		wireframeType, _  := strconv.Atoi(req.FormValue("wireframeType"))
-		strokeWidth, _	  := strconv.ParseFloat(req.FormValue("strokeWidth"), 64)
+		wireframeType, _ := strconv.Atoi(req.FormValue("wireframeType"))
+		strokeWidth, _ := strconv.ParseFloat(req.FormValue("strokeWidth"), 64)
 
 		// Decode json encoded wireframe color into RGBA type.
 		var wfcol wireframeColor
@@ -170,16 +110,16 @@ func main() {
 		imgPath := req.FormValue("imagePath")
 
 		opts := &options{
-			BlurRadius:	 blurRadius,
+			BlurRadius:      blurRadius,
 			SobelThreshold:  sobelThreshold,
-			Noise:		 noise,
+			Noise:           noise,
 			PointsThreshold: pointsTreshold,
-			MaxPoints:	 maxPoints,
-			CoordCenter:	 coordCenter * 0.01,
-			Grayscale:	 grayscale,
+			MaxPoints:       maxPoints,
+			CoordCenter:     coordCenter * 0.01,
+			Grayscale:       grayscale,
 			SolidWireframe:  solidWireframe,
-			WireframeType:	 wireframeType,
-			WireframeColor:	 color.RGBA{wfcol.R, wfcol.G, wfcol.B, wfcol.A},
+			WireframeType:   wireframeType,
+			WireframeColor:  color.RGBA{wfcol.R, wfcol.G, wfcol.B, wfcol.A},
 			StrokeWidth:     strokeWidth,
 		}
 		log.Printf("Transformer accepted for %q", imgPath)
@@ -206,13 +146,13 @@ func main() {
 					w.Header().Set("Access-Control-Allow-Origin", "*")
 					w.WriteHeader(http.StatusOK)
 
-					fmt.Fprintf(w, string(enc))
+					fmt.Fprint(w, string(enc))
 				}
 			}
 		}
 	}))
 
-	m.Post("/save", http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+	router.Post("/save", http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		req.ParseForm()
 		if req.Form == nil {
 			http.Error(w, "Invalid request form.", 400)
@@ -236,6 +176,65 @@ func main() {
 
 	log.Printf("Starting server on port%s", *addr)
 
-	http.Handle("/", m)
-	http.ListenAndServe(*addr, nil)
+	http.Handle("/", router)
+	log.Fatal(http.ListenAndServe(*addr, nil))
+}
+
+// downloadAndTransformImage receives an HTTP Post, applies the transform options and returns the triangulated image in base64 form.
+func downloadAndTransformImage(b64img string, opts options, fn func(image.Image, options) image.Image) (image.Image, error) {
+	decodedImg, err := decodeB64Img(b64img)
+	if err != nil {
+		return nil, err
+	}
+	return fn(decodedImg, opts), nil
+}
+
+// saveTriangulatedImage saves the triangulated image locally. On success it returns the image path, otherwise the error message.
+func saveTriangulatedImage(b64img string, imgPath string) error {
+	fn, err := os.Create(imgPath)
+	decodedImg, err := decodeB64Img(b64img)
+	if err != nil {
+		fmt.Printf("Error creating image file %v.", err)
+		return err
+	}
+
+	if err := jpeg.Encode(fn, decodedImg, &jpeg.Options{100}); err != nil {
+		fmt.Printf("Error encoding the triangulated image %v", err)
+		return err
+	}
+	return nil
+}
+
+// decodeB64Img transforms the base url image to the base64 encoded *.jpeg or *.png file.
+func decodeB64Img(b64img string) (image.Image, error) {
+	var decodedImg image.Image
+
+	// Obtain the image type from the data url
+	idx := strings.Index(b64img, ",")
+	imgType := strings.TrimSuffix(b64img[5:idx], ";base64")
+
+	// Decode the string
+	rawImage := string(b64img)[idx+1:]
+	unbased, err := base64.StdEncoding.DecodeString(rawImage)
+	if err != nil {
+		fmt.Printf("Cannot decode base64 image! %v", err)
+	}
+	res := bytes.NewReader(unbased)
+
+	// Encode the byte string to the corresponding image type
+	switch imgType {
+	case "image/png":
+		decodedImg, err = png.Decode(res)
+		if err != nil {
+			fmt.Printf("Error encoding png image %v.", err)
+			return nil, err
+		}
+	case "image/jpeg":
+		decodedImg, err = jpeg.Decode(res)
+		if err != nil {
+			fmt.Printf("Error encoding jpeg image %v.", err)
+			return nil, err
+		}
+	}
+	return decodedImg, nil
 }

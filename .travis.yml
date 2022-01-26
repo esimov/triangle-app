@@ -4,7 +4,7 @@ warnings_are_errors: false
 
 language: node_js
 node_js:
-  - "10.18.0"
+  - "8.16.0"
 os:
   - linux
   - osx

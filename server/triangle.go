@@ -12,7 +12,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
-*/
+ */
 
 package main
 
@@ -21,6 +21,7 @@ import (
 	"image/color"
 	"log"
 	"time"
+
 	tri "github.com/esimov/triangle"
 	"github.com/fogleman/gg"
 )
@@ -32,11 +33,11 @@ const (
 )
 
 var (
-	blur, gray    	*image.NRGBA
-	sobel, srcImg   *image.NRGBA
-	triangles       []tri.Triangle
-	points          []tri.Point
-	lineColor 	color.RGBA
+	blur, gray    *image.NRGBA
+	sobel, srcImg *image.NRGBA
+	triangles     []tri.Triangle
+	points        []tri.Point
+	lineColor     color.RGBA
 )
 
 // triangulate is the main workhorse. Transforms an image with the provided options.
@@ -48,7 +49,7 @@ func triangulate(src image.Image, opts options) image.Image {
 	ctx.Fill()
 
 	delaunay := &tri.Delaunay{}
-	img := toNRGBA(src)
+	img := tri.ToNRGBA(src)
 
 	start := time.Now()
 	log.Print("Generating triangulated image...")
@@ -76,11 +77,11 @@ func triangulate(src image.Image, opts options) image.Image {
 		ctx.LineTo(float64(p2.X), float64(p2.Y))
 		ctx.LineTo(float64(p0.X), float64(p0.Y))
 
-		cx := float64(p0.X + p1.X + p2.X) * opts.CoordCenter
-		cy := float64(p0.Y + p1.Y + p2.Y) * opts.CoordCenter
+		cx := float64(p0.X+p1.X+p2.X) * opts.CoordCenter
+		cy := float64(p0.Y+p1.Y+p2.Y) * opts.CoordCenter
 
-		j := ((int(cx) | 0) + (int(cy) | 0) * width) * 4
-		r, g, b := srcImg.Pix[j], srcImg.Pix[j + 1], srcImg.Pix[j + 2]
+		j := ((int(cx) | 0) + (int(cy)|0)*width) * 4
+		r, g, b := srcImg.Pix[j], srcImg.Pix[j+1], srcImg.Pix[j+2]
 		wfcol := opts.WireframeColor
 
 		if opts.SolidWireframe {
@@ -124,77 +125,4 @@ func triangulate(src image.Image, opts options) image.Image {
 	log.Printf("\x1b[39mTotal number of \x1b[92m%d \x1b[39mtriangles generated out of \x1b[92m%d \x1b[39mpoints\n", len(triangles), len(points))
 
 	return finalImg
-}
-
-// toNRGBA converts any image type to *image.NRGBA with min-point at (0, 0).
-func toNRGBA(img image.Image) *image.NRGBA {
-	srcBounds := img.Bounds()
-	if srcBounds.Min.X == 0 && srcBounds.Min.Y == 0 {
-		if src0, ok := img.(*image.NRGBA); ok {
-			return src0
-		}
-	}
-	srcMinX := srcBounds.Min.X
-	srcMinY := srcBounds.Min.Y
-
-	dstBounds := srcBounds.Sub(srcBounds.Min)
-	dstW := dstBounds.Dx()
-	dstH := dstBounds.Dy()
-	dst := image.NewNRGBA(dstBounds)
-
-	switch src := img.(type) {
-	case *image.NRGBA:
-		rowSize := srcBounds.Dx() * 4
-		for dstY := 0; dstY < dstH; dstY++ {
-			di := dst.PixOffset(0, dstY)
-			si := src.PixOffset(srcMinX, srcMinY + dstY)
-			for dstX := 0; dstX < dstW; dstX++ {
-				copy(dst.Pix[di:di + rowSize], src.Pix[si:si + rowSize])
-			}
-		}
-	case *image.YCbCr:
-		for dstY := 0; dstY < dstH; dstY++ {
-			di := dst.PixOffset(0, dstY)
-			for dstX := 0; dstX < dstW; dstX++ {
-				srcX := srcMinX + dstX
-				srcY := srcMinY + dstY
-				siy := src.YOffset(srcX, srcY)
-				sic := src.COffset(srcX, srcY)
-				r, g, b := color.YCbCrToRGB(src.Y[siy], src.Cb[sic], src.Cr[sic])
-				dst.Pix[di + 0] = r
-				dst.Pix[di + 1] = g
-				dst.Pix[di + 2] = b
-				dst.Pix[di + 3] = 0xff
-				di += 4
-			}
-		}
-	case *image.Gray:
-		for dstY := 0; dstY < dstH; dstY++ {
-			di := dst.PixOffset(0, dstY)
-			si := src.PixOffset(srcMinX, srcMinY + dstY)
-			for dstX := 0; dstX < dstW; dstX++ {
-				c := src.Pix[si]
-				dst.Pix[di + 0] = c
-				dst.Pix[di + 1] = c
-				dst.Pix[di + 2] = c
-				dst.Pix[di + 3] = 0xff
-				di += 4
-				si += 2
-			}
-		}
-	default:
-		for dstY := 0; dstY < dstH; dstY++ {
-			di := dst.PixOffset(0, dstY)
-			for dstX := 0; dstX < dstW; dstX++ {
-				c := color.NRGBAModel.Convert(img.At(srcMinX + dstX, srcMinY + dstY)).(color.NRGBA)
-				dst.Pix[di + 0] = c.R
-				dst.Pix[di + 1] = c.G
-				dst.Pix[di + 2] = c.B
-				dst.Pix[di + 3] = c.A
-				di += 4
-			}
-		}
-	}
-
-	return dst
 }

@@ -1,0 +1,25 @@
+# github.com/esimov/triangle v1.2.3
+## explicit
+github.com/esimov/triangle
+# github.com/fogleman/gg v1.3.0
+## explicit
+github.com/fogleman/gg
+# github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0
+github.com/golang/freetype/raster
+github.com/golang/freetype/truetype
+# github.com/gorilla/context v1.1.1
+## explicit
+github.com/gorilla/context
+# github.com/gorilla/mux v1.8.0
+## explicit
+github.com/gorilla/mux
+# github.com/gorilla/pat v1.0.1
+## explicit
+github.com/gorilla/pat
+# golang.org/x/image v0.0.0-20171214225156-12117c17ca67
+golang.org/x/image/bmp
+golang.org/x/image/draw
+golang.org/x/image/font
+golang.org/x/image/font/basicfont
+golang.org/x/image/math/f64
+golang.org/x/image/math/fixed
