@@ -8,7 +8,7 @@ Triangle is a desktop application for https://github.com/esimov/triangle built o
 <img src="https://user-images.githubusercontent.com/883386/34100521-59d39458-e3eb-11e7-8ee5-21b1da7784da.gif"/>
 </p>
 
-### Install Go
+## Install Go
 
 After instalation set your `GOPATH`, and make sure `$GOPATH/bin` is on your `PATH`.
 
@@ -17,10 +17,10 @@ $ export GOPATH="$HOME/go"
 $ export PATH="$PATH:$GOPATH/bin"
 ```
 
-### Install & build the application
+## Install & build the application
 In case you do not want to build the application yourself you can jump straight to the [release](https://github.com/esimov/triangle-app/releases) page and download the executable file. **Windows**, **MacOS** and **Ubuntu** are supported. Otherwise, you can build the application yourself. 
 
-#### Install
+### Install
 
 ```bash
 $ git clone https://github.com/esimov/triangle-app
@@ -53,7 +53,7 @@ $ yarn run
 - start
   react-scripts start
 ```
-#### Usage:
+### Usage:
 * To run the electron application:
 ```bash
 $ yarn run dev
@@ -71,7 +71,7 @@ $ yarn run dist
 This command generates the binary files depending on the current operating system.
 
 #### Runing the web server
-Open a new terminal and select the `server` folder from the application root directory then type:
+Open the terminal and select the `server` folder from the application root directory then type:
 
 ```bash
 $ go run server.go triangle.go
